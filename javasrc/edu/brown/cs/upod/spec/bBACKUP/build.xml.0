@@ -1,0 +1,24 @@
+<project name='spr.automate' default='all' >
+
+     <path id='spr.classpath'>
+	<pathelement location='/home/spr/sampler' />
+	<pathelement location='/research/ivy/java' />
+	<fileset dir='/home/spr/google/gdata/java/lib' includes='*.jar' />
+	<fileset dir='/home/spr/google/gdata/java/deps' includes='*.jar' />
+     </path>
+
+     <target name='compile'>
+	<javac srcdir='.' destdir='/home/spr/sampler' debug='on' deprecation='on' includeantruntime='false'>
+	   <classpath refid='spr.classpath' />
+	</javac>
+     </target>
+
+     <target name='all' depends='compile' />
+
+     <target name='cal' depends='compile'>
+	<java classname='spr.automate.MessageCalendar' fork='true' >
+	   <classpath refid='spr.classpath' />
+	</java>
+     </target>
+
+</project>

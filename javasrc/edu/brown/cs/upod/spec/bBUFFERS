@@ -1,0 +1,34 @@
+BF_A
+/************************************************************************
+********/\361/*                                                          
+                    */\361/*                                             
+                                 */\361/*                                
+                                              */\361/********************
+************************************************************/\361
+
+BF_B
+/**\361 *\361 **/\361\361
+
+BF_R
+/**\361 *      Tell if this world is the "real world", i.e. is current.\361
+ **/\361\361boolean isCurrent();\361\361\361\361/**\361 *      Create a n
+ew world that starts out the same as this one\361 **/\361\361World create
+Clone();\361\361\361/**\361 *      Return the set of available primitive 
+conditions\361 **/\361\361Collection<Condition> getPrimitiveConditions();
+\361\361\361/**\361 *      Return the set of available entities that can 
+be acted upon.\361 **/\361\361Collection<Entity> getEntities();\361\361\361
+\361/**\361 *      Return the set of available sensors.\361 **/\361\361Co
+llection<Sensor> getSensors();\361\361\361
+
+BF_S
+Perform will 
+
+BF_W
+\372\264\264\264\227\346
+
+BF_X
+d
+
+BF_Y
+\361
+
