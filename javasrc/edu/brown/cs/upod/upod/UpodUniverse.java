@@ -1,8 +1,8 @@
 /********************************************************************************/
 /*                                                                              */
-/*              BasisActionConflict.java                                        */
+/*              UpodUniverse.java                                               */
 /*                                                                              */
-/*      Conflict between two actions                                            */
+/*      Universe defines the problem domain                                     */
 /*                                                                              */
 /********************************************************************************/
 /*      Copyright 2013 Brown University -- Steven P. Reiss                    */
@@ -33,59 +33,41 @@
 
 
 
-package edu.brown.cs.upod.basis;
-
-import edu.brown.cs.upod.upod.*;
+package edu.brown.cs.upod.upod;
 
 
+import java.util.*;
 
-public class BasisActionConflict extends BasisConflict implements UpodActionConflict, BasisConstants
+public interface UpodUniverse
 {
 
 
-/********************************************************************************/
-/*                                                                              */
-/*      Private Storage                                                         */
-/*                                                                              */
-/********************************************************************************/
+/**
+ *	Return the set of available entities that can be acted upon.
+ **/
 
-private UpodAction      from_action;
-private UpodAction      to_action;
+Collection<UpodEntity> getEntities();
 
 
 
-/********************************************************************************/
-/*                                                                              */
-/*      Constructors                                                            */
-/*                                                                              */
-/********************************************************************************/
+/**
+ *	Return the set of available sensors.
+ **/
 
-public BasisActionConflict(Type t,UpodAction f,UpodAction to) 
-{
-   super(t);
-   from_action = f;
-   to_action = to;
-}
+Collection<UpodSensor> getSensors();
 
+/**
+ *      Return the set of conditions to be presented to the user
+ **/
+
+Collection<UpodCondition> getBasicConditions();
 
 
-/********************************************************************************/
-/*                                                                              */
-/*      Access methods                                                          */
-/*                                                                              */
-/********************************************************************************/
 
-@Override public UpodAction getSourceAction()           { return from_action; }
-
-@Override public UpodAction getTargetAction()           { return to_action; }
+}       // end of interface UpodUniverse
 
 
 
 
-}       // end of class BasisActionConflict
-
-
-
-
-/* end of BasisActionConflict.java */
+/* end of UpodUniverse.java */
 

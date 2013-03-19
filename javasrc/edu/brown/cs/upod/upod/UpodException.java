@@ -1,8 +1,8 @@
 /********************************************************************************/
 /*                                                                              */
-/*              BasisConditionConflict.java                                     */
+/*              UpodException.java                                              */
 /*                                                                              */
-/*      Describe a conflict between two conditions                              */
+/*      description of class                                                    */
 /*                                                                              */
 /********************************************************************************/
 /*      Copyright 2013 Brown University -- Steven P. Reiss                    */
@@ -33,23 +33,16 @@
 
 
 
-package edu.brown.cs.upod.basis;
-
-import edu.brown.cs.upod.upod.*;
+package edu.brown.cs.upod.upod;
 
 
-public class BasisConditionConflict extends BasisConflict implements UpodConditionConflict, BasisConstants
+
+/**
+ *      Exception for mainly internal errors
+ **/
+
+public class UpodException extends Error
 {
-
-
-/********************************************************************************/
-/*                                                                              */
-/*      Private Storage                                                         */
-/*                                                                              */
-/********************************************************************************/
-
-private UpodCondition   from_condition;
-private UpodCondition   to_condition;
 
 
 /********************************************************************************/
@@ -58,30 +51,24 @@ private UpodCondition   to_condition;
 /*                                                                              */
 /********************************************************************************/
 
-public BasisConditionConflict(Type t,UpodCondition f,UpodCondition to) 
+public UpodException(String msg)
 {
-   super(t);
-   from_condition = f;
-   to_condition = to;
+   super(msg);
 }
 
 
 
-/********************************************************************************/
-/*                                                                              */
-/*      Access Methods                                                          */
-/*                                                                              */
-/********************************************************************************/
-
-@Override public UpodCondition getSourceCondition()     { return from_condition; }
-
-@Override public UpodCondition getTargetCondition()     { return to_condition; }
+public UpodException(String msg,Throwable cause)
+{
+   super(msg,cause);
+}
 
 
-}       // end of class BasisConditionConflict
+
+}       // end of class UpodException
 
 
 
 
-/* end of BasisConditionConflict.java */
+/* end of UpodException.java */
 
