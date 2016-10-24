@@ -37,6 +37,8 @@ package edu.brown.cs.upod.upod;
 
 
 import java.util.*;
+import edu.brown.cs.ivy.xml.IvyXmlWriter;
+
 
 
 /**
@@ -46,7 +48,7 @@ import java.util.*;
  **/
 
 
-public interface UpodWorld
+public interface UpodWorld extends UpodIdentifiable
 {
 
 
@@ -57,6 +59,10 @@ public interface UpodWorld
 
 boolean isCurrent();
 
+/**
+ *      Create a clone of this world
+ **/
+UpodWorld createClone();
 
 
 /**
@@ -66,113 +72,74 @@ boolean isCurrent();
 UpodUniverse getUniverse();
 
 
-/**
- *	Create a new world that starts out the same as this one
- **/
-
-UpodWorld createClone();
 
 
 /**
- *	Create an action for a particular entity and transition.  This
- *	will throw an exception if the transition does not apply to the
- *	entity.
- **/
+*       Get the set of all parameters
+**/
 
-UpodAction createNewAction(UpodEntity ent,UpodTransition t) throws UpodActionException;
+UpodParameterSet getParameters();
 
-
-
-/**
- *	Create a new rule specifying the given action when the given
- *	condition holds.  The new rule has the specified priority.
- **/
-
-UpodRule createNewRule(UpodCondition cond,UpodAction act,double priority);
-
-
-
-/**
- *	Create a logical condition that is the AND of the given set of
- *	conditions.
- ***/
-
-UpodCondition createAndCondition(UpodCondition ... act);
-
-
-/**
- *	Create a logical condition that is the OR of the given set of
- *	conditions.
- **/
-
-UpodCondition createOrCondition(UpodCondition ... act);
-
-
-/**
- *	Create the not of an condition.  This can throw an exception if the
- *	given action is a trigger and hence is not invertible.
- **/
-
-UpodCondition createNotCondition(UpodCondition act) throws UpodConditionException;
-
-
-
-/**
- *	Create a time-based condition.	The parameters should allow creation
- *	or arbitrary calendar-type events (i.e. one shot or repeated, day-based,
- *	trigger or time slot, etc.)
- **/
-
-UpodCondition createTimeCondition(Calendar from,Calendar to)
-throws UpodConditionException;	
-
-
-
-/**
- *	Create a condition reflecting a particular condition being on for a
- *	given amount of time.
- **/
-
-UpodCondition createTimedCondition(UpodCondition cond,long ontime)
-throws UpodConditionException;
-
-
-/**
- *      Add all properties of this world to a property set
- **/
-
-void addProperties(UpodPropertySet ps);
 
 
 /**
  *      Get the value of a property from the current property set of this 
  *      world.  This is undefined for the current world.
  **/
-Object getProperty(String prop);
+Object getValue(UpodParameter p);
 
+void setValue(UpodParameter p,Object v);
 
-/**
- *      Set a property for the current world.  This will throw an exception 
- *      if used for the current world.
- **/
-void setProperty(String prop,Object value);
 
 
 
 /**
- *	Return the set of available entities that can be acted upon.
+ *      Set the time for this world.  This will throw an exception for the
+ *      current world.  If the world has a time range, this will only set times
+ *      within that range.
  **/
 
-Collection<UpodEntity> getEntities();
+void setTime(Calendar time);
 
 
 
 /**
- *	Return the set of available sensors.
+ *      Return the current time in the world.
  **/
 
-Collection<UpodSensor> getSensors();
+long getTime();
 
+
+
+/**
+ *      Return the current time
+ **/
+
+Calendar getCurrentTime();
+
+
+
+/********************************************************************************/
+/*                                                                              */
+/*      Updating methods                                                        */
+/*                                                                              */
+/********************************************************************************/
+
+void addTrigger(UpodCondition c,UpodPropertySet ps);
+
+void startUpdate();
+
+void endUpdate();
+
+UpodTriggerContext waitForUpdate();
+
+void updateLock();
+void updateUnlock();
+
+/**
+ *      Output world information 
+ **/
+void outputXml(IvyXmlWriter xw);
 
 
 }	// end of interface UpodWorld

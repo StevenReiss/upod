@@ -2,7 +2,7 @@
 /*                                                                              */
 /*              BasisPropertySet.java                                           */
 /*                                                                              */
-/*      Implementation of a property set                                        */
+/*      Implementation of a property set to hold properties for a world.                                       */
 /*                                                                              */
 /********************************************************************************/
 /*	Copyright 2013 Brown University -- Steven P. Reiss		      */
@@ -38,6 +38,10 @@ package edu.brown.cs.upod.basis;
 
 import edu.brown.cs.upod.upod.*;
 
+import edu.brown.cs.ivy.xml.*;
+
+import org.w3c.dom.*;
+
 import java.util.*;
 
 
@@ -57,9 +61,34 @@ BasisPropertySet()
 { }
 
 
-BasisPropertySet(BasisPropertySet ps)
+BasisPropertySet(UpodPropertySet ps)
 {
    super(ps);
+}
+
+
+BasisPropertySet(UpodParameterSet ps)
+{
+   super();
+   
+   for (Map.Entry<UpodParameter,Object> ent : ps.entrySet()) {
+      String nm = ent.getKey().getName();
+      put(nm,ent.getValue());
+    }
+}
+
+
+BasisPropertySet(Element xml) 
+{
+   this();
+   
+   if (xml != null) {
+      for (Element pe : IvyXml.children(xml,"PARAMETER")) {
+         String nm = IvyXml.getAttrString(pe,"NAME");
+         String vl = IvyXml.getText(pe);
+         put(nm,vl);
+       }
+    }
 }
 
 

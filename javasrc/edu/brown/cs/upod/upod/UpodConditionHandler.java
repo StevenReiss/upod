@@ -46,7 +46,13 @@ public interface UpodConditionHandler extends EventListener
  *	may be null; if not it contains values describing the condition.
  **/
 
-void conditionOn(UpodWorld w,UpodCondition c,UpodParameterSet p);
+void conditionOn(UpodWorld w,UpodCondition c,UpodPropertySet p);
+
+/**
+ *      Invoked when a condition triggers.
+ **/
+
+void conditionTrigger(UpodWorld w,UpodCondition c,UpodPropertySet p);
 
 
 /**
@@ -57,13 +63,7 @@ void conditionOff(UpodWorld w,UpodCondition c);
 
 
 
-/**
- *	Invoked for a trigger condition (rather than on-off).  The
- *	parameter set contains values describing the condition.  It
- *	might be null.
- **/
 
-void conditionTrigger(UpodWorld w,UpodCondition c,UpodParameterSet p);
 
 
 

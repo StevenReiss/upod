@@ -37,8 +37,10 @@
 
 package edu.brown.cs.upod.upod;
 
+import edu.brown.cs.ivy.xml.*;
 
 import java.util.Collection;
+
 
 
 
@@ -56,41 +58,31 @@ public interface UpodTransition extends UpodDescribable {
 
 
 /**
- *	Determine if the state change associated with this action is visible to the
- *	the system and hence if the change can be checked.
- **/
-
-boolean isCheckable();
-
-
-
-/**
- *	Determine the timing characteristics of the transition.  A timing of 0
- *	implies the transition is permanent (i.e. holds until another transition
- *	resets it.)  A timing of -1 implies the state change is a trigger that
- *	doesn't really affect the underlying state.  A timing greater than 0
- *	indicates that the transition is temporary for time milliseconds.
- **/
-
-long getTransitionTiming();
-
-
-/**
- *	Return true if the transition is a trigger (i.e. one shot,
- *	doesn't change state, just does a quick action); returns
- *	false otherwise.
- **/
-
-boolean isTrigger();
-
-
-
-
-/**
  *	Get the set of parameters associated with this transition.
  **/
 
 Collection<UpodParameter> getParameterSet();
+
+
+/**
+ *      Get the entity parameter set by this transition if any
+ **/
+
+UpodParameter getEntityParameter();
+
+
+
+/**
+ *	Return the external label
+ **/
+String getLabel();
+
+
+/**
+ *	Find a parameter by name
+ **/
+
+UpodParameter findParameter(String nm);
 
 /**
  *	Get the default parameter values for this transition. This returns a
@@ -102,21 +94,30 @@ UpodParameterSet getDefaultParameters();
 
 
 /**
- *	Execute a transition synchronously in a hypothetical world.
+ *      Indicate whether this transition is a trigger or a more permanent setting
  **/
 
-void perform(UpodWorld world,UpodEntity entity,UpodParameterSet parameters)
-	throws UpodActionException;
+enum Type {
+   STATE_CHANGE,                // changes state until another event
+   TEMPORARY_CHANGE,            // changes state, device will reset by itselft
+   TRIGGER                      // triggers something, no state change
+}
 
+Type getTransitionType();
+
+/**
+ *	Execute the transition on the given world.
+ **/
+
+void perform(UpodWorld w,UpodDevice e,UpodPropertySet p)
+	throws UpodActionException;
 
 
 /**
- *	Execute a transition asynchonously.  The passed in World must be
- *	the current world.
+ *	Output xml so that the transition can be found again
  **/
 
-void performAsync(UpodWorld w,UpodStatusHandler sts,UpodEntity e,UpodParameterSet p)
-	throws UpodActionException;
+void outputXml(IvyXmlWriter xw);
 
 
 

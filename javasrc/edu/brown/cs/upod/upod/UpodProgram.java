@@ -35,6 +35,9 @@
 
 package edu.brown.cs.upod.upod;
 
+import org.w3c.dom.Element;
+
+import edu.brown.cs.ivy.xml.IvyXmlWriter;
 
 import java.util.*;
 
@@ -46,7 +49,7 @@ import java.util.*;
  **/
 
 
-public interface UpodProgram extends UpodDescribable
+public interface UpodProgram 
 {
 
 
@@ -57,6 +60,29 @@ public interface UpodProgram extends UpodDescribable
 List<UpodRule> getRules();
 
 
+/**
+ *      Return a particular rule by id or name
+ **/
+
+UpodRule findRule(String id);
+
+/**
+ *      Add a new rule
+ **/
+void addRule(UpodRule ur);
+
+/**
+ *      Remove a rule
+ **/
+void removeRule(UpodRule ur);
+
+
+/**
+ *      Return the universe of the program
+ **/
+
+UpodUniverse getUniverse();
+
 
 
 /**
@@ -64,8 +90,82 @@ List<UpodRule> getRules();
  *	returns true if a rule is triggered.
  **/
 
-boolean runOnce(UpodWorld world);
+boolean runOnce(UpodWorld world,UpodTriggerContext ctx);
 
+/**
+ *      Output the program to a file
+ **/
+void outputXml(IvyXmlWriter xw);
+
+/**
+ *      Create (clone) a world
+ **/
+UpodWorld createWorld(UpodWorld base);
+
+
+/**
+ *      Find world.  The argument is the world UID.  Null can be used
+ *      to specify the current world
+ **/
+UpodWorld getWorld(String uid);
+
+
+/**
+ *      Remove a hypothetical world.
+ **/
+boolean removeWorld(UpodWorld w);
+
+
+/**
+ *      Method to recreate an action from its XML.
+ **/
+
+UpodAction createAction(Element e);
+
+
+/**
+ *      Method to recreate a condition from its XML.
+ **/
+
+UpodCondition createCondition(Element e);
+
+
+/**
+ *      Method to find/create an entity from its XMl.
+ **/
+
+UpodDevice createDevice(Element e);
+
+UpodDevice findDevice(String id);
+
+
+/**
+ *      Method to create a rule from its XML.
+ **/
+
+UpodRule createRule(Element e);
+
+
+
+
+
+/**
+ *      Method to find/create a transition from its XML
+ **/
+
+UpodTransition createTransition(UpodDevice ue,Element e);
+
+
+/**
+ *      Create a parameter set from its XML
+ **/
+UpodParameterSet createParameterSet(Element e);
+
+
+/**
+ *      Create a property set from its XML
+ **/
+UpodPropertySet createPropertySet(Element e);
 
 
 

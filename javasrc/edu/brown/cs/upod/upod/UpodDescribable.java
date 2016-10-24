@@ -49,12 +49,28 @@ package edu.brown.cs.upod.upod;
 public interface UpodDescribable {
 
 
+
 /**
  *	Return a short name for this object.  This is typically designed to
  *	be used in a menu or button or label.
  **/
 
 String getName();
+
+/**
+ *      Return a longer description for the object, suitable for help.
+ **/
+
+String getDescription();
+
+
+/**
+ *      Return a label for external use (e.g. in the interfacve)
+ **/
+
+String getLabel();
+
+
 
 
 }	// end of interface UpodDescribable

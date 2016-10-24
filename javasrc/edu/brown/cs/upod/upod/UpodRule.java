@@ -38,16 +38,16 @@
 package edu.brown.cs.upod.upod;
 
 
+import edu.brown.cs.ivy.xml.*;
 
-
-
+import java.util.*;
 
 /**
  *	A rule consists of a condition implying an action.   Rules have priorities
  *	which serve to disambiguate conflicting rules.
  **/
 
-public interface UpodRule extends UpodDescribable {
+public interface UpodRule extends UpodDescribable, UpodIdentifiable {
 
 
 
@@ -63,8 +63,33 @@ UpodCondition getCondition();
  *	Return the action associated with a rule
  **/
 
-UpodAction getAction();
+List<UpodAction> getActions();
 
+/**
+ *      Return the set of devices associated with this rule.  This is used to
+ *      see if the rule conflicts with an already chosen rule or if a rule 
+ *      should be aborted
+ **/
+Set<UpodDevice> getDevices();
+
+
+/**
+ *      Return the set of devices used as sensors for this rule.
+ **/
+Set<UpodDevice> getSensors();
+
+/**
+ *      Compute the set of implied properties associated with this rule.
+ **/
+UpodPropertySet getImpliedProperties(UpodPropertySet set);
+
+
+/**
+ *      List of actions to execute if there is an exception during the 
+ *      normal action evaluation.  This may return null if there are no actions.
+ **/
+
+List<UpodAction> getExceptionActions();
 
 
 
@@ -80,6 +105,14 @@ UpodAction getAction();
 double getPriority();
 
 
+
+/**
+ *      Get rule creation time
+ **/
+
+long getCreationTime();
+
+
 /**
  *	Set the priority associated with this rule.
  **/
@@ -88,27 +121,58 @@ void setPriority(double p);
 
 
 
+/**
+ *      Set a non-default description for the rule.
+ **/
+
+void setDescription(String d);
+
+
+/**
+ *      Set a non-default label for the rule
+ **/
+void setLabel(String d);
+
+
+/**
+ *      Get the external label for this rule
+ **/
+String getLabel();
+
+
+
 
 
 
 
 /**
- *	Apply a rule and wait for any action.  This returns false if the rule is
- *	not applicable (i.e. the condition doesn't hold). It can throw either
- *	ConditionException or ActionException if there are errors.  The rule
- *	is applied to the given world which may be the current one.
+ *      Indicate if a rule is explicitly defined
  **/
-
-boolean apply(UpodWorld state) throws UpodConditionException, UpodActionException;
-
+boolean isExplicit();
 
 
 /**
- *	Apply a rule without waiting for the action to complete.
+ *	Apply a rule without waiting for the action to complete.  This
+ *      returns false if the rule is not applicable (the condition doesn't
+ *      hold).  It can throw condition exception or action exception if
+ *      there are errors.  The rule is applied asynchronously if the rule
+ *      is asynchronous and the world is current.
  **/
 
-boolean applyAsync(UpodWorld state,UpodStatusHandler status) 
+boolean apply(UpodWorld state,UpodTriggerContext ctx) 
         throws UpodConditionException, UpodActionException;
+
+/**
+ *      Abort the rule if it is currently active
+ **/
+
+void abort();
+
+/**
+ *      Output the rule so it can be read back in.
+ **/
+
+void outputXml(IvyXmlWriter xw);
 
 
 

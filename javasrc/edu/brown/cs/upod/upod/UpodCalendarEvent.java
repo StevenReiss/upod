@@ -35,7 +35,6 @@
 
 package edu.brown.cs.upod.upod;
 
-import java.util.*;
 
 
 
@@ -53,22 +52,15 @@ import java.util.*;
 public interface UpodCalendarEvent 
 {
 
+
 /**
- *	Given a start and end time, this method should return all the times
- *	that this event is active during that interval.  It assumes the event
- *	is not active at the start.  If the event does not occur during the
- *	interval, this should yield an empty list.  If the event is active at
- *	the start of the interval, the first element in the returned list should
- *	be the from time.  If the event is still active at the end of the
- *	end of the interval, an entry will be added at the end of the list
- *	with the to time.  Entries should also be added to the list whenever
- *	the event starts or stops beyond that.
+ *      Test if the event is active at a given time.
  **/
 
-List<Calendar> getSlots(Calendar from,Calendar to);
+boolean isActive(long when);
 
 
-	
+
 }	// end of interface UpodCalendarEvent
 
 

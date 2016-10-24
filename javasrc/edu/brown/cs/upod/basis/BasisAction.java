@@ -37,6 +37,9 @@ package edu.brown.cs.upod.basis;
 
 import edu.brown.cs.upod.upod.*;
 
+import edu.brown.cs.ivy.xml.*;
+import org.w3c.dom.*;
+
 
 public class BasisAction implements UpodAction, BasisConstants
 {
@@ -48,10 +51,11 @@ public class BasisAction implements UpodAction, BasisConstants
 /*                                                                              */
 /********************************************************************************/
 
-private String          action_name;
-private UpodEntity      for_entity;
+private UpodDevice     for_entity;
 private UpodTransition  for_transition;
 private UpodParameterSet parameter_set;
+private String          action_description;
+private String          action_label;
 
 
 
@@ -61,12 +65,39 @@ private UpodParameterSet parameter_set;
 /*                                                                              */
 /********************************************************************************/
 
-public BasisAction(String name,UpodEntity e,UpodTransition t)
+public BasisAction(UpodDevice e,UpodTransition t)
 {
-   action_name = name;
    for_entity = e;
    for_transition = t;
-   parameter_set = t.getDefaultParameters();
+   if (t == null) parameter_set = new BasisParameterSet();
+   else  parameter_set = new BasisParameterSet(t.getDefaultParameters());
+   action_description = null;
+   action_label = null;
+}
+
+
+
+public BasisAction(UpodProgram bp,Element xml)
+{
+   for_entity = null;
+   for_transition = null;
+   Element ee = IvyXml.getChild(xml,"DEVICE");
+   for_entity = bp.createDevice(ee);
+   Element te = IvyXml.getChild(xml,"TRANSITION");
+   for_transition = bp.createTransition(for_entity,te);
+   UpodParameterSet ps = null;
+   if (for_transition != null) ps = for_transition.getDefaultParameters();
+   Element pe = IvyXml.getChild(xml,"PARAMETERS");
+   parameter_set = new BasisParameterSet(pe,ps);
+   String desc = Coder.unescape(IvyXml.getTextElement(xml,"DESCRIPTION"));
+   action_description = null;
+   if (desc != null && !desc.equals(getDescription())) {
+      action_description = desc;
+    }
+   String lbl = Coder.unescape(IvyXml.getTextElement(xml,"LABEL"));
+   if (lbl != null && !lbl.equals(getLabel())) {
+      action_label = lbl;
+    }
 }
 
 
@@ -77,9 +108,43 @@ public BasisAction(String name,UpodEntity e,UpodTransition t)
 /*                                                                              */
 /********************************************************************************/
 
-@Override public String getName()                       { return action_name; }
+@Override public String getName()
+{
+   if (for_transition == null) return for_entity.getName() + "^no_action";
+   
+   return for_entity.getName() + "^" + for_transition.getName();
+}
 
-@Override public UpodEntity getEntity()                 { return for_entity; }
+@Override public String getDescription()
+{
+   if (action_description != null) return action_description; 
+   
+   if (for_transition == null) {
+      return "Do nothing to " + for_entity.getName();
+    }
+   
+   return "Apply " + for_transition.getName() + " to " + for_entity.getName();
+}
+
+@Override public String getLabel()
+{
+   if (action_label != null) return action_label;
+   
+   return getDescription();
+}
+
+@Override public void setLabel(String l)
+{
+   action_label = l;
+}
+
+
+@Override public void setDescription(String d) 
+{
+   action_description = d;
+}
+
+@Override public UpodDevice getDevice()                 { return for_entity; }
 
 @Override public UpodTransition getTransition()         { return for_transition; }
 
@@ -108,6 +173,13 @@ public BasisAction(String name,UpodEntity e,UpodTransition t)
 }
 
 
+@Override public void addImpliedProperties(UpodPropertySet ups)
+{
+   UpodPropertySet aps = new BasisPropertySet(parameter_set);
+   ups.putAll(aps);
+}
+
+
 
 /********************************************************************************/
 /*                                                                              */
@@ -115,52 +187,40 @@ public BasisAction(String name,UpodEntity e,UpodTransition t)
 /*                                                                              */
 /********************************************************************************/
 
-@Override public boolean validate()
-{
-   //TODO: check validity of parameters
-   return true;
-}
-
-
-@Override public void perform(UpodWorld w,UpodParameterSet ps) throws UpodActionException
-{
-   UpodParameterSet ups = parameter_set;
-   if (ps != null && !ps.isEmpty()) {
-      ups = new BasisParameterSet(parameter_set);
-      ups.putAll(ps);
-    }
-   
-   for_transition.perform(w,for_entity,ups);
-}
-
-
-@Override public void performAsync(UpodWorld w,UpodParameterSet ps,UpodStatusHandler sts)
+@Override public void perform(UpodWorld w,UpodPropertySet ps) 
         throws UpodActionException
 {
-   UpodParameterSet ups = parameter_set;
+   UpodPropertySet ups = new BasisPropertySet(parameter_set);
    if (ps != null && !ps.isEmpty()) {
-      ups = new BasisParameterSet(parameter_set);
       ups.putAll(ps);
     }
-      
-   for_transition.performAsync(w,sts,for_entity,ups);
-}
-
-
-
-
-/********************************************************************************/
-/*                                                                              */
-/*      Conflict methods                                                        */
-/*                                                                              */
-/********************************************************************************/
-
-@Override public UpodActionConflict getConflicts(UpodAction act) 
-{
-   //TODO: need to compute comflicts
    
-   return new BasisActionConflict(UpodActionConflict.Type.NO_CONFLICT,this,act);
+   if (for_transition != null) for_transition.perform(w,for_entity,ups);
 }
+
+
+
+/********************************************************************************/
+/*                                                                              */
+/*      Output methods                                                          */
+/*                                                                              */
+/********************************************************************************/
+
+@Override public void outputXml(IvyXmlWriter xw)
+{
+   xw.begin("ACTION");
+   xw.field("CLASS",getClass().getName());
+   xw.field("NAME",getName());
+   xw.field("LABEL",Coder.escape(getLabel()));
+   xw.textElement("DESC",Coder.escape(getDescription()));
+   if (for_entity != null) for_entity.outputXml(xw);
+   if (for_transition != null) for_transition.outputXml(xw);
+   if (getParameters() != null) getParameters().outputXml(xw);
+   xw.end("ACTION");
+}
+
+
+
 
 
 

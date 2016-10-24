@@ -35,11 +35,34 @@
 
 package edu.brown.cs.upod.smartsign;
 
+import edu.brown.cs.upod.basis.BasisConstants;
 
 
 
-public interface SmartSignConstants
+public interface SmartSignConstants extends BasisConstants
 {
+
+/********************************************************************************/
+/*                                                                              */
+/*      Files                                                                   */
+/*                                                                              */
+/********************************************************************************/
+
+String SMART_SIGN_PROGRAM = "$(HOME)/.smartsign";
+String SMART_SIGN_UNIVERSE = "/ws/volfred/smartsign/smartsign.universe.xml";
+String SMART_SIGN_IMAGE = "/ws/volfred/smartsign/smartsignimage.jpg";
+
+
+
+/********************************************************************************/
+/*                                                                              */
+/*      Names                                                                   */
+/*                                                                              */
+/********************************************************************************/
+
+String SMART_SIGN = "SmartSign";
+
+
 
 
 }       // end of interface SmartSignConstants

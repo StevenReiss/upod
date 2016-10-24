@@ -37,9 +37,11 @@ package edu.brown.cs.upod.basis;
 
 import edu.brown.cs.upod.upod.*;
 
+import java.util.*;
 
 
-class BasisWorldHypothetical extends BasisWorld implements UpodWorld, BasisConstants
+class BasisWorldHypothetical extends BasisWorld
+        implements UpodWorld, BasisConstants
 {
 
 
@@ -49,7 +51,9 @@ class BasisWorldHypothetical extends BasisWorld implements UpodWorld, BasisConst
 /*                                                                              */
 /********************************************************************************/
 
-private BasisPropertySet        world_map;
+private Calendar                current_time;
+private String                  unique_id;
+
 
 
 /********************************************************************************/
@@ -61,8 +65,22 @@ private BasisPropertySet        world_map;
 BasisWorldHypothetical(UpodWorld w)
 {
    super(w.getUniverse());
-   world_map = new BasisPropertySet();
-   w.addProperties(world_map);
+   current_time = Calendar.getInstance();
+   current_time.setTimeInMillis(w.getTime());
+   unique_id = getNewUID();
+   
+   for (UpodDevice ud : getUniverse().getDevices()) {
+      if (ud.isEnabled()) {
+         for (UpodParameter up : ud.getParameters()) {
+            if (up.isSensor()) {
+               Object val = ud.getValueInWorld(up,w);
+               if (val != null) {
+                  ud.setValueInWorld(up,val,this);
+                }
+             }
+          }
+       }
+    }
 }
 
 
@@ -74,20 +92,42 @@ BasisWorldHypothetical(UpodWorld w)
 
 @Override public boolean isCurrent()            { return false; }
 
-@Override public void addProperties(UpodPropertySet ps)
+
+@Override public void setTime(Calendar time) 
 {
-   ps.putAll(world_map);
+   if (time != null) current_time = time;
 }
 
-@Override public Object getProperty(String p)
+
+
+
+
+@Override public long getTime()
 {
-   return world_map.get(p);
+   if (current_time == null) return System.currentTimeMillis();
+   
+   return current_time.getTimeInMillis();
 }
 
-@Override public void setProperty(String p,Object v)
+
+@Override public String getUID()
 {
-   world_map.put(p,v);
+   return unique_id;
 }
+
+
+
+
+@Override public Calendar getCurrentTime()
+{
+   if (current_time != null) return current_time;
+   return Calendar.getInstance();
+}
+
+
+
+
+
 
 }       // end of class BasisWorldHypothetical
 

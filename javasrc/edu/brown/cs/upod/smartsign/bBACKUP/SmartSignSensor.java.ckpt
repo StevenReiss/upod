@@ -35,18 +35,14 @@
 
 package edu.brown.cs.upod.smartsign;
 
+import edu.brown.cs.upod.basis.*;
+import edu.brown.cs.upod.upod.*;
+
+import java.util.*;
 
 
-class SmartSignSensor implements SmartSignConstants
+abstract class SmartSignSensor extends BasisSensor implements SmartSignConstants
 {
-
-
-/********************************************************************************/
-/*                                                                              */
-/*      Private Storage                                                         */
-/*                                                                              */
-/********************************************************************************/
-
 
 
 /********************************************************************************/
@@ -55,6 +51,10 @@ class SmartSignSensor implements SmartSignConstants
 /*                                                                              */
 /********************************************************************************/
 
+protected SmartSignSensor(UpodUniverse uu,Collection<String> states,String start,long update)
+{
+   super(uu,states,start,update);
+}
 
 
 }       // end of class SmartSignSensor

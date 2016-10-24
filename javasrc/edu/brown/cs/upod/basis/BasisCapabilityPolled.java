@@ -1,8 +1,8 @@
 /********************************************************************************/
 /*                                                                              */
-/*              BasisRunner.java                                                */
+/*              BasisCapabilityPolled.java                                      */
 /*                                                                              */
-/*      Run a program using polling                                             */
+/*      Capability to provide a polled device                                   */
 /*                                                                              */
 /********************************************************************************/
 /*      Copyright 2013 Brown University -- Steven P. Reiss                    */
@@ -35,12 +35,18 @@
 
 package edu.brown.cs.upod.basis;
 
-import edu.brown.cs.upod.upod.*;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.TimerTask;
+import java.util.Timer;
 
-import java.util.*;
+import edu.brown.cs.upod.upod.UpodDevice;
+import edu.brown.cs.upod.upod.UpodParameter;
+import edu.brown.cs.upod.upod.UpodWorld;
 
 
-public class BasisRunner implements BasisConstants
+
+public class BasisCapabilityPolled extends BasisCapability
 {
 
 
@@ -50,9 +56,10 @@ public class BasisRunner implements BasisConstants
 /*                                                                              */
 /********************************************************************************/
 
-private UpodProgram     run_program;
-private UpodWorld       current_world;
+private Map<UpodDevice,Updater> update_task;
+private long poll_rate;
 
+private static final String     RATE_PARAMETER = "poll_rate";
 
 
 /********************************************************************************/
@@ -61,56 +68,87 @@ private UpodWorld       current_world;
 /*                                                                              */
 /********************************************************************************/
 
-public BasisRunner(UpodProgram pgm,UpodWorld world)
+public BasisCapabilityPolled(String name,long rate)
 {
-   run_program = pgm;
-   current_world = world;
+   super(name);
+   poll_rate = rate;
+   update_task = new HashMap<UpodDevice,Updater>();
+}
+
+
+/********************************************************************************/
+/*                                                                              */
+/*      Add to device                                                           */
+/*                                                                              */
+/********************************************************************************/
+
+@Override public void addToDevice(UpodDevice d) 
+{
+   BasisDevice bd = (BasisDevice) d;
+   BasisParameter bp = BasisParameter.createIntParameter(RATE_PARAMETER,1,1000*60*60*24);
+   bd.addParameter(bp);
+   d.setValueInWorld(bp,poll_rate,null);
+}
+
+
+@Override public void startCapability(UpodDevice d)
+{
+   BasisDevice bd = (BasisDevice) d;
+   UpodWorld curworld = bd.getCurrentWorld();
+   UpodParameter bp = d.findParameter(RATE_PARAMETER);
+   long rate  = ((Number) curworld.getValue(bp)).longValue();
+   
+   setPolling(bd,rate);
 }
 
 
 
-/********************************************************************************/
-/*                                                                              */
-/*      Methods to run the world once                                           */
-/*                                                                              */
-/********************************************************************************/
-
-public void runOnce()
+private void setPolling(BasisDevice bd,long rate)
 {
-   for (UpodRule ur : run_program.getRules()) {
-      if (ur.apply(current_world)) break;
+   Updater upd = update_task.get(bd);
+   if (upd != null) {
+      if (upd.getRate() == rate) return;
+      upd.cancel();
+      update_task.remove(bd);
     }
+   
+   if (rate == 0) return;
+   
+   Timer t = BasisWorld.getWorldTimer();
+   TimerTask tt = new Updater(bd,rate);
+   t.schedule(tt,0,rate);
 }
 
 
 
 /********************************************************************************/
 /*                                                                              */
-/*      Methods to run continuously                                             */
+/*      Handle updating                                                         */
 /*                                                                              */
 /********************************************************************************/
 
-public void runEvery(long delay)
-{
-   Timer t = new Timer("BasisRunner");
-   t.schedule(new Runner(),0,delay);
-}
-
-
-private class Runner extends TimerTask {
+private class Updater extends TimerTask {
+   
+   private BasisDevice for_device;
+   private long update_rate;
+   
+   Updater(BasisDevice bd,long rate) {
+      for_device = bd;
+      update_rate = rate;
+    }
+   
+   long getRate()                       { return update_rate; }
    
    @Override public void run() {
-      runOnce();
+      for_device.updateCurrentState();
     }
    
-}       // end of inner class Runner
+}       // end of inner class Updater
 
-
-
-}       // end of class BasisRunner
+}       // end of class BasisCapabilityPolled
 
 
 
 
-/* end of BasisRunner.java */
+/* end of BasisCapabilityPolled.java */
 

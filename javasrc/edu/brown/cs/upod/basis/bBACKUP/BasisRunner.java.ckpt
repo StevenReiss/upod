@@ -78,7 +78,7 @@ public BasisRunner(UpodProgram pgm,UpodWorld world)
 public void runOnce()
 {
    for (UpodRule ur : run_program.getRules()) {
-      if (ur.apply(current_world)) break;
+      if (ur.apply(current_world,null)) break;
     }
 }
 
@@ -92,7 +92,7 @@ public void runOnce()
 
 public void runEvery(long delay)
 {
-   Timer t = new Timer("BasisRunner");
+   Timer t = BasisWorld.getWorldTimer();
    t.schedule(new Runner(),0,delay);
 }
 

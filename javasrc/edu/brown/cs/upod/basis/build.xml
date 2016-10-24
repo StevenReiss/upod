@@ -4,6 +4,10 @@
 	<pathelement location='/research/people/spr/upod/java' />
 	<pathelement location='/research/people/spr/upod/javasrc' />
 	<pathelement location='/research/ivy/java' />
+	<fileset dir='/research/people/spr/upod/lib/' includes='jsoup*.jar' />
+	<fileset dir='/research/people/spr/upod/lib/' includes='json.jar' />
+	<fileset dir='/research/people/spr/upod/lib/' includes='googleapi.jar' />
+	<fileset dir='/research/people/spr/upod/lib/' includes='javax.servlet.jar' />
      </path>
 
      <target name='compile'>

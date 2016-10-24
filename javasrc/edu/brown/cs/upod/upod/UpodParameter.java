@@ -35,6 +35,9 @@
 
 package edu.brown.cs.upod.upod;
 
+import edu.brown.cs.ivy.xml.IvyXmlWriter;
+
+import java.util.*;
 
 
 public interface UpodParameter extends UpodDescribable
@@ -53,11 +56,12 @@ enum ParameterType {
    TIME,
    DATE,
    DATETIME,
-   TIME_RANGE,
-   DATE_RANGE,
-   DATETIME_RANGE,
-   ENUM,
-   EVENT_MATCH,         // calendar event matching
+   SET,                 // set of values from enum or set of strings
+   MAP,                 // map of values
+   PICTURE,             // svg image or equivalent
+   JSON,                // JSON structure
+   COLOR,
+   LOCATION,
 };
 
 
@@ -79,6 +83,7 @@ ParameterType getParameterType();
 double getMinValue();
 
 
+
 /**
  *	Range values.  These are used for both real and integer types.
  *	They are also used for dates/datetimes using time in millis.
@@ -87,14 +92,62 @@ double getMinValue();
 
 double getMaxValue();
 
-
 /**
- *	Validate this parameter.  This returns false if the parameter is
- *	invalid.  Note that its returning true is no guarantee that the
- *	parameter is valid.
+ *      For a parameter that is constrained to a set of values, return the
+ *      set of potential values
  **/
 
-boolean isValid(Object value);
+List<Object> getValues();
+
+
+/**
+ *      Normalize a value for this type of parameters.  The input can be a string
+ *      or any valid type for the parameter.  The output should be the desired
+ *      type that is stored for the parameter.  
+ **/
+
+Object normalize(Object o);
+
+
+/**
+ *      Unnormalize returns a string that can be used as a value globall
+ **/
+
+String unnormalize(Object o);
+
+
+/**
+ *      Indicate if a parameter is a sensor parameter.  A sensor is set by
+ *      outside factors (e.g. the environment) and generally has an associated
+ *      condition that can be used to define rules.
+ **/
+
+boolean isSensor();
+
+
+
+/**
+ *      Indicate if a parameter is a target parameter.  A target is set by 
+ *      a rule based on some condition and generally has one or more associated
+ *      transitions that can be used to set it.
+ ***/
+
+boolean isTarget();
+
+/**
+ *      Indicate if a parameter is continuous or sporatic.  Timing events for
+ *      continuous parameters should be ignored.  On output, sporatic parameters
+ *      should be done via triggers.
+ **/
+
+boolean isContinuous();
+
+
+/**
+ *      Output the parameter in XML
+ **/
+void outputXml(IvyXmlWriter xw,Object dflt);
+
 
 
 }	// end of interface UpodParameter

@@ -35,9 +35,11 @@
 
 package edu.brown.cs.upod.basis;
 
+import edu.brown.cs.ivy.xml.IvyXmlWriter;
 import edu.brown.cs.upod.upod.*;
 
 import java.util.*;
+import java.util.concurrent.locks.*;
 
 public abstract class BasisWorld implements UpodWorld, BasisConstants
 {
@@ -50,6 +52,14 @@ public abstract class BasisWorld implements UpodWorld, BasisConstants
 /********************************************************************************/
 
 private UpodUniverse            our_universe;
+private BasisParameterSet       world_parameters;
+private BasisTriggerContext     trigger_context;
+private int                     update_counter;
+private ReentrantLock           update_lock;
+private Condition               update_condition;
+
+
+private static Timer    world_timer = new Timer("BASIS_WORLD_TIMER",true);
 
 
 
@@ -62,86 +72,13 @@ private UpodUniverse            our_universe;
 protected BasisWorld(UpodUniverse uu) 
 {
    our_universe = uu;
+   world_parameters = new BasisParameterSet();
+   trigger_context = null;
+   update_counter = 0;
+   update_lock = new ReentrantLock();
+   update_condition = update_lock.newCondition();
 }
                
-
-
-/********************************************************************************/
-/*                                                                              */
-/*      Methods for creating conditions                                         */
-/*                                                                              */
-/********************************************************************************/
-
-@Override public UpodCondition createAndCondition(UpodCondition ... act)
-{
-   return null;
-}
-
-@Override public UpodCondition createOrCondition(UpodCondition ... act)
-{
-   return null;
-}
-
-@Override public UpodCondition createNotCondition(UpodCondition act)
-{
-   return null;
-}
-
-@Override public UpodCondition createTimeCondition(Calendar from,Calendar to)
-{
-   return null;
-}
-
-@Override public UpodCondition createTimedCondition(UpodCondition cond,long ontime)
-{
-   return null;
-}
-
-/********************************************************************************/
-/*                                                                              */
-/*      Methods for creating rules                                              */
-/*                                                                              */
-/********************************************************************************/
-
-@Override public UpodRule createNewRule(UpodCondition c,UpodAction act,double pr)
-{
-   String name = c.getName() + "=>" + act.getName();
-   BasisRule br = new BasisRule(name,c,act,pr);
-   return br;
-}
-
-
-/********************************************************************************/
-/*                                                                              */
-/*      Methods for creating actions                                                          */
-/*                                                                              */
-/********************************************************************************/
-
-@Override public UpodAction createNewAction(UpodEntity ent,UpodTransition t)
-{
-   String name = ent.getName() + "^" + t.getName();
-   BasisAction ba = new BasisAction(name,ent,t);
-   return ba;
-}
-
-
-/********************************************************************************/
-/*                                                                              */
-/*      Universe access methods                                                 */
-/*                                                                              */
-/********************************************************************************/
-
-@Override public Collection<UpodEntity> getEntities()
-{
-   return our_universe.getEntities();
-}
-
-
-@Override public Collection<UpodSensor> getSensors()
-{
-   return our_universe.getSensors();
-}
-
 
 /********************************************************************************/
 /*                                                                              */
@@ -157,8 +94,146 @@ protected BasisWorld(UpodUniverse uu)
 
 @Override public UpodWorld createClone()
 {
-   // return new BasisWorldHypothetical(this);
-   return null;
+   return new BasisWorldHypothetical(this);
+}
+
+
+
+/********************************************************************************/
+/*                                                                              */
+/*      Parameter methods                                                       */
+/*                                                                              */
+/********************************************************************************/
+
+@Override public Object getValue(UpodParameter p)
+{
+   return world_parameters.get(p);
+}
+
+
+@Override public void setValue(UpodParameter p,Object v)
+{
+   world_parameters.put(p,v);
+}
+
+
+@Override public UpodParameterSet getParameters()
+{
+   return world_parameters;
+}
+
+
+
+/********************************************************************************/
+/*                                                                              */
+/*      Output methods                                                          */
+/*                                                                              */
+/********************************************************************************/
+
+@Override public void outputXml(IvyXmlWriter xw)
+{
+   xw.begin("WORLD");
+   xw.field("ID",getUID());
+   xw.field("CURRENT",isCurrent());
+   xw.end("WORLD");
+}
+
+
+
+
+/********************************************************************************/
+/*                                                                              */
+/*     Timer to use in current world                                            */
+/*                                                                              */
+/********************************************************************************/
+
+public static Timer getWorldTimer()
+{
+   return world_timer;
+}
+
+
+public static String getNewUID()
+{
+   UUID u = UUID.randomUUID();
+   
+   return UIDP + u.toString().replace("-","_");
+}
+
+
+/********************************************************************************/
+/*                                                                              */
+/*      Condition methods                                                       */
+/*                                                                              */
+/********************************************************************************/
+
+@Override  public void addTrigger(UpodCondition c,UpodPropertySet ps)
+{
+   if (ps == null) ps = new BasisPropertySet();
+   
+   update_lock.lock();
+   try {
+      if (trigger_context == null) trigger_context = new BasisTriggerContext();
+      trigger_context.addCondition(c,ps);
+    }
+   finally { 
+      update_lock.unlock();
+    }
+}
+
+
+@Override public void startUpdate()
+{
+   update_lock.lock();
+   try {
+      ++update_counter;
+    }
+   finally {
+      update_lock.unlock();
+    }
+}
+
+
+@Override public void endUpdate()
+{
+   update_lock.lock();
+   try {
+      --update_counter;
+      if (update_counter == 0) 
+         update_condition.signalAll();
+    }
+   finally {
+      update_lock.unlock();
+    }
+}
+
+
+
+@Override public UpodTriggerContext waitForUpdate()
+{
+   update_lock.lock();
+   try {
+      while (update_counter > 0) {
+         update_condition.awaitUninterruptibly();
+       }
+      UpodTriggerContext ctx = trigger_context;
+      trigger_context = null;
+      return ctx;
+    }
+   finally {
+      update_lock.unlock();
+    }
+}
+
+@Override public void updateLock()
+{
+   update_lock.lock();
+}
+
+
+@Override public void updateUnlock()
+{
+   update_lock.unlock();
 }
 
 

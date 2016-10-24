@@ -35,6 +35,7 @@
 
 package edu.brown.cs.upod.upod;
 
+import java.util.*;
 
 
 
@@ -52,7 +53,121 @@ public interface UpodFactory
  *	what is really happening at this instant.
  **/
 
-UpodWorld createCurrentWorld(UpodUniverse univ);
+UpodWorld getCurrentWorld(UpodUniverse univ);
+
+
+
+
+
+
+/**
+ *	Create an action for a particular entity and transition.  This
+ *	will throw an exception if the transition does not apply to the
+ *	entity.
+ **/
+
+UpodAction createNewAction(UpodDevice ent,UpodTransition t)
+	throws UpodActionException;
+
+
+
+/**
+ *	Create a new rule specifying the given action when the given
+ *	condition holds.  The new rule has the specified priority.
+ **/
+
+UpodRule createNewRule(UpodCondition cond,
+      List<UpodAction> act,double priority);
+
+
+
+/**
+ *	Create a logical condition that is the AND of the given set of
+ *	conditions.
+ ***/
+
+UpodCondition createAndCondition(UpodCondition ... act);
+
+
+
+/**
+ *      Create a logical condition thta tis the OR of the given set or 
+ *      conditions
+ **/
+
+UpodCondition createOrCondition(UpodCondition ... act);
+
+
+
+
+
+
+
+
+
+/**
+ *	Create a time-based condition.	The parameters should allow creation
+ *	or arbitrary calendar-type events (i.e. one shot or repeated, day-based,
+ *	trigger or time slot, etc.)
+ **/
+
+UpodCondition createTimeCondition(UpodUniverse uu,String nm,Calendar from,Calendar to)
+	throws UpodConditionException;
+
+
+
+/**
+ *	Create a condition reflecting a particular condition being on for a
+ *	given amount of time.
+ **/
+
+UpodCondition createTimedCondition(UpodCondition cond,long starttime,long endtime)
+	throws UpodConditionException;
+
+
+
+
+/**
+ *	Create a sensor reflecting another sensor being in a given state for a
+ *	given amount of time
+ **/
+
+UpodDevice createTimedSensor(String id,UpodDevice base,UpodParameter p,Object state,long start,long end);
+
+
+UpodDevice createTimedSensor(String id,UpodCondition cond,
+      long start,long end);
+
+
+/**
+ *	Create a sensor which acts as a latch for a particular device setting
+ **/
+
+UpodDevice createLatchSensor(String id,UpodDevice base,
+      UpodParameter p,Object state,Calendar reset);
+
+
+UpodDevice createLatchSensor(String id,UpodDevice base,
+      UpodParameter p,Object state,long reset,long offafter);
+
+UpodDevice createLatchSensor(String id,UpodCondition cond,long reset,long offafter);
+
+UpodDevice createLatchSensor(String id,UpodCondition cond,Calendar reset);
+
+
+
+/**
+ *      Create an empty sequential (automata) sensor
+ **/
+
+UpodDevice createAutomataSensor(UpodUniverse uu,String id);
+
+/**
+ *      Create an single condition OR sensor
+ **/
+
+UpodDevice createOrSensor(String id,UpodDevice base,UpodParameter p,Object s);
+
 
 
 }	// end of interface UpodFactory

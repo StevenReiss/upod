@@ -1,8 +1,8 @@
 /********************************************************************************/
 /*                                                                              */
-/*              UpodPlan.java                                                   */
+/*              UpodStore.java                                                  */
 /*                                                                              */
-/*      description of class                                                    */
+/*      UPOD class to store user-project data                                   */
 /*                                                                              */
 /********************************************************************************/
 /*      Copyright 2013 Brown University -- Steven P. Reiss                    */
@@ -36,23 +36,42 @@
 package edu.brown.cs.upod.upod;
 
 
-/**
- *      Describe an action plan.  This consists of doing one action, waiting
- *      a certain amount of time, and then doing another action.  This could
- *      involve turning something on for 5 minutes for example.  It could also
- *      correspond to a microwave going 9 minutes at one setting and then 22
- *      minutes at a second setting.
- **/
 
-public interface UpodPlan extends UpodDescribable, UpodVisitable
+public interface UpodStore
 {
 
 
+/**
+ *      Store program for a given user and project.   
+ **/
 
-}       // end of interface UpodPlan
+public void putProgram(UpodUniverse uu,UpodUser user,UpodProgram pgm)
+        throws UpodException;
+
+
+
+/**
+ *      Find the program for a given user and project.
+ **/
+
+public UpodProgram getProgram(UpodUniverse uu,UpodUser user);
+
+
+/**
+ *      Create a new user.  This will fail if the user name is already
+ *      taken or there is some other database problem.  It returns the
+ *      new user id
+ **/
+
+public UpodUser createUser(String name,String email,String pwd) 
+        throws UpodException;
+
+
+
+}       // end of interface UpodStore
 
 
 
 
-/* end of UpodPlan.java */
+/* end of UpodStore.java */
 

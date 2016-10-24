@@ -1,8 +1,8 @@
 /********************************************************************************/
 /*                                                                              */
-/*              SmartSignSensor.java                                            */
+/*              UpodAccess.java                                                 */
 /*                                                                              */
-/*      description of class                                                    */
+/*      Access control for a universe                                           */
 /*                                                                              */
 /********************************************************************************/
 /*      Copyright 2013 Brown University -- Steven P. Reiss                    */
@@ -33,34 +33,58 @@
 
 
 
-package edu.brown.cs.upod.smartsign;
+package edu.brown.cs.upod.upod;
 
 
 
-class SmartSignSensor implements SmartSignConstants
+public interface UpodAccess
 {
 
 
-/********************************************************************************/
-/*                                                                              */
-/*      Private Storage                                                         */
-/*                                                                              */
-/********************************************************************************/
+/**
+ *      Permission types
+ **/
+
+// Might want other roles to allow investigation or setting of properties in
+// either real or artificial worlds.  
+// Writing state of the world might be different from writing rule set
+
+enum Role {
+   NONE,
+   READ,
+   WRITE
+};
 
 
 
-/********************************************************************************/
-/*                                                                              */
-/*      Constructors                                                            */
-/*                                                                              */
-/********************************************************************************/
+/**
+ *      Return the associated universe
+ **/
+
+UpodUniverse getUniverse();
+
+
+/**
+ *      Check access for a user
+ **/
+
+Role getRole(String uid);
 
 
 
-}       // end of class SmartSignSensor
+/**
+ *      Authorize a user.  This method takes a user name (uid) and a random string (sid, 
+ *      typically the session id) that has been passed to the web server.  It checks that
+ *      the key string passed back is the hash of the uid,sid, and proper password.
+ **/
+
+boolean authorize(String uid,String sid,String key);
+
+
+}       // end of interface UpodAccess
 
 
 
 
-/* end of SmartSignSensor.java */
+/* end of UpodAccess.java */
 

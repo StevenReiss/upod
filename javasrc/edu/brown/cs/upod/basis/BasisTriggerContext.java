@@ -1,8 +1,8 @@
 /********************************************************************************/
 /*                                                                              */
-/*              BasisEntity.java                                                */
+/*              BasisTriggerContext.java                                        */
 /*                                                                              */
-/*      Basic implementation of an entity                                       */
+/*      Handle information about pending triggers                               */
 /*                                                                              */
 /********************************************************************************/
 /*      Copyright 2013 Brown University -- Steven P. Reiss                    */
@@ -38,8 +38,10 @@ package edu.brown.cs.upod.basis;
 import edu.brown.cs.upod.upod.*;
 
 import java.util.*;
+import java.util.concurrent.*;
 
-public abstract class BasisEntity implements UpodEntity, BasisConstants
+
+class BasisTriggerContext implements UpodTriggerContext, BasisConstants
 {
 
 
@@ -49,6 +51,8 @@ public abstract class BasisEntity implements UpodEntity, BasisConstants
 /*                                                                              */
 /********************************************************************************/
 
+private Map<UpodCondition,UpodPropertySet>      pending_triggers;
+
 
 
 /********************************************************************************/
@@ -57,9 +61,16 @@ public abstract class BasisEntity implements UpodEntity, BasisConstants
 /*                                                                              */
 /********************************************************************************/
 
-protected BasisEntity()
-{ }
+BasisTriggerContext()
+{
+   pending_triggers = new ConcurrentHashMap<UpodCondition,UpodPropertySet>();
+}
 
+BasisTriggerContext(UpodCondition uc,UpodPropertySet us)
+{
+   this();
+   addCondition(uc,us);
+}
 
 
 /********************************************************************************/
@@ -68,35 +79,36 @@ protected BasisEntity()
 /*                                                                              */
 /********************************************************************************/
 
-@Override public boolean isStateVisible()                       { return false; }
-
-@Override public String getCurrentState(UpodWorld w)            { return null; }
-
-@Override public void addProperties(UpodPropertySet props)      { }
-
-
-
-
-/********************************************************************************/
-/*                                                                              */
-/*      Abstract methods                                                        */
-/*                                                                              */
-/********************************************************************************/
-
-@Override abstract public Collection<UpodTransition> getApplicableTransitions();
-
-@Override abstract public boolean canApply(UpodTransition t,UpodWorld state) 
-        throws UpodActionException;
-
-@Override abstract public void apply(UpodTransition t,UpodParameterSet ps,UpodWorld w)
-        throws UpodActionException;
+void addCondition(UpodCondition uc,UpodPropertySet us) 
+{
+   if (us == null) us = new BasisPropertySet();
+   us.put("*TRIGGER*",Boolean.TRUE);
+   pending_triggers.put(uc,us);
+}
 
 
+void addContext(BasisTriggerContext ctx)
+{
+   pending_triggers.putAll(ctx.pending_triggers);
+}
 
-}       // end of class BasisEntity
+
+void clear()
+{
+   pending_triggers.clear();
+}
+
+
+@Override public UpodPropertySet checkCondition(UpodCondition c)
+{
+   return pending_triggers.get(c);
+}
+
+
+}       // end of class BasisTriggerContext
 
 
 
 
-/* end of BasisEntity.java */
+/* end of BasisTriggerContext.java */
 

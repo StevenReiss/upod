@@ -38,6 +38,7 @@
 package edu.brown.cs.upod.upod;
 
 
+import edu.brown.cs.ivy.xml.*;
 
 
 /**
@@ -64,7 +65,7 @@ public interface UpodAction extends UpodDescribable {
  *	setting a particular state of a particular entity.
  **/
 
-UpodEntity getEntity();
+UpodDevice getDevice();
 
 
 
@@ -82,6 +83,26 @@ UpodTransition getTransition();
  **/
 
 void setParameters(UpodParameterSet params);
+
+
+/**
+ *      Set a non-default description
+ **/
+
+void setDescription(String d);
+
+
+/**
+ *      Set a non-default label
+ **/
+void setLabel(String d);
+
+/**
+ *      Get label for external use
+ **/
+String getLabel();
+
+
 
 /**
  *      Set specified set of parameters.  Any non-mentioned parameters are
@@ -102,12 +123,11 @@ UpodParameterSet getParameters();
 
 
 /**
- *	Validate the action.  This checks if the action with the current set
- *	of parameters is a valid one.  If the parameter set is incomplete or
- *	contains errors, this will return false.
+ *      Get the implied properties for rule deduction
  **/
 
-boolean validate();
+void addImpliedProperties(UpodPropertySet ups);
+
 
 
 /**
@@ -118,36 +138,12 @@ boolean validate();
  *	derived from the condition.  This may be null.
  **/
 
-void perform(UpodWorld world,UpodParameterSet inputs) throws UpodActionException;
-
-
+void perform(UpodWorld world,UpodPropertySet inputs) throws UpodActionException;
 
 /**
- *	Perform an action asynchronously.  This initiates an action in background.
- *	It can throw an exception if the Action is not allowed.  The status
- *	callback  is optional.	If it is non-null, then it will be called to
- *	indicate whether the action succeeded or failed.  The passed in world
- *	must be the current one.  The input parameters (coming from the condition)
- *	may be null.
+ *      Output xml so it can be recreated
  **/
-
-void performAsync(UpodWorld w,UpodParameterSet inputs,UpodStatusHandler status)
-	throws UpodActionException;
-
-
-
-/**
- *	Determine how this action interacts with another action.  Two actions
- *	can have different relationships.  They
- *	can be independent (i.e. no interference); they can be contradictory;
- *	one can be a subset of the other (i.e. turning one light on vs. turning
- *	all lights off); one action can imply the other; etc.  For now, we just
- *      indicate if the actions are compatible.  Later this might return something
- *      more sophisticated.
- **/
-
-boolean getConflicts(UpodAction act);
-
+void outputXml(IvyXmlWriter xw);
 
 
 

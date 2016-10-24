@@ -37,6 +37,12 @@ package edu.brown.cs.upod.basis;
 
 import edu.brown.cs.upod.upod.*;
 
+import edu.brown.cs.ivy.xml.*;
+import edu.brown.cs.ivy.swing.*;
+
+import java.util.*;
+
+import org.w3c.dom.Element;
 
 public abstract class BasisEntity implements UpodEntity, BasisConstants
 {
@@ -48,6 +54,12 @@ public abstract class BasisEntity implements UpodEntity, BasisConstants
 /*                                                                              */
 /********************************************************************************/
 
+private UpodUniverse    the_universe;
+private boolean         is_enabled;
+private List<UpodParameter> parameter_set;
+private SwingEventListenerList<UpodEntityHandler>  entity_handlers;
+private String          entity_uid;
+
 
 
 /********************************************************************************/
@@ -56,10 +68,165 @@ public abstract class BasisEntity implements UpodEntity, BasisConstants
 /*                                                                              */
 /********************************************************************************/
 
-protected BasisEntity()
-{ }
+protected BasisEntity(UpodUniverse uu,Element xml)
+{
+   the_universe = uu;
+   is_enabled = true;
+   parameter_set = new ArrayList<UpodParameter>();
+   entity_handlers = new SwingEventListenerList<UpodEntityHandler>(
+         UpodEntityHandler.class);
+   if (xml == null) {
+      entity_uid = BasisWorld.getNewUID();
+    }
+   else {
+      entity_uid = IvyXml.getAttrString(xml,"ID");
+    }
+   
+   if (xml != null) {
+      is_enabled = IvyXml.getAttrBool(xml,"ENABLED",is_enabled);
+      for (Element pe : IvyXml.children(xml,"PARAMETER")) {
+         BasisParameter bp = BasisParameter.createParameter(pe);
+         addParameter(bp);
+       }
+    }
+}
 
 
+
+/********************************************************************************/
+/*                                                                              */
+/*      Access methods                                                          */
+/*                                                                              */
+/********************************************************************************/
+
+@Override public String getCurrentState(UpodWorld w)            { return null; }
+
+
+@Override public UpodUniverse getUniverse()             { return the_universe; }
+
+@Override public void addProperties(UpodPropertySet props) { }
+
+
+@Override public Collection<UpodParameter> getParameters()
+{
+   return parameter_set;
+}
+
+
+protected UpodParameter addParameter(UpodParameter p)
+{
+   for (UpodParameter up : parameter_set) {
+      if (up.getName().equals(p.getName())) return up;
+    }
+   
+   parameter_set.add(p);
+   
+   return p;
+}
+
+@Override public UpodTransition findTransition(String id)
+{
+   if (id == null) return null;
+   
+   String id1 = id;
+   if (!id.startsWith(getName() + NSEP)) {
+      id1 = getName() + NSEP + id;
+    }
+   for (UpodTransition ut : getApplicableTransitions()) {
+      if (ut.getName().equals(id)) return ut;
+      if (ut.getName().equals(id1)) return ut;
+    }
+   
+   return null;
+}
+
+@Override public void addEntityHandler(UpodEntityHandler h)
+{
+   entity_handlers.add(h);
+}
+
+@Override public void removeEntityHandler(UpodEntityHandler h)
+{
+   entity_handlers.remove(h);
+}
+
+protected void triggerChange(UpodWorld w)
+{
+   for (UpodEntityHandler h : entity_handlers) {
+      h.entityStateChanged(w,this);
+    }
+}
+
+
+
+/********************************************************************************/
+/*                                                                              */
+/*      Access methods                                                          */
+/*                                                                              */
+/********************************************************************************/
+
+@Override public void enable(boolean fg)                { is_enabled = fg; }
+
+@Override public boolean isEnabled()                    { return is_enabled; }
+
+
+@Override public String getLabel()
+{
+   return getDescription();
+}
+
+@Override public final String getUID()
+{
+   return entity_uid;
+}
+
+
+/********************************************************************************/
+/*                                                                              */
+/*      Abstract methods                                                        */
+/*                                                                              */
+/********************************************************************************/
+
+@Override abstract public Collection<UpodTransition> getApplicableTransitions();
+
+@Override public boolean canApply(UpodTransition t,UpodWorld state) 
+        throws UpodActionException
+{
+   return getApplicableTransitions().contains(t);
+}
+
+@Override abstract public void apply(UpodTransition t,UpodPropertySet ps,
+      UpodWorld w) throws UpodActionException;
+
+
+
+
+/********************************************************************************/
+/*                                                                              */
+/*      Output methods                                                          */
+/*                                                                              */
+/********************************************************************************/
+
+@Override public void outputXml(IvyXmlWriter xw)
+{
+   xw.begin("ENTITY");
+   xw.field("ID",getUID());
+   xw.field("NAME",getName());
+   xw.field("LABEL",getLabel());
+   xw.field("CLASS",getClass().getName());
+   xw.field("ENABLED",isEnabled());
+   xw.textElement("DESC",getDescription());
+   
+   for (UpodTransition ut : getApplicableTransitions()) {
+      ut.outputXml(xw);
+    }
+   
+   for (UpodParameter up : parameter_set) {
+      up.outputXml(xw,null);
+    }
+   
+   xw.end("ENTITY");
+}
 
 }       // end of class BasisEntity
 

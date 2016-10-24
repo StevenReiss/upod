@@ -38,7 +38,10 @@
 package edu.brown.cs.upod.upod;
 
 
+import edu.brown.cs.ivy.xml.*;
 
+
+import java.util.Collection;
 
 
 
@@ -65,55 +68,6 @@ public interface UpodCondition extends UpodDescribable {
 
 
 /**
- *	Determine if the condition is a trigger or a context.  A trigger is a
- *	one-shot condition (i.e at 2:00pm) while a context is a condition
- *	where the rule should be applied while the context holds (i.e. 2-4pm).
- **/
-
-boolean isTrigger();
-
-
-/**
- *	Indicates the action is time-based.
- **/
-
-boolean isTimeBased();
-
-
-/**
- *	Indicates the action is position dependent.
- **/
-
-boolean isPositionBased();
-
-
-/**
- *	Return the calendar event corresponding to this condition.
- *	This can be used to determine relevance or check for time-
- *	based conflicts.  If this returns null, then the condition
- *	holds at all times.
- **/
-
-UpodCalendarEvent getEventTimes();
-
-
-
-/**
- *	Returns the sensor associated with the condition.  If
- *	there is no sensor, returns null.
- **/
-
-UpodSensor getSensor();
-
-
-
-
-
-
-
-
-
-/**
  *	poll to check if the condition holds in a given state.	This routine
  *	should return null if the condition does not hold.  If the condition
  *	does hold, it should return a ParameterSet.  The parameter set may
@@ -121,7 +75,20 @@ UpodSensor getSensor();
  *	inside the action.
  **/
 
-UpodParameterSet poll(UpodWorld state) throws UpodConditionException;
+UpodPropertySet getCurrentStatus(UpodWorld world) throws UpodConditionException;
+
+/**
+ *	Return the universe associated with this condition
+ **/
+UpodUniverse getUniverse();
+
+
+/**
+ *	note that the time has changed in a hypothetical world.  This should
+ *	cause the condition to be reevaluated and any listeners triggered.
+ **/
+
+void setTime(UpodWorld w);
 
 
 
@@ -129,7 +96,7 @@ UpodParameterSet poll(UpodWorld state) throws UpodConditionException;
  *	Register a callback to detect when condition changes
  **/
 
-void addHandler(UpodConditionHandler hdlr);
+void addConditionHandler(UpodConditionHandler hdlr);
 
 
 
@@ -137,21 +104,73 @@ void addHandler(UpodConditionHandler hdlr);
  *	Remove a registered callback.
  **/
 
-void removeHandler(UpodConditionHandler hdlr);
+void removeConditionHandler(UpodConditionHandler hdlr);
+
+
+/**
+ *	Get the label for external use
+ **/
+String getLabel();
+
+
+/**
+ *	Explicitly set the external label
+ **/
+void setLabel(String s);
+
+
+
+/**
+ *	Output in a form that can be recreateed using <init>(UpodProgram,Element)
+ **/
+void outputXml(IvyXmlWriter xw);
 
 
 
 
 /**
- *      Return a parameter set describing what parameters if any are needed to
- *      describe this condition.  These will be used to construct a 
- *      parameter set (based on user input) that will be passed to the
- *      proper Condition constructor.  The values associated with each
- *      parameter are the defaults for that parameter
+ *	Return a parameter set describing what parameters if any are needed to
+ *	describe this condition.  These will be used to construct a
+ *	parameter set (based on user input) that will be passed to the
+ *	proper Condition constructor.  The values associated with each
+ *	parameter are the defaults for that parameter
  **/
 
 UpodParameterSet getDefaultParameters();
 
+
+/**
+ *	Get implied properties for rule deduction
+ **/
+void addImpliedProperties(UpodPropertySet ups);
+
+
+/**
+ *	Return the parameters defining this condition if any
+ **/
+
+UpodParameterSet getParameters();
+
+
+/**
+ *	Detect if this condition can be true when the given condition is true
+ **/
+
+boolean canOverlap(UpodCondition uc);
+
+
+/**
+ *	Get the set of sensor devices used by this condition
+ **/
+
+void getSensors(Collection<UpodDevice> rslt);
+
+
+/**
+ *	Check if the condition is a trigger or	not
+ **/
+
+boolean isTrigger();
 
 
 

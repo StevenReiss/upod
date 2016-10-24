@@ -1,9 +1,9 @@
 /********************************************************************************/
-/*                                                                              */
-/*              BasisConstants.java                                             */
-/*                                                                              */
-/*      Constants for common implementations of upod classes                    */
-/*                                                                              */
+/*										*/
+/*		BasisConstants.java						*/
+/*										*/
+/*	Constants for common implementations of upod classes			*/
+/*										*/
 /********************************************************************************/
 /*	Copyright 2013 Brown University -- Steven P. Reiss		      */
 /*********************************************************************************
@@ -37,24 +37,110 @@
 package edu.brown.cs.upod.basis;
 
 
+import java.net.*;
+import java.util.Map;
+import java.io.*;
+
 
 public interface BasisConstants
 {
 
+
+
+
 /********************************************************************************/
-/*                                                                              */
-/*      Thread Pool Constants                                                   */
-/*                                                                              */
+/*										*/
+/*	Time Constants								*/
+/*										*/
+/********************************************************************************/
+
+long T_SECOND = 1000;
+long T_MINUTE = 60 * T_SECOND;
+long T_HOUR = 60 * T_MINUTE;
+long T_DAY = 24 * T_HOUR;
+
+
+
+/********************************************************************************/
+/*										*/
+/*	Thread Pool Constants							*/
+/*										*/
 /********************************************************************************/
 
 int BASIS_CORE_POOL_SIZE = 2;
 int BASIS_MAX_POOL_SIZE = 8;
-long BASIS_POOL_KEEP_ALIVE_TIME = 10*60*1000;
+long BASIS_POOL_KEEP_ALIVE_TIME = 10*T_MINUTE;
 
 
 
+/********************************************************************************/
+/*										*/
+/*	File Locations								*/
+/*										*/
+/********************************************************************************/
 
-}       // end of interface BasisConstants
+String RULE_FILE = "rulelog.xml";
+String HISTORY_FILE = "upodhistory";
+
+
+
+/********************************************************************************/
+/*										*/
+/*	Naming conventions							*/
+/*										*/
+/********************************************************************************/
+
+String NSEP = "_";
+String WSEP = "-";
+String UIDP = "U";
+
+
+/********************************************************************************/
+/*										*/
+/*	Decoding methods							*/
+/*										*/
+/********************************************************************************/
+
+class Coder {
+
+   public static String unescape(String s) {
+      if (s == null) return null;
+      try {
+	 return URLDecoder.decode(s,"UTF-8");
+       }
+      catch (UnsupportedEncodingException e) {
+	 return s;
+       }
+    }
+
+   public static String escape(String s) {
+      if (s == null) return null;
+      try {
+         return URLEncoder.encode(s,"UTF-8");
+       }
+      catch (UnsupportedEncodingException e) {
+         return s;
+       }
+    }
+
+}	// end of inner class Coder
+
+
+
+/********************************************************************************/
+/*										*/
+/*	Calendar Event								*/
+/*										*/
+/********************************************************************************/
+
+interface CalendarEvent {
+
+   long getStartTime();
+   long getEndTime();
+   Map<String,String> getProperties();
+}
+
+}	// end of interface BasisConstants
 
 
 

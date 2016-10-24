@@ -36,13 +36,19 @@
 package edu.brown.cs.upod.upod;
 
 import java.util.*;
+import edu.brown.cs.ivy.xml.IvyXmlWriter;
+
 
 
 
 public interface UpodParameterSet extends Map<UpodParameter,Object>
 {
 
+void setParameter(String nm,Object val);
 
+Collection<UpodParameter> getValidParameters();
+
+void outputXml(IvyXmlWriter xw);
 
 }	// end of class UpodUpodParameterSet
 
