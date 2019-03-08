@@ -61,7 +61,7 @@ private SortedSet<SensorEvent> event_set;
 private static final long  UPDATE_EVERY = T_DAY;
 private static final long  TEMPORARY_TIME = T_MINUTE*5;
 private static final long  DELTA_TIME = T_MINUTE*10;
-private static final long  MAX_TIME = T_HOUR*3;
+// private static final long  MAX_TIME = T_HOUR*3;
 
 
 
@@ -92,7 +92,6 @@ BasisCalendarEvent findImpliedEvent(long when)
 {
    Calendar whenc = Calendar.getInstance();
    whenc.setTimeInMillis(when);
-   int whenday = whenc.get(Calendar.DAY_OF_WEEK)-1;
    
    // need to ensure base < ende mod T_DAY
    // need to ensur base < baseee mod T_DAY
@@ -100,16 +99,11 @@ BasisCalendarEvent findImpliedEvent(long when)
    SensorEvent base = new SensorEvent(when - DELTA_TIME);
    SensorEvent basee = new SensorEvent(when + DELTA_TIME);
    
-   SensorEvent ende = new SensorEvent(when + MAX_TIME + DELTA_TIME);
-   
-   
    buildEventSet();
    if (event_set == null) return null;
    
-   SortedSet<SensorEvent> evts = event_set.subSet(base,ende);
    int [] daycts = new int[7];
    for (int i = 0; i < 7; ++i) daycts[i] = 0;
-   long endtime = 0;
    
    long whenstart = when - when % T_DAY;
    long tot = whenstart;
@@ -126,7 +120,6 @@ BasisCalendarEvent findImpliedEvent(long when)
       daycts[day]++;
     }
    tot = tot/ntot;
-   long start = when - (when % T_DAY) + tot;
    
    return null;
 }
@@ -227,7 +220,7 @@ private static class SensorEvent implements Comparable<SensorEvent> {
       at_time.setTimeInMillis(when);
     }
    
-   UpodDevice getDevice()                       { return for_device; }
+   // UpodDevice getDevice()                       { return for_device; }
    Calendar getTime()                           { return at_time; }
    long getTimeInMillis()                       { return at_time.getTimeInMillis(); } 
    UpodParameter getParameter()                 { return for_parameter; }

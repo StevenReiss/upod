@@ -1,34 +1,34 @@
 /********************************************************************************/
-/*                                                                              */
-/*              BasisAction.java                                                */
-/*                                                                              */
-/*      Basis implementation of an action                                       */
-/*                                                                              */
+/*										*/
+/*		BasisAction.java						*/
+/*										*/
+/*	Basis implementation of an action					*/
+/*										*/
 /********************************************************************************/
-/*      Copyright 2013 Brown University -- Steven P. Reiss                    */
+/*	Copyright 2013 Brown University -- Steven P. Reiss		      */
 /*********************************************************************************
- *  Copyright 2013, Brown University, Providence, RI.                            *
- *                                                                               *
- *                        All Rights Reserved                                    *
- *                                                                               *
- *  Permission to use, copy, modify, and distribute this software and its        *
- *  documentation for any purpose other than its incorporation into a            *
- *  commercial product is hereby granted without fee, provided that the          *
- *  above copyright notice appear in all copies and that both that               *
- *  copyright notice and this permission notice appear in supporting             *
- *  documentation, and that the name of Brown University not be used in          *
- *  advertising or publicity pertaining to distribution of the software          *
- *  without specific, written prior permission.                                  *
- *                                                                               *
- *  BROWN UNIVERSITY DISCLAIMS ALL WARRANTIES WITH REGARD TO THIS                *
- *  SOFTWARE, INCLUDING ALL IMPLIED WARRANTIES OF MERCHANTABILITY AND            *
- *  FITNESS FOR ANY PARTICULAR PURPOSE.  IN NO EVENT SHALL BROWN UNIVERSITY      *
- *  BE LIABLE FOR ANY SPECIAL, INDIRECT OR CONSEQUENTIAL DAMAGES OR ANY          *
- *  DAMAGES WHATSOEVER RESULTING FROM LOSS OF USE, DATA OR PROFITS,              *
- *  WHETHER IN AN ACTION OF CONTRACT, NEGLIGENCE OR OTHER TORTIOUS               *
- *  ACTION, ARISING OUT OF OR IN CONNECTION WITH THE USE OR PERFORMANCE          *
- *  OF THIS SOFTWARE.                                                            *
- *                                                                               *
+ *  Copyright 2013, Brown University, Providence, RI.				 *
+ *										 *
+ *			  All Rights Reserved					 *
+ *										 *
+ *  Permission to use, copy, modify, and distribute this software and its	 *
+ *  documentation for any purpose other than its incorporation into a		 *
+ *  commercial product is hereby granted without fee, provided that the 	 *
+ *  above copyright notice appear in all copies and that both that		 *
+ *  copyright notice and this permission notice appear in supporting		 *
+ *  documentation, and that the name of Brown University not be used in 	 *
+ *  advertising or publicity pertaining to distribution of the software 	 *
+ *  without specific, written prior permission. 				 *
+ *										 *
+ *  BROWN UNIVERSITY DISCLAIMS ALL WARRANTIES WITH REGARD TO THIS		 *
+ *  SOFTWARE, INCLUDING ALL IMPLIED WARRANTIES OF MERCHANTABILITY AND		 *
+ *  FITNESS FOR ANY PARTICULAR PURPOSE.  IN NO EVENT SHALL BROWN UNIVERSITY	 *
+ *  BE LIABLE FOR ANY SPECIAL, INDIRECT OR CONSEQUENTIAL DAMAGES OR ANY 	 *
+ *  DAMAGES WHATSOEVER RESULTING FROM LOSS OF USE, DATA OR PROFITS,		 *
+ *  WHETHER IN AN ACTION OF CONTRACT, NEGLIGENCE OR OTHER TORTIOUS		 *
+ *  ACTION, ARISING OUT OF OR IN CONNECTION WITH THE USE OR PERFORMANCE 	 *
+ *  OF THIS SOFTWARE.								 *
+ *										 *
  ********************************************************************************/
 
 
@@ -46,23 +46,24 @@ public class BasisAction implements UpodAction, BasisConstants
 
 
 /********************************************************************************/
-/*                                                                              */
-/*      Private Storage                                                         */
-/*                                                                              */
+/*										*/
+/*	Private Storage 							*/
+/*										*/
 /********************************************************************************/
 
 private UpodDevice     for_entity;
-private UpodTransition  for_transition;
+private UpodTransition	for_transition;
 private UpodParameterSet parameter_set;
-private String          action_description;
-private String          action_label;
+private String		action_description;
+private String		action_label;
+private boolean 	is_trigger;
 
 
 
 /********************************************************************************/
-/*                                                                              */
-/*      Constructors                                                            */
-/*                                                                              */
+/*										*/
+/*	Constructors								*/
+/*										*/
 /********************************************************************************/
 
 public BasisAction(UpodDevice e,UpodTransition t)
@@ -73,6 +74,7 @@ public BasisAction(UpodDevice e,UpodTransition t)
    else  parameter_set = new BasisParameterSet(t.getDefaultParameters());
    action_description = null;
    action_label = null;
+   is_trigger = false;
 }
 
 
@@ -98,38 +100,39 @@ public BasisAction(UpodProgram bp,Element xml)
    if (lbl != null && !lbl.equals(getLabel())) {
       action_label = lbl;
     }
+   is_trigger = IvyXml.getAttrBool(xml,"TRIGGER");
 }
 
 
 
 /********************************************************************************/
-/*                                                                              */
-/*      Access methods                                                          */
-/*                                                                              */
+/*										*/
+/*	Access methods								*/
+/*										*/
 /********************************************************************************/
 
 @Override public String getName()
 {
    if (for_transition == null) return for_entity.getName() + "^no_action";
-   
+
    return for_entity.getName() + "^" + for_transition.getName();
 }
 
 @Override public String getDescription()
 {
-   if (action_description != null) return action_description; 
-   
+   if (action_description != null) return action_description;
+
    if (for_transition == null) {
       return "Do nothing to " + for_entity.getName();
     }
-   
+
    return "Apply " + for_transition.getName() + " to " + for_entity.getName();
 }
 
 @Override public String getLabel()
 {
    if (action_label != null) return action_label;
-   
+
    return getDescription();
 }
 
@@ -139,21 +142,34 @@ public BasisAction(UpodProgram bp,Element xml)
 }
 
 
-@Override public void setDescription(String d) 
+@Overide public boolean isTriggerAction()
+{
+   return is_trigger;
+}
+
+
+@Override public setIsTriggerAction(boolean fg)
+{
+   is_trigger = fg;
+}
+
+
+
+@Override public void setDescription(String d)
 {
    action_description = d;
 }
 
-@Override public UpodDevice getDevice()                 { return for_entity; }
+@Override public UpodDevice getDevice() 		{ return for_entity; }
 
-@Override public UpodTransition getTransition()         { return for_transition; }
+@Override public UpodTransition getTransition() 	{ return for_transition; }
 
 
 
 /********************************************************************************/
-/*                                                                              */
-/*      Parameter methods                                                       */
-/*                                                                              */
+/*										*/
+/*	Parameter methods							*/
+/*										*/
 /********************************************************************************/
 
 @Override public void setParameters(UpodParameterSet ps)
@@ -182,28 +198,28 @@ public BasisAction(UpodProgram bp,Element xml)
 
 
 /********************************************************************************/
-/*                                                                              */
-/*      Action methods                                                          */
-/*                                                                              */
+/*										*/
+/*	Action methods								*/
+/*										*/
 /********************************************************************************/
 
-@Override public void perform(UpodWorld w,UpodPropertySet ps) 
-        throws UpodActionException
+@Override public void perform(UpodWorld w,UpodPropertySet ps)
+	throws UpodActionException
 {
    UpodPropertySet ups = new BasisPropertySet(parameter_set);
    if (ps != null && !ps.isEmpty()) {
       ups.putAll(ps);
     }
-   
+
    if (for_transition != null) for_transition.perform(w,for_entity,ups);
 }
 
 
 
 /********************************************************************************/
-/*                                                                              */
-/*      Output methods                                                          */
-/*                                                                              */
+/*										*/
+/*	Output methods								*/
+/*										*/
 /********************************************************************************/
 
 @Override public void outputXml(IvyXmlWriter xw)
@@ -224,7 +240,7 @@ public BasisAction(UpodProgram bp,Element xml)
 
 
 
-}       // end of class BasisAction
+}	// end of class BasisAction
 
 
 

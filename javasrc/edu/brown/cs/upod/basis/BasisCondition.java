@@ -82,7 +82,7 @@ protected BasisCondition(UpodUniverse uu)
 
 protected BasisCondition(UpodProgram pgm,Element xml)
 {
-   this(pgm.getUniverse());
+   this(pgm.getUniverse()); 
    condition_label = Coder.unescape(IvyXml.getTextElement(xml,"LABEL"));
 }
 

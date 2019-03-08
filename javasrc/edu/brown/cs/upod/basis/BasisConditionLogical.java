@@ -74,12 +74,12 @@ protected BasisConditionLogical(UpodCondition ... cond) throws UpodConditionExce
 
    arg_conditions = new ArrayList<BasisCondition>();
    boolean havetrigger = false;
-   
+
    for (UpodCondition c : cond) {
       if (c.isTrigger()) {
-         if (havetrigger)
-            throw new UpodConditionException("Trigger must be first condition");
-         havetrigger = true;
+	 if (havetrigger)
+	    throw new UpodConditionException("Trigger must be first condition");
+	 havetrigger = true;
        }
       arg_conditions.add((BasisCondition) c);
     }
@@ -126,7 +126,7 @@ protected BasisConditionLogical(UpodProgram pgm,Element xml)
    for (BasisCondition bc : arg_conditions) {
       if (bc.isTrigger()) return true;
     }
-   
+
    return false;
 }
 
@@ -147,7 +147,7 @@ protected BasisConditionLogical(UpodProgram pgm,Element xml)
 
    cond_updater.beginHold(w);
    for (UpodCondition c : arg_conditions) {
-      c.setTime(w);
+      if (c != null) c.setTime(w);
     }
    cond_updater.endHold(w);
 }
@@ -239,7 +239,7 @@ private class CondUpdater implements UpodConditionHandler {
     }
 
    @Override public void conditionTrigger(UpodWorld w,UpodCondition c,
-         UpodPropertySet ps) {
+	 UpodPropertySet ps) {
       BasisTriggerContext ctx = new BasisTriggerContext(c,ps);
       update(w,ctx);
     }
@@ -282,7 +282,7 @@ static public class And extends BasisConditionLogical {
       super(cond);
       int tct = 0;
       for (BasisCondition bc : arg_conditions) {
-         if (bc.isTrigger()) ++tct;
+	 if (bc.isTrigger()) ++tct;
        }
       if (tct > 1) throw new UpodConditionException("Can't AND multiple triggers");
     }
@@ -373,83 +373,83 @@ static public class Or extends BasisConditionLogical {
       super(cond);
       int tct = 0;
       for (BasisCondition bc : arg_conditions) {
-         if (bc.isTrigger()) ++tct;
+	 if (bc.isTrigger()) ++tct;
        }
       if (tct != 0 && tct != arg_conditions.size())
-         throw new UpodConditionException("OR must be either all triggers or no triggers");
+	 throw new UpodConditionException("OR must be either all triggers or no triggers");
     }
-   
+
    public Or(UpodProgram pgm,Element xml) {
       super(pgm,xml);
     }
-   
+
    @Override public String getName() {
       StringBuffer buf = new StringBuffer();
       for (UpodCondition c : arg_conditions) {
-         if (buf.length() > 0) buf.append("||");
-         buf.append(c.getName());
+	 if (buf.length() > 0) buf.append("||");
+	 buf.append(c.getName());
        }
       return buf.toString();
     }
-   
+
    @Override public String getLabel() {
       StringBuffer buf = new StringBuffer();
       for (UpodCondition c : arg_conditions) {
-         if (buf.length() > 0) buf.append(" OR ");
-         buf.append(c.getLabel());
+	 if (buf.length() > 0) buf.append(" OR ");
+	 buf.append(c.getLabel());
        }
       return buf.toString();
     }
-   
+
    @Override public String getDescription() {
       StringBuffer buf = new StringBuffer();
       for (UpodCondition c : arg_conditions) {
-         if (buf.length() > 0) buf.append("||");
-         buf.append(c.getDescription());
+	 if (buf.length() > 0) buf.append("||");
+	 buf.append(c.getDescription());
        }
       return buf.toString();
     }
-   
+
    @Override protected	UpodPropertySet recompute(UpodWorld world,BasisTriggerContext ctx)
    throws UpodConditionException {
       UpodPropertySet ups = null;
       for (UpodCondition c : arg_conditions) {
-         UpodPropertySet ns = null;
-         if (ctx != null) ns = ctx.checkCondition(c);
-         if (ns == null) ns = c.getCurrentStatus(world);
-         if (ns != null) {
-            if (ups == null) ups = new BasisPropertySet();
-            ups.putAll(ns);
-          }
+	 UpodPropertySet ns = null;
+	 if (ctx != null) ns = ctx.checkCondition(c);
+	 if (ns == null) ns = c.getCurrentStatus(world);
+	 if (ns != null) {
+	    if (ups == null) ups = new BasisPropertySet();
+	    ups.putAll(ns);
+	  }
        }
       return ups;
     }
-   
+
    @Override protected boolean checkOverlapConditions(BasisCondition bc) {
       for (BasisCondition ac : arg_conditions) {
-         if (!ac.checkOverlapConditions(bc)) return false;
+	 if (!ac.checkOverlapConditions(bc)) return false;
        }
       return true;
     }
-   
+
    @Override public void addImpliedProperties(UpodPropertySet ups)
    {
       for (BasisCondition ac : arg_conditions) {
-         ac.addImpliedProperties(ups);
+	 ac.addImpliedProperties(ups);
        }
     }
-   
+
    @Override protected boolean isConsistentWith(BasisCondition bc) {
       for (BasisCondition ac : arg_conditions) {
-         if (ac.isConsistentWith(bc)) return true;
+	 if (ac.isConsistentWith(bc)) return true;
        }
       return true;
     }
-   
+
    @Override protected void outputLocalXml(IvyXmlWriter xw) {
       xw.field("TYPE","OR");
     }
-   
+
 }	// end of inner class Or
 
 

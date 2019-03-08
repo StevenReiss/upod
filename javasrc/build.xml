@@ -1,0 +1,49 @@
+<project name='bubbles' default='all' >
+
+   <target name='all'>
+      <ant antfile="build.xml" dir="edu/brown/cs/upod/upod" />
+      <ant antfile="build.xml" dir="edu/brown/cs/upod/basis" />
+      <ant antfile="build.xml" dir="edu/brown/cs/upod/umon" />
+      <ant antfile="build.xml" dir="edu/brown/cs/upod/usim" />
+      <ant antfile="build.xml" dir="edu/brown/cs/upod/sim" />
+      <ant antfile="build.xml" dir="edu/brown/cs/upod/smartsign" />
+      <ant antfile="build.xml" dir="edu/brown/cs/upod/smarthome" />
+      <ant antfile="build.xml" dir="edu/brown/cs/upod/smartthings" />
+      <ant antfile="build.xml" dir="edu/brown/cs/upod/smarthab" />
+   </target>
+
+   <path id='bubbles.classpath'>
+      <pathelement location='${BUBBLES}/java' />
+      <pathelement location='${PRO}/ivy/java' />
+   </path>
+
+   <path id='test.classpath'>
+      <pathelement location='${BUBBLES}/java' />
+      <pathelement location='${PRO}/ivy/java' />
+   </path>
+
+   <path id='jdocsrc'>
+      <pathelement location='${BUBBLES}/javasrc' />
+      <pathelement location='${PRO}/ivy/javasrc' />
+   </path>
+
+
+   <target name='compile'>
+      <javac srcdir='.' destdir='${BUBBLES}/java' debug='on' deprecation='on'>
+	 <classpath refid='bubbles.classpath' />
+      </javac>
+   </target>
+
+
+   <target name='doc'>
+      <javadoc sourcepathref='jdocsrc' classpathref='bubbles.classpath' destdir='${BUBBLES}/doc'>
+	 <package name="edu.brown.cs.upod.upod" />
+	 <package name="edu.brown.cs.upod.basis" />
+	 <package name="edu.brown.cs.upod.umon" />
+	 <package name="edu.brown.cs.upod.smartsign" />
+      </javadoc>
+   </target>
+
+
+</project>
+

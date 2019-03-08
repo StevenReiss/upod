@@ -103,10 +103,10 @@ private List<UpodDevice>	all_devices;
 private List<UpodHub>		all_hubs;
 private List<UpodCondition>	all_conditions;
 private Map<String,BasisCapability> all_capabilities;
-private BasisHistoryDeducer     history_deducer;
-private BasisAccess             access_info;
-private int                     port_number;
-private boolean                 is_started;
+private BasisHistoryDeducer	history_deducer;
+private BasisAccess		access_info;
+private int			port_number;
+private boolean 		is_started;
 
 private File			base_file;
 
@@ -134,7 +134,7 @@ protected BasisUniverse(File f,Element xml)
    loadUniverse(xml);
 
    base_file = f;
-   
+
    access_info = new BasisAccess(this);
 }
 
@@ -195,16 +195,16 @@ public void addCapability(BasisCapability bc)
 
 
 
-@Override public void start() 
+@Override public void start()
 {
    if (is_started) return;
    is_started = true;
-   
+
    for (UpodDevice ud : all_devices) {
       for (UpodCondition c : ud.getConditions()) {
-         addBaseCondition(c);
+	 addBaseCondition(c);
        }
-      
+
       ud.startDevice();
     }
 }
@@ -248,11 +248,11 @@ public Collection<UpodCapability> getCapabilities()
 @Override public UpodCondition findBasicCondition(String name)
 {
    if (name == null) return null;
-   
+
    for (UpodCondition uc : all_conditions) {
       if (uc.getName().equalsIgnoreCase(name)) return uc;
     }
-   
+
    return null;
 }
 
@@ -273,7 +273,7 @@ BasisHistoryDeducer getHistoryDeducer()
 @Override public UpodDevice findDevice(String id)
 {
    if (id == null) return null;
-   
+
    String id1 = id;
    if (!id.startsWith(getName() + NSEP)) {
       id1 = getName() + NSEP + id;
@@ -320,9 +320,9 @@ protected void setWebServerPort(int port)
 
 
 /********************************************************************************/
-/*                                                                              */
-/*      Authorization methods                                                        */
-/*                                                                              */
+/*										*/
+/*	Authorization methods							     */
+/*										*/
 /********************************************************************************/
 
 @Override public boolean authorize(String user,String sid,String userkey)
@@ -413,7 +413,7 @@ private void save()
 @Override public void outputXml(IvyXmlWriter xw)
 {
    Set<String> groups = new HashSet<String>();
-   
+
    xw.begin("UNIVERSE");
    xw.field("NAME",getName());
    xw.field("LABEL",getLabel());
@@ -425,13 +425,13 @@ private void save()
       ue.outputXml(xw);
       groups.addAll(ue.getGroups());
     }
-   
+
    xw.begin("GROUPS");
    for (String s : groups) {
       xw.textElement("GROUP",s);
     }
-   xw.end("GROUPS");  
-   
+   xw.end("GROUPS");
+
    xw.end("UNIVERSE");
 }
 
@@ -440,14 +440,14 @@ private void save()
 private void loadUniverse(Element xml)
 {
    port_number = IvyXml.getAttrInt(xml,"PORT",port_number);
-   
+
    for (Element cxml : IvyXml.children(xml,"CAPABILITY")) {
       String nm = IvyXml.getAttrString(xml,"NAME");
       if (findCapability(nm) == null) {
-         createCapability(cxml);
+	 createCapability(cxml);
        }
     }
-   
+
    for (Element exml : IvyXml.children(xml,"DEVICE")) {
       createDevice(exml);
     }
@@ -501,23 +501,6 @@ protected void createCapability(Element xml)
 
 
 
-
-
-
-
-
-
-
-
-
-/*
- * 
- */
-
-void get()
-{
-   // method body goes here
-}
 
 
 }	// end of class BasisUniverse

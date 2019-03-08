@@ -13,6 +13,8 @@
      <target name='compile'>
 	<javac srcdir='.' destdir='/research/people/spr/upod/java' debug='on' deprecation='on' includeantruntime='false'>
 	   <classpath refid='spr.classpath' />
+	   <compilerarg value='--add-modules' />
+	   <compilerarg value='java.xml.ws' />
 	</javac>
      </target>
 

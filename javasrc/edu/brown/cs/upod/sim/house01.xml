@@ -1,0 +1,82 @@
+<HOUSE>
+   <WALL R='10' T='0' COLOR='WHITE'>
+     <RECTANGLE X0='0' Y0='0.5' X1='0.5' Y1='19.5' Z0='0' Z1='8' />
+   </WALL>
+   <WALL R='10' T='0' COLOR='WHITE'>
+     <RECTANGLE X0='15' Y0='0.5' X1='15.5' Y1='2' Z0='0' Z1='8' />
+   </WALL>
+   <DOOR COLOR='BROWN' R='4' T='0.05'>
+     <RECTANGLE X0='15' Y0='2' X1='15.5' Y1='5' Z0='0' Z1='8' />
+   </DOOR>
+   <WALL R='10' T='0' COLOR='WHITE'>
+     <RECTANGLE X0='15' Y0='5' X1='15.5' Y1='19.5' Z0='0' Z1='8' />
+   </WALL>
+   <WALL R='10' T='0' COLOR='WHITE'>
+     <RECTANGLE X0='39.5' Y0='0.5' X1='40' Y1='19.5' Z0='0' Z1='8' />
+   </WALL>
+   <WALL R='10' T='0' COLOR='WHITE'>
+     <RECTANGLE X0='0' Y0='19.5' X1='2' Y1='20' Z0='0' Z1='8' />
+   </WALL>
+   <WALL R='10' T='0' COLOR='WHITE'>
+     <RECTANGLE X0='2' Y0='19.5' X1='5' Y1='20' Z0='0' Z1='3' />
+   </WALL>
+   <WINDOW R='2' T='0.95' COLOR='BLUE'>
+     <RECTANGLE X0='2' Y0='19.5' X1='5' Y1='20' Z0='3' Z1='8' />
+   </WINDOW>
+   <WALL R='10' T='0' COLOR='WHITE'>
+     <RECTANGLE X0='5' Y0='19.5' X1='10' Y1='20' Z0='0' Z1='8' />
+   </WALL>
+   <WALL R='10' T='0' COLOR='WHITE'>
+     <RECTANGLE X0='10' Y0='19.5' X1='13' Y1='20' Z0='0' Z1='3' />
+   </WALL>
+   <WINDOW R='2' T='0.95' COLOR='BLUE'>
+     <RECTANGLE X0='10' Y0='19.5' X1='13' Y1='20' Z0='3' Z1='8' />
+   </WINDOW>
+   <WALL R='10' T='0' COLOR='WHITE'>
+     <RECTANGLE X0='13' Y0='19.5' X1='17' Y1='20' Z0='0' Z1='8' />
+   </WALL>
+   <WALL R='10' T='0' COLOR='WHITE'>
+     <RECTANGLE X0='17' Y0='19.5' X1='20' Y1='20' Z0='0' Z1='3' />
+   </WALL>
+   <WINDOW R='2' T='0.95' COLOR='BLUE'>
+     <RECTANGLE X0='17' Y0='19.5' X1='20' Y1='20' Z0='3' Z1='8' />
+   </WINDOW>
+   <WALL R='10' T='0' COLOR='WHITE'>
+     <RECTANGLE X0='20' Y0='19.5' X1='26' Y1='20' Z0='0' Z1='8' />
+   </WALL>
+   <WALL R='10' T='0' COLOR='WHITE'>
+     <RECTANGLE X0='26' Y0='19.5' X1='29' Y1='20' Z0='0' Z1='3' />
+   </WALL>
+   <WINDOW R='2' T='0.95' COLOR='BLUE'>
+     <RECTANGLE X0='26' Y0='19.5' X1='29' Y1='20' Z0='3' Z1='8' />
+   </WINDOW>
+   <WALL R='10' T='0' COLOR='WHITE'>
+     <RECTANGLE X0='29' Y0='19.5' X1='26' Y1='35' Z0='0' Z1='8' />
+   </WALL>
+   <WALL R='10' T='0' COLOR='WHITE'>
+     <RECTANGLE X0='35' Y0='19.5' X1='38' Y1='20' Z0='0' Z1='3' />
+   </WALL>
+   <WINDOW R='2' T='0.95' COLOR='BLUE'>
+     <RECTANGLE X0='35' Y0='19.5' X1='38' Y1='20' Z0='3' Z1='8' />
+   </WINDOW>
+   <WALL R='10' T='0' COLOR='WHITE'>
+     <RECTANGLE X0='38' Y0='19.5' X1='40' Y1='35' Z0='0' Z1='8' />
+   </WALL>
+   <WALL R='10' T='0' COLOR='WHITE'>
+     <RECTANGLE X0='0' Y0='0' X1='16' Y1='0.5' Z0='0' Z1='8' />
+   </WALL>
+   <DOOR COLOR='RED' R='4' T='0.05'>
+     <RECTANGLE X0='16' Y0='0' X1='20' Y1='0.5' Z0='0' Z1='8' />
+   </DOOR>
+   <WALL R='10' T='0' COLOR='WHITE'>
+     <RECTANGLE X0='20' Y0='0' X1='40' Y1='0.5' Z0='0' Z1='8' />
+   </WALL>
+   <WALL R='10' T='0' COLOR='WHITE'>
+     <RECTANGLE X0='21' Y0='0.5' X1='21.5' Y1='10' Z0='0' Z1='8' />
+   </WALL>
+   <WALL R='2' T='0' COLOR='WHITE'>
+     <RECTANGLE X0='29' X1='29.5' Y0='12' Y1='14' Z0='0' Z1='3' />
+   </WALL>
+   <LIGHT L='750' TYPE='CIELING' X='27.5' Y='16' Z='8' />
+   <SWITCH TYPE='TOGGLE' X='15.5' Y='1.1' Z='4' />
+</HOUSE>

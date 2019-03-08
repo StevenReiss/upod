@@ -78,35 +78,51 @@ UpodTransition getTransition();
 
 
 /**
- *	Set the parameters for the transition.  This removes any previous 
- *      parameter associations
+ *	Set the parameters for the transition.	This removes any previous
+ *	parameter associations
  **/
 
 void setParameters(UpodParameterSet params);
 
 
 /**
- *      Set a non-default description
+ *	Set a non-default description
  **/
 
 void setDescription(String d);
 
 
 /**
- *      Set a non-default label
+ *	Set a non-default label
  **/
+
 void setLabel(String d);
 
 /**
- *      Get label for external use
+ *	Get label for external use
  **/
+
 String getLabel();
+
+
+/**
+ *	Indicate if this is a trigger action
+ **/
+
+boolean isTriggerAction();
+
+
+/**
+ *	Set whether this is a trigger action or not
+ **/
+
+void setIsTriggerAction(boolean fg);
 
 
 
 /**
- *      Set specified set of parameters.  Any non-mentioned parameters are
- *      left untouched.
+ *	Set specified set of parameters.  Any non-mentioned parameters are
+ *	left untouched.
  **/
 
 void addParameters(UpodParameterSet params);
@@ -123,7 +139,7 @@ UpodParameterSet getParameters();
 
 
 /**
- *      Get the implied properties for rule deduction
+ *	Get the implied properties for rule deduction
  **/
 
 void addImpliedProperties(UpodPropertySet ups);
@@ -141,7 +157,7 @@ void addImpliedProperties(UpodPropertySet ups);
 void perform(UpodWorld world,UpodPropertySet inputs) throws UpodActionException;
 
 /**
- *      Output xml so it can be recreated
+ *	Output xml so it can be recreated
  **/
 void outputXml(IvyXmlWriter xw);
 

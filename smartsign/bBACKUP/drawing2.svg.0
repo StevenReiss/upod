@@ -1,0 +1,21 @@
+<svg width="320" height="240" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+<!-- Created with SVG-edit - http://svg-edit.googlecode.com/ -->
+<g>
+<title>Layer 1</title>
+<text fill="#000000" stroke="#000000" stroke-width="0" x="84.5" y="27" id="svg_1" font-size="24" font-family="serif" text-anchor="middle" xml:space="preserve">Spr's Office Sign</text>
+<image x="24.5" y="188" width="32" height="28" id="svg_8" xlink:href="SENSOR/SmartSign_Presense"/>
+<image x="53.5" y="41" width="186" height="133.999994" id="svg_7" xlink:href="ENTITY/SmartSignDisplay.Display"/>
+<image xlink:href="SENSOR/SmartSign_Visitor" id="svg_4" height="25" width="34" y="190" x="77.5"/>
+<image xlink:href="sensors/smartsign_onphone" id="svg_5" height="26" width="23" y="190" x="143.5"/>
+</g>
+</svg>
+
+
+
+
+
+
+
+
+
+

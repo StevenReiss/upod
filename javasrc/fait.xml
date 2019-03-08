@@ -1,0 +1,23 @@
+<FAIT>
+   <METHOD NAME='java.lang.reflect.Constructor.newInstance'
+	RETURN='edu.brown.cs.upod.smartsign.SmartSignUniverse'
+	CONSTRUCTOR='true' ARGS='*,...'>
+     <WHEN CALLER='edu.brown.cs.upod.basis.BasisUniverse.createUniverse' />
+   </METHOD>
+
+   <METHOD NAME='java.lang.reflect.Constructor.newInstance'
+	RETURN='edu.brown.cs.upod.basis.BasisSensorLatch'
+	CONSTRUCTOR='true'
+	ARGS='*,*edu.brown.cs.upod.smartsign.SmartSignUniverse,*org.w3c.dom.Element' >
+     <WHEN CALLER='edu.brown.cs.upod.basis.BasisUniverse.createDevice' />
+   </METHOD>
+
+   <PACKAGE NAME='org.apache.batik.' />
+   <PACKAGE NAME='org.apache.velocity.' />
+   <PACKAGE NAME='com.google.api.' />
+   <PACKAGE NAME='edu.brown.cs.ivy.xml.IvyXmlWriter' />
+   <PACKAGE NAME='com.jogamp.opengl.' />
+
+   <METHOD NAME='edu.brown.cs.upod.umon.UmonControl.process' SCAN='true' NORETURN='true' />
+
+</FAIT>

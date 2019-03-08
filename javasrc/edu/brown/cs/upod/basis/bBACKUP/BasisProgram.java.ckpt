@@ -166,7 +166,7 @@ public BasisProgram(UpodUniverse uu,Element xml)
 @Override public boolean removeWorld(UpodWorld w)
 {
     if (w == null || w.isCurrent()) return false;
-    if (known_worlds.remove(w) == null) return false;
+    if (known_worlds.remove(w.getUID()) == null) return false;
     return true;
 }
 

@@ -65,8 +65,7 @@ private File web_file;
 private File temp_file;
 private Object update_lock;
 
-private static final File BASE_FILE =
-   new File("/ws/volfred/smartsign/image.jpg");
+private static final File BASE_FILE = new File(SMART_SIGN_IMAGE);
 
 private static final String DISPLAY_NAME = "SignDisplay";
 private static final String PICTURE_PARAM_NAME = "Display";
@@ -137,15 +136,15 @@ public SmartSignDisplay(UpodUniverse uu,Element xml)
    if (xml != null) {
       StringBuffer buf = new StringBuffer();
       for (Element te : IvyXml.elementsByTag(xml,"text")) {
-         String txt = IvyXml.getText(te);
-         if (txt != null) {
-            if (buf.length() > 0) buf.append(" ");
-            buf.append(txt);
-          }
+	 String txt = IvyXml.getText(te);
+	 if (txt != null) {
+	    if (buf.length() > 0) buf.append(" ");
+	    buf.append(txt);
+	  }
        }
       if (buf.length() > 0) return buf.toString();
     }
-   
+
    return "Sign displaying ???";
 }
 
@@ -188,32 +187,37 @@ private class SignUpdater implements Runnable {
    @Override public void run() {
       if (sign_file == null) return;
       synchronized (update_lock) {
-         try {
-            IvyFile.copyFile(sign_file,BASE_FILE);
-          }
-         catch (IOException e) { }
-   
-         String cmd = "ssh valerie obexftp -B 1 -b 00:1A:7D:DA:71:13 -p " + BASE_FILE;
-         BasisLogger.logI("SMARTSIGN: " + cmd);
-   
-         if (do_change) {
-            try {
-               // IvyExec ex = new IvyExec(cmd);
-               // ex.waitFor();
-               if (web_file != null) {
-                  if (temp_file != null) {
-                     IvyFile.copyFile(BASE_FILE,temp_file);
-                     temp_file.renameTo(web_file);
-                   }
-                  else {
-                     IvyFile.copyFile(BASE_FILE,web_file);
-                   }
-                }
-             }
-            catch (IOException e) { }
-          }
-   
-         sign_file.delete();
+	 File basefile = BASE_FILE;
+	 try {
+	    IvyFile.copyFile(sign_file,BASE_FILE);
+	  }
+	 catch (IOException e) { }
+	 if (!BASE_FILE.exists()) {
+	    basefile = sign_file;
+	    do_change = true;
+	  }
+
+	 String cmd = "ssh valerie obexftp -B 1 -b 00:1A:7D:DA:71:13 -p " + basefile;
+	 BasisLogger.logI("SMARTSIGN: " + cmd + " " + do_change);
+
+	 if (do_change) {
+	    try {
+	       // IvyExec ex = new IvyExec(cmd);
+	       // ex.waitFor();
+	       if (web_file != null) {
+		  if (temp_file != null) {
+		     IvyFile.copyFile(basefile,temp_file);
+		     temp_file.renameTo(web_file);
+		   }
+		  else {
+		     IvyFile.copyFile(basefile,web_file);
+		   }
+		}
+	     }
+	    catch (IOException e) { }
+	  }
+
+	 sign_file.delete();
        }
     }
 }
@@ -232,7 +236,6 @@ private class SignUpdater implements Runnable {
 private class SignChanger extends BasisTransition  {
 
    private UpodParameter picture_param;
-
 
    SignChanger() {
       String pnm = getName() + NSEP + "SET" + NSEP + PICTURE_PARAM_NAME;
@@ -256,52 +259,55 @@ private class SignChanger extends BasisTransition  {
       return "Set Sign From Picture";
     }
 
-   @Override public Type getTransitionType()    { return Type.STATE_CHANGE; }
-   
+   @Override public Type getTransitionType()	{ return Type.STATE_CHANGE; }
+
    File getSignFile(UpodPropertySet ps,UpodWorld w) {
       String vl = ps.get(picture_param.getName()).toString();
-   
+
       Map<String,String> pvals = new HashMap<String,String>();
       if (ps != null) {
-         for (Map.Entry<String,Object> ent : ps.entrySet()) {
-            Object val = ent.getValue();
-            if (val != null) {
-               pvals.put(ent.getKey(),val.toString());
-             }
-            else pvals.put(ent.getKey(),null);
-          }
-         vl = IvyFile.expandText(vl,pvals);
+	 for (Map.Entry<String,Object> ent : ps.entrySet()) {
+	    Object val = ent.getValue();
+	    if (val != null) {
+	       pvals.put(ent.getKey(),val.toString());
+	     }
+	    else pvals.put(ent.getKey(),null);
+	  }
+	 vl = IvyFile.expandText(vl,pvals);
        }
-   
+
       if (!w.isCurrent()) {
-         w.setValue(display_param,vl);
+	 w.setValue(display_param,vl);
        }
       else {
-         if (current_value == null && vl == null) return null;
-         if (current_value != null && current_value.equals(vl)) return null;
-         current_value = vl;
+	 if (current_value == null && vl == null) return null;
+	 if (current_value != null && current_value.equals(vl)) return null;
+	 current_value = vl;
        }
-   
+
       File f = null;
       try {
-         f = File.createTempFile("upod",".jpg");
-         f.deleteOnExit();
-         StringReader sr = new StringReader(vl);
-         TranscoderInput tin = new TranscoderInput(sr);
-         FileOutputStream fw = new FileOutputStream(f);
-         TranscoderOutput tout =new TranscoderOutput(fw);
-         JPEGTranscoder jtr = new JPEGTranscoder();
-         jtr.addTranscodingHint(JPEGTranscoder.KEY_QUALITY,new Float(1.0));
-         jtr.transcode(tin,tout);
-         fw.flush();
-         fw.close();
+	 f = File.createTempFile("upod",".jpg");
+	 f.deleteOnExit();
+	 StringReader sr = new StringReader(vl);
+	 TranscoderInput tin = new TranscoderInput(sr);
+	 FileOutputStream fw = new FileOutputStream(f);
+	 TranscoderOutput tout =new TranscoderOutput(fw);
+	 JPEGTranscoder jtr = new JPEGTranscoder();
+	 jtr.addTranscodingHint(JPEGTranscoder.KEY_QUALITY,Float.valueOf(1.0f));
+	 // BasisLogger.logI("SIGN: about to transcode : " + vl);
+	 jtr.transcode(tin,tout);
+	 fw.flush();
+	 fw.close();
+	 // BasisLogger.logI("SIGN: done transcode : " + f.length());
        }
-      catch (Exception e) {
-         if (f != null) f.delete();
-         f = null;
-         BasisLogger.logE("Problem create jpeg from " + vl,e);
+      catch (Throwable e) {
+	 BasisLogger.logI("SIGN: transcode fail : " + e);
+	 if (f != null) f.delete();
+	 f = null;
+	 BasisLogger.logE("Problem create jpeg from " + vl,e);
        }
-   
+
       return f;
     }
 

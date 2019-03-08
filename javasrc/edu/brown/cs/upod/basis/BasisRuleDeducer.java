@@ -1,5 +1,4 @@
-/********************************************************************************/
-/*										*/
+/********************************************************************************/ /*										   */
 /*		BasisRuleDeducer.java						*/
 /*										*/
 /*	Handle automatic deduction of new rules based on settings		*/
@@ -102,7 +101,7 @@ public synchronized void outputRule() throws IOException
    File f2 = new File(f1,RULE_FILE);
    FileWriter fw = new FileWriter(f2,true);
    IvyXmlWriter xw = new IvyXmlWriter(fw);
-   
+
    xw.begin("RULE");
    xw.field("WHEN",at_time);
    xw.field("WHENS",new Date(at_time).toString());
@@ -290,7 +289,7 @@ private void getTimeConditions(RuleInstance ri,List<RuleInstance> allrules,Set<C
       // use the calendar event here to set days and
       // possibly the end time
     }
-   
+
    Calendar xc = Calendar.getInstance();
    RuleInstance ribest = null;
    RuleInstance ribesttoday = null;
@@ -516,14 +515,14 @@ private static class RuleInstance {
       entity_state = 0;
       Element we = IvyXml.getChild(xml,"WORLD");
       for (Element pe : IvyXml.children(we,"PARAM")) {
-         String id = IvyXml.getAttrString(pe,"NAME");
-         String val = IvyXml.getText(pe);
-         world_props.put(id,val);
+	 String id = IvyXml.getAttrString(pe,"NAME");
+	 String val = IvyXml.getText(pe);
+	 world_props.put(id,val);
        }
       calendar_events = new ArrayList<CalEvent>();
       for (Element ce : IvyXml.children(xml,"CALENDAR")) {
-         CalEvent cevt = new CalEvent(ce);
-         calendar_events.add(cevt);
+	 CalEvent cevt = new CalEvent(ce);
+	 calendar_events.add(cevt);
        }
     }
 
@@ -531,10 +530,10 @@ private static class RuleInstance {
       from_rule = ur;
       BasisPropertySet bps = new BasisPropertySet();
       ur.getImpliedProperties(bps);
-   
+
       world_props = new HashMap<String,String>();
       entity_state = 0;
-   
+
       Object t0 = bps.get("*FROMTIME");
       if (t0 != null) rule_time = ((Number) t0).longValue();
       else rule_time = 0;
@@ -543,7 +542,7 @@ private static class RuleInstance {
       else end_time = rule_time;
       Object t2 = bps.get("*DAYS");
       if (t2 != null) day_set = (BitSet) t2;
-   
+
       calendar_events = new ArrayList<CalEvent>();
       // need to get calendar properties as well
     }

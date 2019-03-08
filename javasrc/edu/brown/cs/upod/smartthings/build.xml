@@ -1,0 +1,139 @@
+<project name='upod.smartthings' default='all' >
+
+     <path id='spr.classpath'>
+	<pathelement location='/research/people/spr/upod/java' />
+	<pathelement location='/research/people/spr/upod/javasrc' />
+	<pathelement location='/research/ivy/java' />
+	<fileset dir='/research/people/spr/upod/lib/' includes='nanohttpd.jar' />
+	<fileset dir='/research/people/spr/upod/lib/' includes='json.jar' />
+	<fileset dir='/research/people/spr/upod/lib/' includes='stringtemplate.jar' />
+	<fileset dir='/research/people/spr/upod/lib/' includes='velocity*.jar' />
+	<fileset dir='/research/people/spr/upod/lib/' includes='jsoup*.jar' />
+	<fileset dir='/research/s6/public/batik-1.7/' includes='batik.jar' />
+	<fileset dir='/research/people/spr/upod/lib/' includes='googleapi.jar' />
+	<fileset dir='/research/people/spr/upod/lib/' includes='javax.servlet.jar' />
+     </path>
+
+     <target name='compile'>
+	<javac srcdir='.' destdir='/research/people/spr/upod/java' debug='on' deprecation='on' includeantruntime='false'>
+	   <classpath refid='spr.classpath' />
+	</javac>
+     </target>
+
+     <target name='all' depends='compile' />
+
+     <target name='run' depends='compile'>
+	<java classname='edu.brown.cs.upod.smartthings.SmartThingsMain' fork='true' >
+	   <classpath refid='spr.classpath' />
+	   <redirector alwayslog='true' output='/ws/volfred/smartthings/log.out' />
+	</java>
+     </target>
+
+     <target name='create' depends='compile'>
+	<delete file='/u/spr/.smartthings' quiet='true' />
+	<java classname='edu.brown.cs.upod.smartthings.SmartThingsMain' fork='true'  >
+	   <classpath refid='spr.classpath' />
+	   <arg value="create" />
+	   <redirector alwayslog='true' output='/ws/volfred/smartthings/log.out' />
+	</java>
+     </target>
+
+</project>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

@@ -147,6 +147,7 @@ void addFieldMatch(String name,String val)
 @Override public void setTime(UpodWorld w)
 {
    BasisGoogleCalendar bc = BasisGoogleCalendar.getCalendar(w);
+   if (bc == null) return;
    String evt = getEventString();
    Map<String,String> rslt = new HashMap<String,String>();
    if (bc.findEvent(w.getTime(),evt,rslt)) {

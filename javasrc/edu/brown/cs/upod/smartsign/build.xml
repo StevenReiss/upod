@@ -9,7 +9,7 @@
 	<fileset dir='/research/people/spr/upod/lib/' includes='stringtemplate.jar' />
 	<fileset dir='/research/people/spr/upod/lib/' includes='velocity*.jar' />
 	<fileset dir='/research/people/spr/upod/lib/' includes='jsoup*.jar' />
-	<fileset dir='/research/s6/public/batik-1.7/' includes='batik.jar' />
+	<fileset dir='/research/people/spr/upod/lib/' includes='batik.jar' />
 	<fileset dir='/research/people/spr/upod/lib/' includes='googleapi.jar' />
 	<fileset dir='/research/people/spr/upod/lib/' includes='javax.servlet.jar' />
      </path>
@@ -31,6 +31,8 @@
      <target name='run' depends='compile'>
 	<java classname='edu.brown.cs.upod.smartsign.SmartSignMain' fork='true' >
 	   <classpath refid='spr.classpath' />
+	   <jvmarg value='--add-modules' />
+	   <jvmarg value='java.xml.ws' />
 	</java>
      </target>
 
@@ -38,6 +40,8 @@
 	<delete file='/u/spr/.smartsign' quiet='true' />
 	<java classname='edu.brown.cs.upod.smartsign.SmartSignMain' fork='true' >
 	   <classpath refid='spr.classpath' />
+	   <jvmarg value='--add-modules' />
+	   <jvmarg value='java.xml.ws' />
 	   <arg value="create" />
 	</java>
      </target>

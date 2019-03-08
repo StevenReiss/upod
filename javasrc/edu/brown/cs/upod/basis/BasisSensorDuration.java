@@ -96,7 +96,7 @@ public BasisSensorDuration(String id,UpodDevice base,UpodParameter param,Object 
       UpodCondition c,long start,long end)
 {
    super(findInitialUniverse(base,c));
-   
+
    base_sensor = base;
    base_state = (state == null ? Boolean.TRUE : state);
    sensor_label = id;
@@ -105,11 +105,11 @@ public BasisSensorDuration(String id,UpodDevice base,UpodParameter param,Object 
    base_parameter = param;
    base_condition = c;
    condition_name = null;
-  
-   if (base_parameter == null) {
+
+   if (base_parameter == null && base_sensor != null) {
       base_parameter = base_sensor.findParameter(base_sensor.getUID());
     }
-   
+
    setup();
 }
 
@@ -120,7 +120,7 @@ public BasisSensorDuration(UpodUniverse uu,Element xml)
    super(uu,xml);
    min_time = IvyXml.getAttrLong(xml,"MIN",0);
    max_time = IvyXml.getAttrLong(xml,"MAX",-1);
-   
+
    sensor_label = IvyXml.getAttrString(xml,"LABEL");
    sensor_name = IvyXml.getAttrString(xml,"NAME");
 
@@ -201,7 +201,7 @@ private void setup()
    else if (base_condition != null) {
       base_condition.addConditionHandler(new SensorChanged());
     }
-   
+
    handleStateChanged(getCurrentWorld());
 }
 
@@ -346,16 +346,16 @@ private class SensorChanged implements UpodDeviceHandler, UpodConditionHandler {
 
 private class UniverseChanged implements UpodUniverse.Listener {
 
-   @Override public void conditionAdded(UpodUniverse u,UpodCondition c) { 
+   @Override public void conditionAdded(UpodUniverse u,UpodCondition c) {
       if (condition_name != null && c.getName().equals(condition_name)) {
-         base_condition = c;
-         condition_name = null;
+	 base_condition = c;
+	 condition_name = null;
        }
     }
-   
-   @Override public void conditionRemoved(UpodUniverse u,UpodCondition c) { 
+
+   @Override public void conditionRemoved(UpodUniverse u,UpodCondition c) {
       if (base_condition == c) {
-         // remove this sensor as well
+	 // remove this sensor as well
        }
     }
 
@@ -401,13 +401,13 @@ private class StateRepr {
 
    protected void recheck(long when) {
       if (for_world.isCurrent()) {
-         if (timer_task != null) timer_task.cancel();
-         timer_task = null;
-         System.err.println("RECHECK DURATION " + getLabel() + when);
-         if (when <= 0) return;
-         Timer t = BasisWorld.getWorldTimer();
-         timer_task = new TimeChanged(for_world);
-         t.schedule(timer_task,when);
+	 if (timer_task != null) timer_task.cancel();
+	 timer_task = null;
+	 System.err.println("RECHECK DURATION " + getLabel() + when);
+	 if (when <= 0) return;
+	 Timer t = BasisWorld.getWorldTimer();
+	 timer_task = new TimeChanged(for_world);
+	 t.schedule(timer_task,when);
        }
     }
 
