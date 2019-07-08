@@ -142,13 +142,13 @@ public BasisAction(UpodProgram bp,Element xml)
 }
 
 
-@Overide public boolean isTriggerAction()
+@Override public boolean isTriggerAction()
 {
    return is_trigger;
 }
 
 
-@Override public setIsTriggerAction(boolean fg)
+@Override public void setIsTriggerAction(boolean fg)
 {
    is_trigger = fg;
 }

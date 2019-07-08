@@ -162,7 +162,7 @@ private void setupTimer()
 	 Calendar s1 = slots.get(1);
 	 t1 = s1.getTimeInMillis();
        }
-      if (t0 == 0 || t0 == now) {
+      if (t0 == 0 || t0 <= now) {
 	 setCurrent();
 	 delay = t1-now;
        }

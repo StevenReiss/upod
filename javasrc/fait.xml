@@ -1,15 +1,19 @@
 <FAIT>
    <METHOD NAME='java.lang.reflect.Constructor.newInstance'
-	RETURN='edu.brown.cs.upod.smartsign.SmartSignUniverse'
 	CONSTRUCTOR='true' ARGS='*,...'>
      <WHEN CALLER='edu.brown.cs.upod.basis.BasisUniverse.createUniverse' />
+     <REPLACE>
+	edu.brown.cs.upod.smartsign.SmartSignUniverse(Ljava/io/File;Lorg/w3c/dom/Element;)
+     </REPLACE>
    </METHOD>
 
    <METHOD NAME='java.lang.reflect.Constructor.newInstance'
-	RETURN='edu.brown.cs.upod.basis.BasisSensorLatch'
 	CONSTRUCTOR='true'
 	ARGS='*,*edu.brown.cs.upod.smartsign.SmartSignUniverse,*org.w3c.dom.Element' >
      <WHEN CALLER='edu.brown.cs.upod.basis.BasisUniverse.createDevice' />
+     <REPLACE>
+	edu.brown.cs.upod.basis.BasisSensorLatch(Ledu/brown/cs/upod/upod/UpodUniverse;Lorg/w3c/dom/Element;)
+     </REPLACE>
    </METHOD>
 
    <PACKAGE NAME='org.apache.batik.' />

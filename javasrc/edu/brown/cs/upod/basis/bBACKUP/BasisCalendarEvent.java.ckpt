@@ -282,6 +282,7 @@ public void addExcludedDate(Calendar date)
    if (date == null) exclude_dates = null;
    else {
       date = startOfDay(date);
+      if (exclude_dates == null) exclude_dates = new HashSet<>();
       exclude_dates.add(date);
     }
 }
@@ -419,24 +420,24 @@ List<Calendar> getSlotsOLD(Calendar from,Calendar to)
    if (!isDayRelevant(day)) return false;
    Calendar dstart = startOfDay(day);
    Calendar dend = startOfNextDay(day);
-   
+
    boolean usetimes = false;
    if (day_set != null && !day_set.isEmpty()) usetimes = true;
    if (repeat_interval > 0) usetimes = true;
-   if (exclude_dates != null) usetimes = true;   
+   if (exclude_dates != null) usetimes = true;	
    if (from_time != null) {
       boolean usefromtime = usetimes;
       if (from_date == null || sameDay(from_date,day)) usefromtime = true;
       if (usefromtime) {
-         dstart = setDateAndTime(day,from_time);
+	 dstart = setDateAndTime(day,from_time);
        }
     }
    if (to_time != null) {
       boolean usetotime = usetimes;
       if (to_date == null || isNextDay(day,to_date)) usetotime = true;
       if (usetotime) {
-         Calendar endt = setDateAndTime(day,to_time);
-         if (endt.before(dend)) dend = endt;
+	 Calendar endt = setDateAndTime(day,to_time);
+	 if (endt.before(dend)) dend = endt;
        }
     }
 
@@ -621,9 +622,9 @@ void outputXml(IvyXmlWriter xw)
     }
    if (exclude_dates != null) {
       for (Calendar c : exclude_dates) {
-         Date d = new Date(c.getTimeInMillis());
-         buf.append("-");
-         buf.append(DateFormat.getDateInstance().format(d));
+	 Date d = new Date(c.getTimeInMillis());
+	 buf.append("-");
+	 buf.append(DateFormat.getDateInstance().format(d));
        }
     }
    return buf.toString();
