@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+
+<html>
+
+#parse( "defs.vel" )
+
+
+#@header(" Rule Editing Interface")
+
+<script type='text/javascript' src='upoda.js'></script>
+
+#end
+
+
+<body>
+
+#pageheader()
+
+#rulelist($rules,"Current Rules")
+
+<div class='ruleoptions'>
+  <form action='get'>
+    <input type='button' name='newrule' value='New Rule' onclick='createNewRule()' />
+    <input type='button' name='editrule' value='Edit Rule' id='editrulebtn'
+		disabled='disabled' onclick='editSelectedRule()' />
+    <input type='button' name='delete' value='Delete Rule' id='deleterulebtn'
+		disabled='disabled' onclick='deleteSelectedRule()' />
+  </form>
+</div>
+
+#rulearea()
+
+  <div class='acceptarea'>
+     <div class='newaccept'>
+	<input type='button' name='clearrule' value='Clear' id='clearrulebtn'
+		   onclick='clearRuleArea()' />
+	<input name="rulesubmit" type='submit' id="rulesubmit" class='rulesubmit' value="Create Rule"
+		   onclick='addNewRule(); return false;' />
+	<input name="ruleedit" type='submit' id="ruleedit" class='rulesubmit' value="Edit Rule"
+		   onclick='editRule(); return false;' />
+	<input id="ruleeditid" name="ruleeditid" type='hidden' value="" />
+	<input name="rulecancel" type='submit' id="rulecancel" class='rulecancel' value="Cancel Rule"
+		   onclick='cancelNewRule(); return false;' />
+     </div>
+  </div>
+  </form>
+</div>
+
+</body>
+
+</html>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

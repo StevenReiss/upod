@@ -1,0 +1,164 @@
+<!DOCTYPE HTML>
+
+<html>
+
+#parse("defs.vel")
+
+#@header("Smart Rule / Debugging Interface")
+
+<script type='text/javascript' src='upodc.js'></script>
+
+#end
+
+<body>
+
+#pageheader()
+
+
+<form id='setruleform'>
+<div class='setworldstate' id='setworldstate'>
+   <span class='settitle'>WHEN</span>
+   <div class='setdatetime' id='setdatetime'>
+   Date:
+      <input type='text' name='curdate' id='curdate' class='dateregion' value=''
+		   onchange='updateDateTime();' />
+   Time:
+      <input type='text' name='curtime' id='curtime' class='timeregion' value=''
+		   onchange='updateDateTime();' />
+   </div>
+   <br>
+   <span class='settitle'>SENSORS</span>
+   <div class='setsensors' id='setsensors'>
+      <table id='sensorlist'>
+#foreach ($device in $devices)
+ #if ( $device.isEnabled() )
+  #foreach ($param in $device.parameters)
+   #if ( $param.isSensor() )
+    #set ($tag = "sen_${device.UID}__SEP__${param.name}" )
+	  <tr>
+	     <td>
+		<label for='$tag'>${param.label}</label>
+	     </td>
+	     <td>
+    #if ($param.parameterType == 'SET' || $param.parameterType == 'BOOLEAN')
+		<select name='$tag' id='$tag' class='sensorstate'
+			onchange='updateSensors();'>
+     #foreach ($state in $param.values)
+		   <option value='$state'>$state</option>
+     #end
+		</select>
+    #elseif ($param.parameterType == 'REAL' || $param.parameterType == 'INTEGER')
+		<input type='number' name='$tag' id='$tag' class='sensorinput'
+     #if ($param.maxValue < 1000)
+			min='${param.minValue}' max='${param.maxValue}'
+     #end
+			size='6'
+			onchange='updateSensors();' />
+    #elseif ($param.parameterType == 'STRING')
+		<input type='text' name='$tag' id='$tag' class='sensorinput'
+			onchange='updateSensors();' />
+    #elseif ($param.parameterType == 'DATETIME')
+    #elseif ($param.parameterType == 'LOCATION')
+    #else
+PARAM $param.parameterType
+    #end
+	     </td>
+	  </tr>
+   #end
+  #end
+ #end
+#end
+      </table>
+   </div>
+   <br>
+   <span class='settitle'>RESULT</span>
+   <div class='setresult' id='setresult'>
+      <table class='fullwidth'>
+	 <col width='20%' />
+	 <col width='80%' />
+#foreach ($device in $devices)
+ #if ( $device.isEnabled() )
+  #foreach ($param in $device.parameters)
+   #if ( $param.isTarget() )
+    #set ($tag = "RESULT_${device.UID}__SEP__${param.name}" )
+	 <tr>
+	    <td>
+	       ${param.label}:
+	    </td>
+	    <td>
+    #if ($param.parameterType == 'INTEGER' || $param.parameterType == 'REAL')
+	       <input type='number' id='$tag'>
+    #elseif ($param.parameterType == 'STRING')
+	       <input type='text' id='$tag'>
+    #elseif ($param.parameterType == 'PICTURE')
+	       <iframe id='$tag' src='svg/svg-edit/picture-editor.html'
+		   class='pictureeditor'
+		   onload='initPicture("$tag","${param.name}",null,"${device.UID}");' >
+	       </iframe>
+    #elseif ($param.parameterType == 'SET' || $param.paramaterType == 'BOOLEAN')
+	       <select name='$tag' id='$tag' class='sensorstate'>
+     #foreach ($state in $param.values)
+		  <option value='$state'>$state</option>
+     #end
+	       </select>
+    #elseif ($param.parameterType == 'COLOR')
+	       <input type='color' id='$tag'>
+    #else
+	       $param.parameterType <input type='text' id='$tag'>
+    #end
+	    </td>
+	 </tr>
+   #end
+  #end
+ #end
+#end
+      </table>
+   </div>
+</div>
+
+<div class='ruleoptions'>
+   <input type='button' name='newrule' value='New Rule' onclick='createNewSetRule()' />
+   <input type='button' name='editrule' value='Edit Rule' onclick='editCurrentRule()' />
+</div>
+
+</form>
+</html>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

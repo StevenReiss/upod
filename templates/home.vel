@@ -1,0 +1,135 @@
+<!DOCTYPE HTML>
+<html>
+
+#parse( "defs.vel" )
+
+#@header(" Home Page")
+
+<script type='text/javascript'>
+
+var USID = '$usid';
+
+function clear()
+{
+   $("#userid").val("");
+   $("#passwd").val("");
+
+}
+function authenticate()
+{
+   var u = $("#userid").val();
+   var p = $("#passwd").val();
+   var p1 = CryptoJS.SHA256(p);
+   var p2 = p1.toString(CryptoJS.enc.Hex);
+
+   var msg = "UPOD@" + u + "@UPOD@" + p2 + "@UPOD@" + USID + "@UPOD";
+   var hash = CryptoJS.SHA256(msg);
+   $("#passwd").val("");
+   $("#auth").val(hash.toString(CryptoJS.enc.Base64));
+   $("#USID").val(USID);
+}
+
+</script>
+
+#end
+
+<body>
+
+#pageheader()
+
+#if ($user)
+
+<div>
+   <h2>Go to Rule Editing / Viewing Interface</h2>
+
+   <ul>
+      <li>
+	 <a href='file/upoda.vel'>Rule Editing Interface</a>
+      </li>
+      <li>
+	 <a href='file/upodb.vel'>Rule Creation Interface</a>
+      </li>
+      <li>
+	 <a href='file/upodc.vel'>Smart Rule / Debugging Interface</a>
+      </li>
+      <li>
+	 <a href='file/upodd.vel'>Modular Interface</a>
+      </li>
+   <ul>
+</div>
+
+<div>
+   <h2>Go to Status Interface</h2>
+
+   <ul>
+      <li>
+	 <a href='/status'>Show Status</a>
+      </li>
+   </ul>
+</div>
+
+<div>
+   <h2>Go to Sensor Creation</h2>
+
+   <ul>
+      <li>
+	 <a href='file/upodduration.vel'>Create Duration Sensor</a>
+      </li>
+      <li>
+	 <a href='file/upodlatch.vel'>Create Latch Sensor</a>
+      </li>
+      <li>
+	 <a href='file/upodcombo.vel'>Create Combination Sensor</a>
+      </li>
+      <li>
+	 <a href='file/upodfsasensor.html'>Create Sequence Sensor</a>
+      </li>
+      <li>
+	 <a href='file/upodrss.html'>Create RSS Feed Sensor</a>
+      </li>
+      <li>
+	 <a href='file/upodweb.html'>Create Web Page Sensor</a>
+      </li>
+   </ul>
+</div>
+
+<div>
+   <h2>Actions</h2>
+      <li>
+	<a href='file/upodaction.html'>Trigger A Device</a>
+      </li>
+      <li>
+	<a href='/logout'>Logout</a>
+      </li>
+</div>
+
+#else
+
+<h1>Please Login to Access $universe.name</h1>
+
+<br>
+
+<form action='/validate' method='post'onsubmit='authenticate();' >
+<table>
+   <tr>
+      <td>Username:</td>
+      <td><input type='text' name='userid' id='userid' class='userid' maxlength='64' />
+   </tr>
+   <tr>
+      <td>Password:</td>
+      <td><input type='password' name='passwd' id='passwd' class='passwd' maxlength='64' />
+   </tr>
+</table>
+<br>
+<input type='hidden' name='auth' id='auth' value='*' />
+<input type='hidden' name='USID' id='USID' value='*' />
+<div class='loginbtns'>
+   <input type='button' name='clearbtn' value='Clear' onclick='clear();' />
+   <input type='submit' name='login' value='Login' />
+</div>
+</form>
+
+#end
+
+
+</body>

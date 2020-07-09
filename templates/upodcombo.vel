@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+
+#macro (condrow $i)
+
+
+	    <div id='comborow$i'
+#if ($i >= 4)
+		    class='starthidden'
+#end
+		  >
+	       <span>Condition:</span>
+	       <span>
+		  <select name='sensorcond' id='combocond$i' class='ruleselect'
+			onchange='checkComboSensorValid();' />
+#if ($i >= 3)
+		     <option value='' selected >NONE</option>
+#end
+#foreach ( $cond in ${universe.basicConditions} )
+   #if (${cond.label})
+		     <option value='$cond.name'>${cond.label}</option>
+   #end
+#end
+		  </select>
+	       </span>
+	     </div>
+#end
+
+
+
+
+<html>
+
+#parse( "defs.vel" )
+
+
+#@header(" Combination Sensor Definition")
+
+<script type='text/javascript' src='/file/upodsensor.js'></script>
+
+#end
+
+
+<body>
+
+#pageheader()
+
+<div id='combosensor'>
+   <form id='combosensorform'>
+      <div class='ruleheader' id='ruleheader'>
+	 Define a New $universe.name Combination Sensor
+      </div>	
+      <div class='sensorinfo' id='sensorinfo'>
+	 <div class='title'>
+	    <span>Label: </span>
+	    <span>
+	       <input type='text' name='sensorlabel' id='combosensorlabel'
+		     maxlength='96' size='48' onchange='checkComboSensorValid();' />
+	    </span>
+	 </div>
+	 <div>
+	    <h2>Any Of</h2>
+	 </div>
+	 <div>
+#foreach ($j in [1,2,3,4,5,6,7,8,9,10,11,12])
+   #condrow($j)
+#end
+	 </div>
+      </div>
+   </form>
+</div>
+
+
+<div class='acceptarea'>
+   <div class='newaccept'>
+      <input type='submit' id='combodefine' name='definesensor' class='rulesubmit'
+		value='Create Sensor' onclick='addComboSensor();' />
+   </div>
+</div>
+
+
+</html>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

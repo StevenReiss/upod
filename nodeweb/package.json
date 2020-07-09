@@ -1,0 +1,12 @@
+{
+   "name" : "brown-upod-web-server",
+   "description" : "external web server for UPOD access",
+   "version" : "0.0.1",
+   "private" : true,
+   "dependencies" : {
+      "express" : "3.x",
+      "pg" : ">= 0.12.1",
+      "node-uuid" : ">= 1.4.0",
+      "crypto" : ">= 0.10.24"
+    }
+}

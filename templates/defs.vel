@@ -1,0 +1,428 @@
+#************************************************************************#
+#*									*#
+#*	Page header							*#
+#*									*#
+#*	Passed in : page title						*#
+#*	Body text: included in header					*#
+#*									*#
+#************************************************************************#
+
+#macro( header $title )
+<head>
+<meta charset="utf-8">
+
+<title>${universe.name}$title</title>
+
+
+<script type="text/javascript" src="http://code.jquery.com/jquery-1.9.0.min.js"></script>
+<script type="text/javascript" src="http://code.jquery.com/ui/1.10.0/jquery-ui.min.js"></script>
+<script type="text/javascript" src="/file/js/jquery.timepicker.js"></script>
+<script type='text/javascript' src='/file/share/jscolor/jscolor.js'></script>
+<script type='text/javascript' src='/file/js/date.js'></script>
+<script src='/file/js/sha256.js'></script>
+<script src='/file/js/enc-base64-min.js'></script>
+
+<link rel='stylesheet' media='all' type='text/css' href='http://code.jquery.com/ui/1.10.0/themes/smoothness/jquery-ui.css' />
+
+<link rel='stylesheet' type='text/css' href='/file/upod.css' />
+<link rel='stylesheet' type='text/css' href='/file/css/jquery.timepicker.css' />
+
+$!bodyContent
+
+<script type='text/javascript' src='/file/upodcode.js'></script>
+<script type='text/javascript' src='/file/upodrules.js'></script>
+<script type='text/javascript' src='/file/upoddefine.js'></script>
+<script type='text/javascript' src='/file/svg/svg-edit/canvg/canvg.js'></script>
+
+
+</head>
+#end
+
+
+
+#************************************************************************#
+#*									*#
+#*	pageheader: output page header with proper title		*#
+#*									*#
+#************************************************************************#
+
+#macro (pageheader)
+<div class="header" id='topheaderdone'>
+${universe.name}: ${universe.label}
+</div>
+#end
+
+
+
+#************************************************************************#
+#*									*#
+#*	rulelist -- output a list of rules				*#
+#*									*#
+#*	Parameter: the rules to list					*#
+#*	Parameter: the header to be used				*#
+#*									*#
+#************************************************************************#
+
+#macro (rulelist, $list, $ttl)
+
+<script type='text/javascript'>
+$(function() {
+   $('.rulelistclass').sortable({ handle: '.handle',
+			     update: function(event,ui) { rulesSorted(ui); }
+			   });
+   $('.rulelistclass').selectable({
+      selected : function(event,ui) { ruleSelected(ui,true); },
+      unselected : function(event,ui) { ruleSelected(ui,false); }
+    });
+})
+</script>
+
+<div class='rulebase'>
+  <h2 class='rulelabel'>$ttl:</h2>
+  <div class='rulelisting'>
+  <ul id='rulelist' class='rulelistclass'>
+#foreach ( $rule in $list)
+     <li class='ui-corner-all' id='rule_$rule.id' >
+	<div class='handle'>
+	   <span class='ui=icon ui-icon-carat-2-nl-s'></span>
+	</div>
+	$rule.label
+      </li>
+#end
+  </ul>
+  </div>
+</div>
+
+#end
+
+
+
+
+#************************************************************************#
+#*									*#
+#*	Time Selection for rule 					*#
+#*									*#
+#*	Passed in : counter for IDs					*#
+#*									*#
+#************************************************************************#
+
+#macro ( timeselection, $ctr )
+<div class='timeselection starthidden' id='timeselector$ctr'>
+   <table>
+      <tr>
+	 <td>Description: </td>
+	 <td colspan='3'>
+	    <input type='text' name='timedesc$ctr' id='timedesc$ctr' class='timedesc'
+		    maxlength='96' size='48' onchange='checkRuleValid();' />
+	 </td>
+      </tr>
+      <tr>
+	 <td>Date From: </td>
+	 <td>
+	    <input type='text' name='datefrom$ctr' id='datefrom$ctr' class='dateregion' value=''
+		    onchange='checkRuleValid();' />
+	 </td>
+	 <td>To: </td>
+	 <td>
+	    <input type='text' name='dateto$ctr' id='dateto$ctr' class='dateregion' value=''
+		    onchange='checkRuleValid();' />
+	 </td>
+      </tr>
+      <tr>
+	 <td>Time From: </td>
+	 <td>
+	    <input type='text' name='timefrom$ctr' id='timefrom$ctr' class='timeregion' value=''
+		    onchange='checkRuleValid();' />
+	 </td>
+	 <td>To: </td>
+	 <td>
+	    <input type='text' name='timeto$ctr' id='timeto$ctr' class='timeregion' value=''
+		    onchange='checkRuleValid();' />
+	 </td>
+      </tr>
+   </table>
+   <p>Days of the week:</p><p>&nbsp;&nbsp;&nbsp;
+       <input type="checkbox" class='daycheck' name="daysmon$ctr" value="mon" id='daysmon$ctr'/>
+       <label for='daysmon$ctr'>Monday</label>
+       <input type="checkbox" class='daycheck' name="daystue$ctr" value="tue" id='daystue$ctr'/>
+       <label for='daystue$ctr'>Tuesday</label>
+       <input type="checkbox" class='daycheck' name="dayswed$ctr" value="wed" id='dayswed$ctr'/>
+       <label for='dayswed$ctr'>Wednesday</label>
+       <input type="checkbox" class='daycheck' name="daysthu$ctr" value="thu" id='daysthu$ctr'/>
+       <label for='daysthu$ctr'>Thursday</label>
+       <input type="checkbox" class='daycheck' name="daysfri$ctr" value="fri" id='daysfri$ctr'/>
+       <label for='daysfri$ctr'>Friday</label>
+       <input type="checkbox" class='daycheck' name="dayssat$ctr" value="sat" id='dayssat$ctr'/>
+       <label for='dayssat$ctr'>Saturday</label>
+       <input type="checkbox" class='daycheck' name="dayssun$ctr" value="sun" id='dayssun$ctr'/>
+       <label for='dayssun$ctr'>Sunday</label>
+   </p>
+   <p>Repeat every:
+	<select name='repeattype$ctr' id='repeattype$ctr'>
+	   <option value='0' selected='selected'>No Repeat</option>
+	   <option value='7'>Every Week</option>
+	   <option value='14'>Every Two Weeks</option>
+	   <option value='21'>Every Three Weeks</option>
+	   <option value='28'>Every Four Weeks</option>
+	   <option value='-1'>Every Month</option>
+	</select>
+   </p>
+</div>
+#end
+
+
+
+#************************************************************************#
+#*									*#
+#*	calendarselection: rule area for calendar events		*#
+#*									*#
+#*	Passed in : counter for ids					*#
+#*									*#
+#************************************************************************#
+
+#macro (calendarevent, $id, $ctr)
+<label for='calfield$id$ctr'>Calendar Field: </label>
+<select name='calfielda$ctr' id='calfield$id$ctr' onchange='checkRuleValid();' >
+   <option value='none' selected='selected'> -- None -- </option>
+   <option value='TRANS'>Transparency</option>
+   <option value='WHERE'>Where</option>
+   <option value='CONTENT'>Content</option>
+   <option value='WHO'>Who</option>
+   <option value='TITLE'>Title</option>
+   <option value='TEXT'>Text</option>
+   <option value='CALENDAR'>Calendar</option>
+   <option value='ALLDAY'>All Day</option>
+ </select>
+<select name="calfieldempty$id$ctr" id="calfieldempty$id$ctr" onchange='checkRuleValid();' >
+   <option value="EITHER" selected='selected'>Can be Empty</option>
+   <option value="NULL">Must be Empty</option>
+   <option value="NOTNULL">Must not be Empty</option>
+</select>
+And
+<select name='calmatchtype$id$ctr' id='calmatchtype$id$ctr' onchange='checkRuleValid();' >
+    <option value='IGNORE' selected='selected'>Ignore Value</option>
+    <option value='MATCH'>Matches</option>
+    <option value='NOMATCH'>Doesn't Match</option>
+</select>
+<input type='text' name='calfieldmatch$id$ctr' id='calfieldmatch$id$ctr' value='' onchange='checkRuleValid();' />
+#end
+
+#macro (calendarselection, $ctr)
+<div class='calendarselection starthidden' id='calendarselector$ctr'>
+  <div class='calendarfield' id='calendarfield$ctr'>
+     <label for='caldesc$ctr'>Description: </label>
+     <input type='text' name='caldesc$ctr' id='caldesc$ctr' class='caldesc'
+	      maxlength='96' size='48' onchange='checkRuleValid();' />
+     <br/>
+     #calendarevent( "a" )
+     <br/>
+     #calendarevent( "b" )
+     <br/>
+     #calendarevent( "c" )
+     <br/>
+     #calendarevent( "d" )
+   </div>
+</div>
+#end
+
+
+
+#************************************************************************#
+#*									*#
+#*	TimeTrigger:: rule area for time selection			*#
+#*									*#
+#************************************************************************#
+
+#macro (timetrigger, $ctr)
+<div class='timetrigger starthidden' id='timetrigger$ctr'>
+   <table>
+      <tr>
+	 <td>Description: </td>
+	 <td colspan='3'>
+	    <input type='text' name='timetrigdesc$ctr' id='timetrigdesc$ctr' class='timetrigd'
+		    maxlength='96' size='48' onchange='checkRuleValid();' />
+	 </td>
+      </tr>
+      <tr>
+	<td>Minute: </td>
+	<td colspan='3'>
+	    <input type='text' name='timetrigmin$ctr' id='timetrigmin$ctr' class='timetrig0'
+		    maxlength='40' size='$ctr6' value='0' onchange='checkRuleValid();' />
+	 </td>
+      </tr>
+      <tr>
+	<td>Hour: </td>
+	<td colspan='3'>
+	    <input type='text' name='timetrighour$ctr' id='timetrighour$ctr' class='timetrig$ctr'
+		    maxlength='40' size='$ctr6' value='*' onchange='checkRuleValid();' />
+	 </td>
+      </tr>
+      <tr>
+	<td>Day of Month : </td>
+	<td colspan='3'>
+	    <input type='text' name='timetrigday$ctr' id='timetrigday$ctr' class='timetrig$ctr'
+		    maxlength='40' size='16' value='*' onchange='checkRuleValid();' />
+	 </td>
+      </tr>
+      <tr>
+	<td>Month of Year: </td>
+	<td colspan='3'>
+	    <input type='text' name='timetrigmonth$ctr' id='timetrigmonth1' class='timetrig1'
+		    maxlength='40' size='16' value='*' onchange='checkRuleValid();' />
+	 </td>
+      </tr>
+      <tr>
+	<td>Day of Week : </td>
+	<td colspan='3'>
+	    <input type='text' name='timetrigweek$ctr' id='timetrigweek1' class='timetrig1'
+		    maxlength='40' size='16' value='*' onchange='checkRuleValid();' />
+	 </td>
+      </tr>
+   </table>
+</div>
+#end
+
+
+
+#************************************************************************#
+#*									*#
+#*	rulearea :: new rule or rule edit area				*#
+#*									*#
+#*	Parameter: title for the rule area				*#		
+#*									*#
+#************************************************************************#
+
+#macro (rulearea)
+
+<div class='newrule starthidden' id='newrulearea' >
+  <form id='newruleform'>
+     <div class='ruleheader' id='ruleheader'>
+	Define a New $universe.name  Rule
+     </div>
+     <div class='ruleinfo' id='ruleinfo'>
+	<table>
+	   <tr>
+	      <td><label for='rulelabel'>Rule Label:</label></td>
+	      <td><input type='text' name='rulelabel' id='rulelabel' maxlength='96' size='48'
+			   onchange='checkRuleValid();'/></td>
+	   </tr>
+	</table>
+     </div>
+     <div class='conditionheader' id='conditionheader'>
+	Condition for $universe.name Rule
+     </div>
+     <div class='singlerule' id='rulepart1'>
+	<div class='ruletype'>
+	   WHEN:
+	   <select name='ruletype_1' id='ruletype_1' class='ruleselect' onchange='setRuleType(this)'>
+	      <option value='none' id='none1'>Always</option>
+#foreach ( $cond in ${universe.basicConditions} )
+   #if (${cond.label})
+	      <option value='$cond.name'>${cond.label}</option>
+   #end
+#end
+#foreach ( $device in $universe.devices )
+   #foreach ( $param in $device.parameters )
+      #if ($param.isSensor)
+	 #if ($param.type == 'REAL' || $param.type == 'INTEGER')
+	      <option value='rangerule\$$param.name\$$param.id'>$device.label $param.label Range</option>
+	 #end
+      #end
+   #end
+#end
+	      <option value='timesrule' id='timesrule1' selected='selected'>Scheduled Time ...</option>
+	      <option value='calendarrule' id='calendarrule1'>Google Calendar Event ...</option>
+	      <option value='timetrigger' id='timetrigger1'>At a Scheduled Time ...</option>
+	   </select>
+       </div>
+    <div class='rangeselection starthidden' id='rangeselector1'>
+       <span class='rangetext'>Between&nbsp;</span>
+       <input type='number' name='rangemin1' id='rangemin1' />
+       <span class='rangetext'>&nbsp;And&nbsp;</span>
+       <input type='number' name='rangemax1' id='rangemax1' />
+       <span class='rangetext'>&nbsp;&nbsp;</span>
+       <input type='checkbox' name='rangetrigger1' id='rangetrigger1' value='trigger' />
+       <span class='rangetext'>&nbsp;Trigger</span>
+    </div>
+    #timeselection(1)
+    #calendarselection(1)
+    #timetrigger(1)
+  </div>
+  <div class='andarea'>
+    <button type='button' id='andbutton' onclick='expandRule(this.parentNode);' >AND</button>
+  </div>
+  <div class="actionarea" id='actionarea'>
+     <div class='actionheader' id='actionheader'>
+	Rule Action Label Here
+     </div>
+     <div class='arearegion'>
+	<div class='actionspan'>
+	   <table class='fullwidth'>
+	      <col width='20%' />
+	      <col width='80%' />
+	      <tr>
+		 <td><label for='actionlabel'>Description: </label></td>
+		 <td><input type='text' id='actionlabel' class='actionlabel' maxlength='96' size='48' /></td>
+	      </tr>
+#foreach ( $device in $devices )
+   #if ($device.isEnabled() && $device.hasTransitions() )
+	      <tr>
+		 <td>Action for $device.label</td>
+		 <td>
+		    <div>
+		       <select name='actionedittype_${device.name}' id='actionedittype_$device.UID'
+			     class='actionselect actionedittype' onchange='setActionType(this);' >
+			  <option value='NONE' class='noneoption'>
+			      Don't change
+			  </option>
+      #foreach ( $trans in $device.transitions )
+			  <option value='${trans.name}'>
+			      $trans.label
+			  </option>
+      #end
+		       </select>
+      #foreach ($trans in $device.transitions)
+	 #if ($trans.getParameterSet().size() > 0)
+		       <div class='actionoptions starthidden parms_${device.name}' id='parms_${device.UID}_${trans.name}'>
+	    #foreach ($param in $trans.parameterSet)
+	       #if ($param.parameterType == 'INTEGER' || $param.parameterType == 'REAL')
+			  <span class='paramlabel'>$param.label: </span>
+			  <input type='NUMBER' id='actionparam_${device.UID}_${trans.name}_${param.name}'
+				   class='numbereditor actionparam_${device.UID}_${trans.name}'
+				   min='$param.minValue' max='$param.maxValue' />
+	       #elseif ($param.parameterType == 'PICTURE')
+			   <iframe id='actionparam_${device.UID}_${trans.name}_${param.name}'
+				 src='svg/svg-edit/picture-editor.html'
+				 class='pictureeditor actionparam_${device.UID}_${trans.name}'
+				 onload='initPicture("actionparam_${device.UID}_${trans.name}_${param.name}", "$param.name","$trans.name", "$device.UID");' >
+			   </iframe>
+	       #elseif ($param.parameterType == 'STRING')
+			  <span class='paramlabel'>$param.label: </span>
+			  <input type='text' id='actionparam_${device.UID}_${trans.name}_${param.name}'
+				   class='actionparam_${device.UID}_${trans.name}' />
+	       #elseif ($param.parameterType == 'COLOR')
+			  <span class='paramlabel'>$param.label: </span>
+			  <input type='COLOR' id='actionparam_${device.UID}_${trans.name}_${param.name}'
+				   class='xcoloreditor actionparam_${device.UID}_${trans.name}' />
+	       #else
+			   <span>NEED SOMETHING HERE for ${param.parameterType}</span>
+	       #end
+	    #end
+		       </div>
+	 #end
+      #end
+		    </div>
+		 </td>
+	      </tr>
+   #end
+#end
+	   </table>
+	</div>
+     </div>
+   </div>
+
+
+#end
+
+
+##	End of defs.vel

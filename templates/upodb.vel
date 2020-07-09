@@ -1,0 +1,66 @@
+<!DOCTYPE HTML>
+
+<html>
+
+#parse("defs.vel")
+
+
+#@header(" Rule Creation Interface")
+
+<script type='text/javascript' src='upodb.js'></script>
+
+#end
+
+
+<body>
+
+#pageheader()
+
+#rulearea()
+
+  <div class='acceptarea'>
+     <div class='newaccept'>
+	<input type='button' name='clearrule' value='Clear' id='clearrulebtn'
+		   onclick='clearRuleArea()' />
+	<input name="rulesubmit" type='submit' id="rulesubmit" class='rulesubmit' value="Create Rule"
+		   onclick='addNewRule(); return false;' />
+	<input type='button' name='editrule' value='Edit Rule' id='editrulebtn'
+		   disabled='disabled' onclick='editSelectedRule();' />
+       <input type='button' name='delete' value='Delete Rule' id='deleterulebtn'
+		   disabled='disabled' onclick='deleteSelectedRule();' />
+     </div>
+  </div>
+  </form>
+</div>
+
+<div class='conflictarea' id='conflicts'>
+   <div class='conflictheader' id='conflictheader'>
+      Conflict Label Goes Here
+   </div>
+
+   <div class='conflictbase'>
+     <div class='rulelisting'>
+     <ul id='rulelist'>
+	<li class='ui-state-default'>
+	   <span class='ui-icon ui-icon-arrowthick-2-n-s'></span>
+	   First rule
+	</li>
+	<li class='ui-state-default'>
+	   <span class='ui-icon ui-icon-arrowthick-2-n-s'></span>
+	   Second rule
+	</li>
+     </ul>
+   </div>
+
+</div>
+
+
+</div>
+
+</html>
+
+
+
+
+
+

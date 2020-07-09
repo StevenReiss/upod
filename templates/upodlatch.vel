@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+
+<html>
+
+#parse( "defs.vel" )
+
+
+#@header(" Latch Sensor Definition")
+
+<script type='text/javascript' src='/file/upodsensor.js'></script>
+
+#end
+
+
+<body>
+
+#pageheader()
+
+<div id='latchsensor'>
+   <form id='latchsensorform'>
+      <div class='ruleheader' id='ruleheader'>
+	 Define a New $universe.name Latch Sensor
+      </div>										
+      <div class='sensorinfo' id='sensorinfo'>
+	 <table>
+	    <tr>
+	       <td><label for='sensorlabel'>Label:</label></td>
+	       <td>
+		  <input type='text' name='sensorlabel' id='latchsensorlabel'
+			maxlength='96' size='48' onchange='checkLatchSensorValid();' />
+	       </td>
+	    </tr>
+	    <tr>
+	       <td><label for='sensorcond'>When:</label></td>
+	       <td>
+		  <select name='sensorcond' id='latchsensorcond' class='ruleselect'
+			onchange='checkLatchSensorValid();' />
+#foreach ( $cond in ${universe.basicConditions} )
+   #if (${cond.label})
+		     <option value='$cond.name'>${cond.label}</option>
+   #end
+#end
+		 </select>
+	       </td>
+	    <tr>
+	    <tr>
+	       <td><label for='resettime'>Reset At:</label></td>
+	       <td>
+		  <input name='resettime' id='latchreset' type='time' value='00:00'
+		      onchange='checkLatchSensorValid();' />
+	       </td>
+	    </tr>
+	    <tr>
+	       <td><label for='endtime'>Reset After:</label></td>
+	       <td>
+		  <input name='endtime' id='latchafter' type='number' value='0'
+		     min='0' max='1440' onchange='checkLatchSensorValid();' /> minutes
+	       </td>
+	    </tr>
+	 </table>
+      </div>
+   </form>
+</div>
+
+<div class='acceptarea'>
+   <div class='newaccept'>
+      <input type='submit' id='latchdefine' name='definesensor' class='rulesubmit'
+		value='Create Sensor' onclick='addLatchSensor();' />
+   </div>
+</div>
+
+
+</html>
