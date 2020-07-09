@@ -48,6 +48,7 @@ import java.io.File;
 import java.io.IOException;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
+import java.util.Base64;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -145,7 +146,8 @@ BasisAccess(BasisUniverse uu)
    try {
       MessageDigest md = MessageDigest.getInstance("SHA-256");
       byte [] rslt = md.digest(msg.getBytes());
-      key = javax.xml.bind.DatatypeConverter.printBase64Binary(rslt);
+      key = Base64.getEncoder().encodeToString(rslt);
+//      key = javax.xml.bind.DatatypeConverter.printBase64Binary(rslt);
     }
    catch (NoSuchAlgorithmException e) {
       return false;
@@ -235,7 +237,8 @@ private static class UserData {
             try {
                MessageDigest md = MessageDigest.getInstance("SHA-256");
                byte [] rslt = md.digest(pwd.getBytes());
-               user_sh256 = javax.xml.bind.DatatypeConverter.printBase64Binary(rslt);
+               user_sh256 = Base64.getEncoder().encodeToString(rslt);
+//               user_sh256 = javax.xml.bind.DatatypeConverter.printBase64Binary(rslt);
                is_dirty = true;
              }
             catch (NoSuchAlgorithmException e) {

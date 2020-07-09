@@ -157,6 +157,17 @@ protected void handleContents(String cnts)
        }
     }
 
+   String rslt = decodeWebResponse(cnts);
+
+   if (rslt != null) {
+      UpodWorld cw = getCurrentWorld();
+      setValueInWorld(param,rslt,cw);
+    }
+}
+
+
+protected String decodeWebResponse(String cnts)
+{
    try {
       org.jsoup.nodes.Element doc = Jsoup.parse(cnts);
       org.jsoup.select.Elements elts = doc.select(data_selector);
@@ -165,14 +176,13 @@ protected void handleContents(String cnts)
 	 rslt = elts.get(0).text();
        }
 
-      if (rslt != null) {
-	 UpodWorld cw = getCurrentWorld();
-	 setValueInWorld(param,rslt,cw);
-       }
+      return rslt;
     }
    catch (Throwable t) {
       BasisLogger.logE("Problem parsing web data: " + cnts,t);
     }
+
+   return null;
 }
 
 

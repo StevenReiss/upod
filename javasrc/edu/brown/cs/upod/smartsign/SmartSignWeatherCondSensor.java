@@ -41,7 +41,9 @@ import edu.brown.cs.upod.basis.*;
 import edu.brown.cs.ivy.file.*;
 import edu.brown.cs.ivy.xml.*;
 
-import org.w3c.dom.*;
+import org.json.JSONObject;
+
+import org.w3c.dom.Element;
 
 import java.util.*;
 
@@ -66,8 +68,14 @@ private static final String weather_url_old =
    "&cm_ite=cc2&site=city_page";
 ****/
 
+/**
 private static final String weather_url =
    "http://www.wunderground.com/cgi-bin/findweather/getForecast?query=$(ZIP)";
+*********/
+
+private static final String weather_url =
+   "http://api.openweathermap.org/data/2.5/weather/?zip=$(ZIP)&APPID=$(APPID)&units=imperial";
+
 
 private static final String cond_select = "#curCond .wx-value";
 
@@ -104,7 +112,7 @@ public SmartSignWeatherCondSensor(UpodUniverse uu,Element xml)
 private void initialize()
 {
    setAccess(weather_url,cond_select);
-   
+
    BasisParameter pp = BasisParameter.createStringParameter("WeatherCondition");
    pp.setIsSensor(true);
    pp.setIsContinuous(true);
@@ -141,10 +149,26 @@ private void initialize()
 {
    Map<String,String> zmap = new HashMap<String,String>();
    zmap.put("ZIP",zip_code);
-
+   zmap.put("APPID","4ed79476e5b66b99b80df09fc1c4dad0");
+   
    String url = IvyFile.expandText(orig,zmap);
 
    return url;
+}
+
+
+
+@Override protected String decodeWebResponse(String cnts)
+{
+   try {
+      JSONObject obj = new JSONObject(cnts);
+      JSONObject wea = obj.getJSONArray("weather").getJSONObject(0);
+      String desc = wea.getString("main");
+      return desc;
+    }
+   catch (Throwable t) {
+      return null;
+    }
 }
 
 

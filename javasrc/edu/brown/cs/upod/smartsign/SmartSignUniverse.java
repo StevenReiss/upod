@@ -39,7 +39,7 @@ import edu.brown.cs.ivy.exec.IvyExec;
 import edu.brown.cs.upod.upod.*;
 import edu.brown.cs.upod.basis.*;
 
-import org.w3c.dom.*;
+import org.w3c.dom.Element;
 
 import java.util.*;
 import java.net.*;
@@ -69,7 +69,7 @@ private UpodDevice  visitor_sensor;
 
 public SmartSignUniverse(File f,Element xml)
 {
-   super(f,xml); 
+   super(f,xml);
 
    setWebServerPort(8800);
 
@@ -159,31 +159,31 @@ private class SensorHub extends TimerTask implements UpodHub {
 
    @Override public void run() {
       try {
-         Socket s = new Socket(SENSOR_HOST,SENSOR_PORT);
-         OutputStream so = s.getOutputStream();
-         so.write("GO\n".getBytes());
-         so.flush();
-         InputStream si = s.getInputStream();
-         Reader r = new InputStreamReader(si);
-         char [] buf = new char[10240];
-         int ln = r.read(buf);
-         if (ln > 0) {
-            String rslt = new String(buf,0,ln);
-            if (rslt.startsWith("RESULT ")) {
-               current_world.startUpdate();
-               try {
-        	  setSensorState(phone_sensor,rslt.charAt(8) == '1');
-        	  setSensorState(visitor_sensor,rslt.charAt(7) == '1');
-        	}
-               finally {
-        	  current_world.endUpdate();
-        	}
-             }
-          }
-         s.close();
+	 Socket s = new Socket(SENSOR_HOST,SENSOR_PORT);
+	 OutputStream so = s.getOutputStream();
+	 so.write("GO\n".getBytes());
+	 so.flush();
+	 InputStream si = s.getInputStream();
+	 Reader r = new InputStreamReader(si);
+	 char [] buf = new char[10240];
+	 int ln = r.read(buf);
+	 if (ln > 0) {
+	    String rslt = new String(buf,0,ln);
+	    if (rslt.startsWith("RESULT ")) {
+	       current_world.startUpdate();
+	       try {
+		  setSensorState(phone_sensor,rslt.charAt(8) == '1');
+		  setSensorState(visitor_sensor,rslt.charAt(7) == '1');
+		}
+	       finally {
+		  current_world.endUpdate();
+		}
+	     }
+	  }
+	 s.close();
        }
       catch (IOException e) {
-         System.err.printf("Problem getting sensor info",e);
+	 System.err.println("Problem getting sensor info: " + e);
        }
     }
 

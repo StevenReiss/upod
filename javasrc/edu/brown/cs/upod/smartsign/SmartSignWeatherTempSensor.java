@@ -41,7 +41,9 @@ import edu.brown.cs.upod.basis.*;
 import edu.brown.cs.ivy.file.*;
 import edu.brown.cs.ivy.xml.*;
 
-import org.w3c.dom.*;
+import org.w3c.dom.Element;
+
+import org.json.JSONObject;
 
 import java.util.*;
 
@@ -60,10 +62,15 @@ private String	zip_code;
 
 private static final String DEFAULT_ZIP = "02912";
 
+/****
 private static final String weather_url =
    "http://www.wunderground.com/cgi-bin/findweather/getForecast?query=$(ZIP)";
+*****/
 
 private static final String temp_select = "#curTemp .wx-value";
+
+private static final String weather_url =
+   "http://api.openweathermap.org/data/2.5/weather/?zip=$(ZIP)&APPID=$(APPID)&units=imperial";
 
 
 
@@ -98,7 +105,7 @@ public SmartSignWeatherTempSensor(UpodUniverse uu,Element xml)
 private void initialize()
 {
    setAccess(weather_url,temp_select);
-   
+
    BasisParameter pp = BasisParameter.createRealParameter("Temperature",-100,200);
    pp.setIsSensor(true);
    pp.setIsContinuous(true);
@@ -135,10 +142,25 @@ private void initialize()
 {
    Map<String,String> zmap = new HashMap<String,String>();
    zmap.put("ZIP",zip_code);
+   zmap.put("APPID","4ed79476e5b66b99b80df09fc1c4dad0");
 
    String url = IvyFile.expandText(orig,zmap);
 
    return url;
+}
+
+
+@Override protected String decodeWebResponse(String cnts)
+{
+   try {
+      JSONObject obj = new JSONObject(cnts);
+      JSONObject main =  obj.getJSONObject("main");
+      String temp = main.get("temp").toString();
+      return temp;
+    }
+   catch (Throwable t) {
+      return null;
+    }
 }
 
 
@@ -163,4 +185,6 @@ private void initialize()
 
 
 /* end of SmartSignWeatherTempSensor.java */
+
+
 

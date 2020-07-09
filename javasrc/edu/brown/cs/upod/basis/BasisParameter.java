@@ -769,7 +769,8 @@ private static class PictureParameter extends BasisParameter {
 	 if (!vs.startsWith("<svg")) {
 	    try {
 	       byte [] val = null;
-	       val = javax.xml.bind.DatatypeConverter.parseBase64Binary(vs);
+	       val = Base64.getDecoder().decode(vs);
+//	       val = javax.xml.bind.DatatypeConverter.parseBase64Binary(vs);
 	       if (val[0] == 137 && val[1] == 80 && val[2] == 78 && val[3] == 71) return val;
 	       return null;
 	     }
