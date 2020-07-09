@@ -1,23 +1,39 @@
 <project name='upod.smarthome' default='all' >
 
+   <property file='../../../../../../build.properties' />
+   <property name='PRO' value='/research/people/spr' />
+   <available file='${PRO}/ivy' type="dir" property="ivy.present" />
+   <property name='IVYBIN' value='${PRO}/ivy/java' />
+   <property name='UPOD' value='/research/people/spr/upod' />
+
+   <property name='UPODLIB' value='${UPOD}/lib' />
+   <property name='IVY' value='${PRO}/ivy/java' />
+   <property name='IVYLIB' value='${PRO}/ivy/lib' />
+
      <path id='spr.classpath'>
-	<pathelement location='/research/people/spr/upod/java' />
-	<pathelement location='/research/people/spr/upod/javasrc' />
-	<pathelement location='/research/ivy/java' />
-	<fileset dir='/research/people/spr/upod/lib/' includes='nanohttpd.jar' />
-	<fileset dir='/research/people/spr/upod/lib/' includes='json.jar' />
-	<fileset dir='/research/people/spr/upod/lib/' includes='stringtemplate.jar' />
-	<fileset dir='/research/people/spr/upod/lib/' includes='jsoup*.jar' />
-	<fileset dir='/research/people/spr/upod/lib/google/lib' includes='gdata-base-1.0.jar' />
-	<fileset dir='/research/people/spr/upod/lib/google/lib' includes='gdata-calendar-2.0.jar' />
-	<fileset dir='/research/people/spr/upod/lib/google/lib' includes='gdata-client-1.0.jar' />
-	<fileset dir='/research/people/spr/upod/lib/google/lib' includes='gdata-core-1.0.jar' />
-	<fileset dir='/research/people/spr/upod/lib/google/deps' includes='*.jar' />
-	<fileset dir='/research/s6/public/batik-1.7/' includes='batik.jar' />
+	<pathelement location='${UPOD}/java' />
+	<pathelement location='${UPOD}/javasrc' />
+	<pathelement location='${IVY}' />
+	<fileset dir='${UPODLIB}' includes='jsoup*.jar' />
+	<fileset dir='${UPODLIB}' includes='json.jar' />
+	<fileset dir='${UPODLIB}' includes='googleapi.jar' />
+	<fileset dir='${UPODLIB}' includes='javax.servlet.jar' />
+	<fileset dir='${UPODLIB}' includes='nanohttpd.jar' />
+	<fileset dir='${UPODLIB}' includes='stringtemplate.jar' />
+	<fileset dir='${UPODLIB}' includes='jsoup*.jar' />
+	<fileset dir='${UPODLIB}' includes='batik.jar' />
+	<fileset dir='${UPODLIB}' includes='velocity*.jar' />
+<!--
+	<fileset dir='${UPODLIB}/google/lib' includes='gdata-base-1.0.jar' />
+	<fileset dir='${UPODLIB}/google/lib' includes='gdata-calendar-2.0.jar' />
+	<fileset dir='${UPODLIB}/google/lib' includes='gdata-client-1.0.jar' />
+	<fileset dir='${UPODLIB}/google/lib' includes='gdata-core-1.0.jar' />
+	<fileset dir='${UPODLIB}/google/deps' includes='*.jar' />
+-->
      </path>
 
      <target name='compile'>
-	<javac srcdir='.' destdir='/research/people/spr/upod/java' debug='on' deprecation='on' includeantruntime='false'>
+	<javac srcdir='.' destdir='${UPOD}/java' debug='on' deprecation='on' includeantruntime='false'>
 	   <classpath refid='spr.classpath' />
 	</javac>
      </target>

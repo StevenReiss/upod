@@ -1,5 +1,10 @@
 <project name='bubbles' default='all' >
 
+   <property file='../build.properties' />
+   <property name='PRO' value='/research' />
+   <property name='IVYBIN' value='${PRO}/ivy/java' />
+   <property name='UPOD' value='/research/people/spr/upod' />
+
    <target name='all'>
       <ant antfile="build.xml" dir="edu/brown/cs/upod/upod" />
       <ant antfile="build.xml" dir="edu/brown/cs/upod/basis" />

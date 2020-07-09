@@ -1,15 +1,31 @@
 <project name='upod.usim' default='all' >
 
+   <property file='../../../../../../build.properties' />
+   <property name='PRO' value='/research/people/spr' />
+   <available file='${PRO}/ivy' type="dir" property="ivy.present" />
+   <property name='IVYBIN' value='${PRO}/ivy/java' />
+   <property name='UPOD' value='/research/people/spr/upod' />
+
+   <property name='UPODLIB' value='${UPOD}/lib' />
+   <property name='IVY' value='${PRO}/ivy/java' />
+   <property name='IVYLIB' value='${PRO}/ivy/lib' />
+
      <path id='spr.classpath'>
-	<pathelement location='/research/people/spr/upod/java' />
-	<pathelement location='/research/people/spr/upod/javasrc' />
-	<pathelement location='/research/ivy/java' />
+	<pathelement location='${UPOD}/java' />
+	<pathelement location='${UPOD}/javasrc' />
+	<pathelement location='${IVY}' />
+	<fileset dir='${UPODLIB}' includes='jsoup*.jar' />
+	<fileset dir='${UPODLIB}' includes='json.jar' />
+	<fileset dir='${UPODLIB}' includes='googleapi.jar' />
+	<fileset dir='${UPODLIB}' includes='javax.servlet.jar' />
 	<pathelement location='/usr/share/java/gluegen2-rt.jar' />
 	<pathelement location='/usr/share/java/jogl2.jar' />
-     </path>
+	<pathelement location='/Users/spr/jogamp-all-platforms/jar/gluegen.jar' />
+	<pathelement location='/Users/spr/jogamp-all-platforms/jar/jogl-all.jar' />
+       </path>
 
      <target name='compile'>
-	<javac srcdir='.' destdir='/research/people/spr/upod/java' debug='on' deprecation='on' includeantruntime='false'>
+	<javac srcdir='.' destdir='${UPOD}/java' debug='on' deprecation='on' includeantruntime='false'>
 	   <classpath refid='spr.classpath' />
 	</javac>
      </target>

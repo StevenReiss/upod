@@ -1,6 +1,22 @@
 <project name='upod' default='all'>
 
-   <target name='all'>
+   <available file="./build.properties" type='file' property='setup.done' />
+
+   <path id='setuppath'>
+      <pathelement location='..' />
+   </path>
+   <path id='upodpath'>
+      <pathelement location='.' />
+   </path>
+   <property name='setupfile' refid='setuppath' />
+   <property name='upodfile' refid='upodpath' />
+   <target name='setup' unless='setup.done'>
+      <echo file='./build.properties' message="PRO=${setupfile}${line.separator}" />
+      <echo file='./build.properties' message='UPOD=${upodfile}${line.separator}' append='true' />
+      <mkdir dir='./java/edu/brown/cs/upod' />
+   </target>
+
+   <target name='all' depends='setup' >
       <ant antfile="build.xml" dir="javasrc" />
    </target>
 
