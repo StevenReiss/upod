@@ -45,6 +45,10 @@ import org.w3c.dom.Element;
 
 import org.json.JSONObject;
 
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileReader;
+import java.io.IOException;
 import java.util.*;
 
 
@@ -61,16 +65,33 @@ public class SmartSignWeatherTempSensor extends BasisSensorWeb implements SmartS
 private String	zip_code;
 
 private static final String DEFAULT_ZIP = "02912";
-
-/****
-private static final String weather_url =
-   "http://www.wunderground.com/cgi-bin/findweather/getForecast?query=$(ZIP)";
-*****/
+private static final String weather_appid;
 
 private static final String temp_select = "#curTemp .wx-value";
 
 private static final String weather_url =
    "http://api.openweathermap.org/data/2.5/weather/?zip=$(ZIP)&APPID=$(APPID)&units=imperial";
+
+
+static {
+   String appid = "00000000000";
+   
+   File f = IvyFile.expandFile("$(HOME)/.upodweather");
+   try (BufferedReader br = new BufferedReader(new FileReader(f))) {
+      for ( ; ; ) {
+         String ln = br.readLine();
+         if (ln == null) break;
+         ln = ln.trim();
+         if (ln.startsWith("#")) continue;
+         if (ln.length() == 0) continue;
+         appid = ln;
+         break;
+       }
+    }
+   catch (IOException e) { }
+   weather_appid = appid;
+}
+
 
 
 
@@ -142,7 +163,7 @@ private void initialize()
 {
    Map<String,String> zmap = new HashMap<String,String>();
    zmap.put("ZIP",zip_code);
-   zmap.put("APPID","4ed79476e5b66b99b80df09fc1c4dad0");
+   zmap.put("APPID",weather_appid);
 
    String url = IvyFile.expandText(orig,zmap);
 
