@@ -158,14 +158,12 @@ private static String getFileContents(String file)
 {
    char [] buf = new char[4096];
    StringBuffer sbuf = new StringBuffer();
-   try {
-      FileReader fr = new FileReader(file);
+   try (FileReader fr = new FileReader(file)) {
       for ( ; ; ) {
          int ln = fr.read(buf);
          if (ln <= 0) break;
          sbuf.append(buf,0,ln);
        }
-      fr.close();
     }
    catch (IOException e) {
       return null;

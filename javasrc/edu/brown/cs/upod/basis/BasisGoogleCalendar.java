@@ -261,30 +261,28 @@ boolean findEvent(long when,String desc,Map<String,String> fields)
 
 private void loadCalendarData()
 {
-   if (!cal_file.exists()) {
-      cal_dlm = 0;
-      cal_names.clear();
-      cal_names.add("primary");
-    }
-   else if (cal_file.lastModified() > cal_dlm) {
-      cal_dlm = cal_file.lastModified();
-      cal_names.clear();
-      try {
-	 BufferedReader br = new BufferedReader(new FileReader(cal_file));
-	 for ( ; ; ) {
-	    String ln = br.readLine();
-	    if (ln == null) break;
-	    ln = ln.trim();
-	    if (ln.startsWith("#") || ln.length() == 0) continue;
-	    cal_names.add(ln);
-	  }
-	 br.close();
-	 if (cal_names.size() == 0) cal_names.add("primary");
-       }
-      catch (IOException e) {
-	BasisLogger.logE("GOOGLECAL: Problem reading calendar data",e);
-       }
-    }
+    if (!cal_file.exists()) {
+        cal_dlm = 0;
+        cal_names.clear();
+        cal_names.add("primary");
+     }
+    else if (cal_file.lastModified() > cal_dlm) {
+        cal_dlm = cal_file.lastModified();
+        cal_names.clear();
+        try (BufferedReader br = new BufferedReader(new FileReader(cal_file))) {
+            for ( ; ; ) {
+                String ln = br.readLine();
+                if (ln == null) break;
+                ln = ln.trim();
+                if (ln.startsWith("#") || ln.length() == 0) continue;
+                cal_names.add(ln);
+             }
+            if (cal_names.size() == 0) cal_names.add("primary");
+         }
+        catch (IOException e) {
+            BasisLogger.logE("GOOGLECAL: Problem reading calendar data",e);
+         }
+     }
 }
 
 

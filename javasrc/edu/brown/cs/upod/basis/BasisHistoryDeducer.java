@@ -140,11 +140,9 @@ private synchronized void buildEventSet()
    
    SortedSet<SensorEvent> newset = new TreeSet<SensorEvent>();
    Map<UpodParameter,SensorEvent> usemap = new HashMap<UpodParameter,SensorEvent>();
+   String fnm = HISTORY_FILE + "." + for_universe.getName() + ".xml";
    
-   try {
-      String fnm = HISTORY_FILE + "." + for_universe.getName() + ".xml";
-      FileReader fr = new FileReader(fnm);
-      IvyXmlReader xr = new IvyXmlReader(fr);
+   try (IvyXmlReader xr = new IvyXmlReader(new FileReader(fnm))) {
       for ( ; ; ) {
          String xmls = xr.readXml();
          if (xmls == null) break;
@@ -163,7 +161,6 @@ private synchronized void buildEventSet()
             usemap.put(up,se);
           }
        }
-      xr.close();
       for (SensorEvent se : usemap.values()) {
          if (se.getTimeInMillis() - now > TEMPORARY_TIME) newset.add(se);
        }

@@ -648,6 +648,8 @@ private static class TimeParameter extends BasisParameter {
             c.set(Calendar.SECOND,0);
             c.set(Calendar.MILLISECOND,0);
             break;
+         default :
+             break;
        }
       return c;
     }

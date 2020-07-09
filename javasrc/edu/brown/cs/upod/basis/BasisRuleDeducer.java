@@ -199,27 +199,24 @@ public void deduceRules()
 
 private List<RuleInstance> loadRules()
 {
-   List<RuleInstance> allrules = new ArrayList<RuleInstance>();
-
-   try {
-      File f1 = for_program.getUniverse().getBaseDirectory();
-      File f2 = new File(f1,RULE_FILE);
-      FileInputStream fis = new FileInputStream(f2);
-      IvyXmlReader xr = new IvyXmlReader(fis);
-      for ( ; ; ) {
-	 String xmls = xr.readXml();
-	 if (xmls == null) break;
-	 Element xml = IvyXml.convertStringToXml(xmls);
-	 RuleInstance ri = new RuleInstance(xml,from_world.getUniverse());
-	 allrules.add(ri);
-       }
-      xr.close();
-    }
-   catch (IOException e) {
-      BasisLogger.logE("Problem reading rules",e);
-    }
-
-   return allrules;
+    List<RuleInstance> allrules = new ArrayList<RuleInstance>();
+    
+    File f1 = for_program.getUniverse().getBaseDirectory();
+    File f2 = new File(f1,RULE_FILE);
+    try (IvyXmlReader xr = new IvyXmlReader(new FileInputStream(f2))) {
+        for ( ; ; ) {
+            String xmls = xr.readXml();
+            if (xmls == null) break;
+            Element xml = IvyXml.convertStringToXml(xmls);
+            RuleInstance ri = new RuleInstance(xml,from_world.getUniverse());
+            allrules.add(ri);
+         }
+     }
+    catch (IOException e) {
+        BasisLogger.logE("Problem reading rules",e);
+     }
+    
+    return allrules;
 }
 
 

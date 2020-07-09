@@ -64,6 +64,9 @@ String SMART_SIGN_IMAGE = "/ws/volfred/smartsign/image.jpg";
 
 String SMART_SIGN = "SmartSign";
 
+String SMART_SIGN_HOST = "fred4.cs.brown.edu";
+int SMART_SIGN_MONITOR_PORT = 19992;
+
 
 
 

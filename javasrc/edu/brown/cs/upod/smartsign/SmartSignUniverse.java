@@ -58,6 +58,8 @@ public class SmartSignUniverse extends BasisUniverse implements SmartSignConstan
 
 private UpodDevice  phone_sensor;
 private UpodDevice  visitor_sensor;
+private ServerSocket server_socket;
+
 
 
 
@@ -83,16 +85,22 @@ public SmartSignUniverse(File f,Element xml)
 
    UpodDevice ts = bf.createTimedSensor("Stepped out",uss,null,SmartSignPresenceSensor.State.OUT,0,300000);
    addDevice(ts);
-
-   // UpodCondition sout = BasisFactory.getFactory().createTimedCondition(uc,0,5000);
-   // sout.setLabel("Stepped out");
-   // addBaseCondition(sout);
-
+   
+   SmartSignHomePresenceSensor sshps = new SmartSignHomePresenceSensor(this);
+   UpodDevice usshps = addDevice(sshps);
+ 
+   UpodDevice ths = bf.createTimedSensor("Away from Machine at Home",usshps,null,
+         SmartSignHomePresenceSensor.State.AWAY,0,300000);
+   addDevice(ths);
+   
    UpodDevice ns = new SmartSignOnPhoneSensor(this);
    phone_sensor = addDevice(ns);
 
    ns = new SmartSignVisitorSensor(this);
    visitor_sensor = addDevice(ns);
+   
+   UpodDevice zs = new SmartSignOnZoomSensor(this);
+   addDevice(zs);
 
    UpodDevice wts = new SmartSignWeatherTempSensor(this);
    wts = addDevice(wts);
@@ -139,16 +147,17 @@ public SmartSignUniverse(File f,Element xml)
 private class SensorHub extends TimerTask implements UpodHub {
 
    private UpodWorld current_world;
-
+   
    private static final String	   SENSOR_HOST = "valerie.cs.brown.edu";
    private static final int	   SENSOR_PORT = 19892;
-
+   
    SensorHub() {
       current_world = BasisFactory.getFactory().getCurrentWorld(SmartSignUniverse.this);
     }
 
    void start() {
-      String cmd = "ssh valerie -C java spr.automate.MessageChecker &";
+      setupServer();
+      String cmd = "ssh " + SENSOR_HOST + " -C java spr.automate.MessageChecker &";
       try {
 	 new IvyExec(cmd);
        }
@@ -159,33 +168,33 @@ private class SensorHub extends TimerTask implements UpodHub {
 
    @Override public void run() {
       try {
-	 Socket s = new Socket(SENSOR_HOST,SENSOR_PORT);
-	 OutputStream so = s.getOutputStream();
-	 so.write("GO\n".getBytes());
-	 so.flush();
-	 InputStream si = s.getInputStream();
-	 Reader r = new InputStreamReader(si);
-	 char [] buf = new char[10240];
-	 int ln = r.read(buf);
-	 if (ln > 0) {
-	    String rslt = new String(buf,0,ln);
-	    if (rslt.startsWith("RESULT ")) {
-	       current_world.startUpdate();
-	       try {
-		  setSensorState(phone_sensor,rslt.charAt(8) == '1');
-		  setSensorState(visitor_sensor,rslt.charAt(7) == '1');
-		}
-	       finally {
-		  current_world.endUpdate();
-		}
-	     }
-	  }
-	 s.close();
+         Socket s = new Socket(SENSOR_HOST,SENSOR_PORT);
+         OutputStream so = s.getOutputStream();
+         so.write("GO\n".getBytes());
+         so.flush();
+         InputStream si = s.getInputStream();
+         Reader r = new InputStreamReader(si);
+         char [] buf = new char[10240];
+         int ln = r.read(buf);
+         if (ln > 0) {
+            String rslt = new String(buf,0,ln);
+            if (rslt.startsWith("RESULT ")) {
+               current_world.startUpdate();
+               try {
+                  setSensorState(phone_sensor,rslt.charAt(8) == '1');
+                  setSensorState(visitor_sensor,rslt.charAt(7) == '1');
+                }
+               finally {
+                  current_world.endUpdate();
+                }
+             }
+          }
+         s.close();
        }
       catch (IOException e) {
-	 System.err.println("Problem getting sensor info: " + e);
+         System.err.println("Problem getting sensor info: " + e);
        }
-    }
+   }
 
    private void setSensorState(UpodDevice s,boolean fg) {
       UpodParameter p0 = findParameter(s);
@@ -196,7 +205,73 @@ private class SensorHub extends TimerTask implements UpodHub {
       s.setValueInWorld(p0,st,null);
     }
 
+   private void setupServer() {
+      try {
+         server_socket = new ServerSocket(SMART_SIGN_MONITOR_PORT);
+         HomeChecker hc = new HomeChecker();
+         hc.start();
+       }
+      catch (IOException e) {
+         server_socket = null;
+       }
+      
+    }
 }	// end of inner class SensorHub
+
+
+private class HomeChecker extends Thread {
+
+   HomeChecker() {
+      super("SmartSignHomeServerChecker");
+    }
+   
+   @Override public void run() {
+      try {
+         for ( ; ; ) {
+            Socket s = server_socket.accept();
+            HomeHub hh = new HomeHub(s);
+            hh.start();
+          }
+       }
+      catch (IOException e) {
+         server_socket = null;
+       }
+    }
+   
+}       // end of inner class HomeChecker
+
+
+
+private class HomeHub extends Thread {
+
+   private BufferedReader socket_reader;
+   
+   HomeHub(Socket s) throws IOException {
+      socket_reader = new BufferedReader(new InputStreamReader(s.getInputStream()));
+    }
+   
+   @Override public void run() {
+      try {
+         for ( ; ; ) {
+            String ln = socket_reader.readLine();
+            if (ln == null) break;
+            int idx = ln.indexOf("=");
+            if (idx < 0) continue;
+            String sensor = ln.substring(0,idx).trim();
+            String value = ln.substring(idx+1).trim();
+            UpodDevice ud = findDevice(sensor);
+            if (ud != null) {
+               UpodParameter p0 = findParameter(ud);
+               ud.setValueInWorld(p0,value,null);
+             }
+          }
+         socket_reader.close();
+       }
+      catch (IOException e) { }
+    }
+   
+}       // end of inner class HomeHub
+
 
 
 
