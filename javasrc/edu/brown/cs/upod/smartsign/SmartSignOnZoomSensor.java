@@ -56,7 +56,7 @@ public class SmartSignOnZoomSensor extends BasisDevice implements SmartSignConst
 
 private static enum States { NOT_ON_ZOOM, ON_ZOOM };
 
-private static final String	ZOOM_NAME = "OnZoom";
+private static final String	ZOOM_NAME = "HomeZoomSensor";
 
 
 
@@ -82,7 +82,7 @@ public SmartSignOnZoomSensor(UpodUniverse uu,Element xml)
 
 private void initialize()
 {
-   BasisParameter bp = BasisParameter.createEnumParameter(getUID(),States.ON_ZOOM);
+   BasisParameter bp = BasisParameter.createEnumParameter(getUID(),States.NOT_ON_ZOOM);
    bp.setIsSensor(true);
    bp.setLabel("In a Zoom Meeting");
    UpodParameter pp = addParameter(bp);

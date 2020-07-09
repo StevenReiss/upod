@@ -167,6 +167,7 @@ private class SensorHub extends TimerTask implements UpodHub {
     }
 
    @Override public void run() {
+      if (server_socket == null) setupServer();
       try {
          Socket s = new Socket(SENSOR_HOST,SENSOR_PORT);
          OutputStream so = s.getOutputStream();
@@ -219,6 +220,17 @@ private class SensorHub extends TimerTask implements UpodHub {
 }	// end of inner class SensorHub
 
 
+private void setSensor(String sensor,String value)
+{
+   UpodDevice ud = findDevice(sensor);
+   if (ud != null) {
+      UpodParameter p0 = findParameter(ud);
+      ud.setValueInWorld(p0,value,null);
+    }
+}
+
+
+
 private class HomeChecker extends Thread {
 
    HomeChecker() {
@@ -226,6 +238,9 @@ private class HomeChecker extends Thread {
     }
    
    @Override public void run() {
+      setSensor("HomePresenceSensor","NOTHOME");
+      setSensor("HomeZoomSensor","NOT_ON_ZOOM");
+      
       try {
          for ( ; ; ) {
             Socket s = server_socket.accept();
@@ -259,16 +274,15 @@ private class HomeHub extends Thread {
             if (idx < 0) continue;
             String sensor = ln.substring(0,idx).trim();
             String value = ln.substring(idx+1).trim();
-            UpodDevice ud = findDevice(sensor);
-            if (ud != null) {
-               UpodParameter p0 = findParameter(ud);
-               ud.setValueInWorld(p0,value,null);
-             }
+            setSensor(sensor,value);
           }
          socket_reader.close();
        }
       catch (IOException e) { }
-    }
+      
+      setSensor("HomePresenceSensor","NOTHOME");
+      setSensor("HomeZoomSensor","NOT_ON_ZOOM");
+   }
    
 }       // end of inner class HomeHub
 

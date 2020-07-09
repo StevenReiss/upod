@@ -72,10 +72,9 @@ public static void main(String ... args)
 private long    last_idle;
 private Boolean last_zoom;
 
-private final String IDLE_COMMAND = "ioreg -c IOHIDSystem | " +
-        "fgrep HIDIdleTime";
+private final String IDLE_COMMAND = "sh -c 'ioreg -c IOHIDSystem | fgrep HIDIdleTime'";
 
-private final String ZOOM_COMMAND = "ps -ax | fgrep zoom | fgrep caphost";
+private final String ZOOM_COMMAND = "sh -c 'ps -ax | fgrep zoom | fgrep caphost'";
 
         
 
@@ -193,6 +192,7 @@ private Boolean usingZoom()
          for ( ; ; ) {
             String ln = br.readLine();
             if (ln == null) break;
+            if (ln.contains("sh -c")) continue;
             if (ln.contains("zoom") && ln.contains("caphost")) {
                return true;
              }

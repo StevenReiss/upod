@@ -56,7 +56,7 @@ public class SmartSignHomePresenceSensor extends BasisDevice implements SmartSig
 
 private UpodParameter	 presence_param;
 
-private static final String	SENSOR_NAME = "HomePresence";
+private static final String	SENSOR_NAME = "HomePresenceSensor";
 
 static enum State { WORKING, AWAY, NOTHOME };
 
