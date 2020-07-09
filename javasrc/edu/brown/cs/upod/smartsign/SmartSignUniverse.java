@@ -89,7 +89,7 @@ public SmartSignUniverse(File f,Element xml)
    SmartSignHomePresenceSensor sshps = new SmartSignHomePresenceSensor(this);
    UpodDevice usshps = addDevice(sshps);
  
-   UpodDevice ths = bf.createTimedSensor("Away from Machine at Home",usshps,null,
+   UpodDevice ths = bf.createTimedSensor("Stepped Away at Home",usshps,null,
          SmartSignHomePresenceSensor.State.AWAY,0,300000);
    addDevice(ths);
    

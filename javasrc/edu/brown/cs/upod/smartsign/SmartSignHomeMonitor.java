@@ -40,6 +40,7 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.io.PrintWriter;
+import java.net.ServerSocket;
 import java.net.Socket;
 
 import edu.brown.cs.ivy.exec.IvyExec;
@@ -98,8 +99,17 @@ private SmartSignHomeMonitor(String [] args)
 /*                                                                              */
 /********************************************************************************/
 
+@SuppressWarnings("resource")
 private void start()
 {
+   try {
+      // create a server socket to ensure only one instance running
+      new ServerSocket(SMART_SIGN_MONITOR_PORT+1);
+    }
+   catch (IOException e) {
+      System.exit(1);
+    }
+   
    for ( ; ; ) {
       try (Socket s = new Socket(SMART_SIGN_HOST,SMART_SIGN_MONITOR_PORT)) {
          last_idle = -1;

@@ -401,13 +401,13 @@ private class StateRepr {
 
    protected void recheck(long when) {
       if (for_world.isCurrent()) {
-	 if (timer_task != null) timer_task.cancel();
-	 timer_task = null;
-	 System.err.println("RECHECK DURATION " + getLabel() + when);
-	 if (when <= 0) return;
-	 Timer t = BasisWorld.getWorldTimer();
-	 timer_task = new TimeChanged(for_world);
-	 t.schedule(timer_task,when);
+         if (timer_task != null) timer_task.cancel();
+         timer_task = null;
+         if (when <= 0) return;
+         BasisLogger.logD("RECHECK DURATION " + getLabel() + " " + when);
+         Timer t = BasisWorld.getWorldTimer();
+         timer_task = new TimeChanged(for_world);
+         t.schedule(timer_task,when);
        }
     }
 

@@ -362,30 +362,30 @@ private class StateReprTimed extends StateRepr {
 
    void updateStatus() {
       if (error_cause != null) {
-	 start_time = 0;
-	 recheck(0);
-	 fireError(for_world,error_cause);
-	 return;
+         start_time = 0;
+         recheck(0);
+         fireError(for_world,error_cause);
+         return;
        }
-
+   
       if (on_params == null) {
-	 start_time = 0;
-	 recheck(0);
-	 fireOff(for_world);
-	 return;
+         start_time = 0;
+         recheck(0);
+         fireOff(for_world);
+         return;
        }
-
+   
       if (start_time == 0) start_time = for_world.getTime();
       long now = for_world.getTime();
       if (now - start_time < min_time) {
-	 fireOff(for_world);
-	 recheck(min_time - (now-start_time));
+         fireOff(for_world);
+         recheck(min_time - (now-start_time));
        }
       else if (max_time > 0 &&	now-start_time > max_time) {
-	 fireOff(for_world);
+         fireOff(for_world);
        }
       else {
-	 fireOn(for_world,on_params);
+         fireOn(for_world,on_params);
        }
     }
 
