@@ -262,6 +262,7 @@ private class HomeHub extends Thread {
    private BufferedReader socket_reader;
    
    HomeHub(Socket s) throws IOException {
+      super("SmartSignHomeHub");
       socket_reader = new BufferedReader(new InputStreamReader(s.getInputStream()));
     }
    

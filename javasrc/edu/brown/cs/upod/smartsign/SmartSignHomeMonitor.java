@@ -36,14 +36,16 @@
 package edu.brown.cs.upod.smartsign;
 
 import java.io.BufferedReader;
+import java.io.File;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.io.PrintWriter;
-import java.net.ServerSocket;
 import java.net.Socket;
 
 import edu.brown.cs.ivy.exec.IvyExec;
+import edu.brown.cs.ivy.file.IvyFile;
+import edu.brown.cs.ivy.file.IvyFileLocker;
 
 public class SmartSignHomeMonitor implements SmartSignConstants
 {
@@ -77,6 +79,9 @@ private final String IDLE_COMMAND = "sh -c 'ioreg -c IOHIDSystem | fgrep HIDIdle
 
 private final String ZOOM_COMMAND = "sh -c 'ps -ax | fgrep zoom | fgrep caphost'";
 
+private final File LOCK_FILE = IvyFile.expandFile("$(HOME)/.smartsignhomemonitor.lock");
+
+
         
 
 /********************************************************************************/
@@ -102,12 +107,9 @@ private SmartSignHomeMonitor(String [] args)
 @SuppressWarnings("resource")
 private void start()
 {
-   try {
-      // create a server socket to ensure only one instance running
-      new ServerSocket(SMART_SIGN_MONITOR_PORT+1);
-    }
-   catch (IOException e) {
-      System.exit(1);
+   IvyFileLocker locker = new IvyFileLocker(LOCK_FILE);
+   if (!locker.tryLock()) {
+      System.exit(0);
     }
    
    for ( ; ; ) {
