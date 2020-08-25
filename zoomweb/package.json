@@ -1,0 +1,12 @@
+{
+   "name": "brown-upod-web-zoom-monitor",
+   "description": "external web server for monitoring zoom",
+   "version": "0.0.1",
+   "private": true,
+   "dependencies": {
+      "crypto": ">= 0.10.24",
+      "express": "3.x",
+      "node-uuid": ">= 1.4.0",
+      "request": "^2.88.2"
+   }
+}
