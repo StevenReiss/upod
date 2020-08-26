@@ -40,6 +40,24 @@ var https = require('https');
 
 /********************************************************************************/
 /*										*/
+/*	HTTPS credentials							*/
+/*										*/
+/********************************************************************************/
+
+const private_key = fs.readFileSync('/etc/letsencrypt/live/conifer2.cs.brown.edu/privatekey.pem','utf8');
+const certificate = fs.readFileSync('/etc/letsencrypt/live/conifer2.cs.brown.edu/cert.pem','utf8');
+const ca = fs.readFileSync('/etc/letsencrypt/live/conifer2.cs.brown.edu/chain.pem','utf8');
+
+const credentials = {
+   key : private_key,
+   cert : certificate,
+   ca: ca
+};
+
+
+
+/********************************************************************************/
+/*										*/
 /*	Default handlers							*/
 /*										*/
 /********************************************************************************/
@@ -67,13 +85,9 @@ function start()
    app.get('/zoomauth',handleAuth);
    app.get('/status',handleStatus);
 
-   var sapp = https.createServer({
-      key : fs.readFileSync('server.key'),
-      cert: fs.readFileSync('server.cert') },app);
-   var http = sapp.listen(6060);
-   var http1 = app.listen(6061);
-
-
+   var sapp = https.createServer(credentials,app);
+   var httpsserver = sapp.listen(6060);
+   var httpserver = app.listen(6061);
 
    console.log("UPOD Node.JS server has started");
 }
