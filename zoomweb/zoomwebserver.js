@@ -48,7 +48,9 @@ var morgan = require('morgan');
 const private_key = fs.readFileSync('/etc/letsencrypt/live/conifer2.cs.brown.edu/privkey.pem','utf8');
 const certificate = fs.readFileSync('/etc/letsencrypt/live/conifer2.cs.brown.edu/cert.pem','utf8');
 const ca = fs.readFileSync('/etc/letsencrypt/live/conifer2.cs.brown.edu/chain.pem','utf8');
-const eventtoken = fs.readFileSync('zoom.event');
+const eventtoken = fs.readFileSync('zoom.event','utf8').trim();
+const personalmtg = fs.readFileSync('zoom.personal','utf8').trim();
+const personalid = fs.readFileSync('zoom.whoami','utf8').trim();
 
 const credentials = {
    key : private_key,
@@ -56,6 +58,19 @@ const credentials = {
    ca: ca
 };
 
+/********************************************************************************/
+/*										*/
+/*	Status Result								*/
+/*										*/
+/********************************************************************************/
+
+var status = {
+   in_other: 0,
+   in_personal : false,
+   personal_active : false,
+   wait_count: 0,
+   active_count : 0,
+}
 
 
 /********************************************************************************/
@@ -105,11 +120,11 @@ function start()
    app.get('/status',handleStatus);
    app.all('*',handle404);
 
-   var sapp = https.createServer(credentials);
+   var sapp = https.createServer(credentials,app);
    var httpsserver = sapp.listen(6060);
    var httpserver = app.listen(6061);
 
-   console.log("UPOD Node.JS server has started");!nod
+   console.log("UPOD Node.JS server has started");
 }
 
 
@@ -143,20 +158,7 @@ function handleToken(req,res)
 
 function handleStatus(req,res)
 {
-   if (current_code == null) {
-      let options = {
-	 method: "GET",
-	 url: "https://zoom.us/oauth/authorize?response_type=code&client_id=xdIWPd8JT0iUbegYyYljA&redirect_uri=https%3A%2F%2Fconifer2.cs.brown.edu%3A6060%2Fzoomauth"
-       };
-      request(options,function(err,resp,body) {
-		 console.log("REQUEST RESPONSE",body);
-	       } );
-      res.type('xml').send("<TRYAGAIN/>");
-    }	
-   else {
-      console.log("STATUS",req.query);
-   }
-   res.type('txt').send("OK");
+   res.end(JSON.stringify(status));
 }
 
 
@@ -171,35 +173,51 @@ function handleWebHook(req,res)
     }
     let event = req.body.payload;
     let what = req.body.event;
-    let data = event.object;
+    let meeting = event.object;
     let who = data.participant;
-    console.log(what,data,who0;)
+    console.log(what,meeting,who);
 
     switch (what) {
       case 'meeting.started' :
-         let meeting = data;
-         // handle started meeting
+         if (meeting.id == personalmtg) status.personal_active = true;
          break;
       case 'meeting.ended' :
-         // handle meeting ended
+         if (meeting.id == personalmtg) status.personal_active = false;
          break;
       case 'meeting.participant_joined_waiting_room' :
-         // handle someone waiting
+         if (meeting.id == personalmtg) status.num_waiting++;
          break;
       case 'meeting.participant_left_waiting_room' :
-         // handle someone not waiting
+         if (meeting.id == personalmtg) {
+            status.num_waiting--;
+            if (status.num_waiting < 0) status.num_waiting = 0;
+         }
          break;
       case 'meeting.participant_jbh_joined' :
-         // handle participant there, no host
+         if (meeting.id == personalmtg) status.active_count++;
          break;
       case 'meeting.participant_jbh_waiting' :
-         // handle participant there, no host
+         if (meeting.id == personalmtg) status.num_waiting++;
          break;
       case 'meeting.participant_joined' :
-         // handle someone joined
+         if (meeting.id == personalmtg) {
+            if (who.user_id == personalid) status.in_personal = true;
+            else status.active_count++
+         }
+         else if (who.user_id == personalid) status.in_other++;
          break;
       case 'meeting.participant_left' :
-         // handle someone left
+         if (meeting.id == personalmtg) {
+            if (who.user_id == personalid) status.in_personal = false;
+            else {
+               status.active_count--;
+               if (status.active_count < 0) status.active_count = 0;
+            }
+         }
+         else if (who.user_id == personalid) {
+            status.in_other--;
+            if (status.in_other < 0) status.in_other = 0;
+         }
          break;
       default :
          console.log("UNKNOWN EVENT",what);
