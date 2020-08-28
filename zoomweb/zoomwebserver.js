@@ -97,6 +97,7 @@ function start()
    app.get('/zoomauth',handleAuth);
    app.get('/zoomtoken',handleToken);
    app.post("/zoomhook",handleWebHook)
+   app.get("/zoomhook",handleWebHookCheck);
    app.get('/status',handleStatus);
 
    var sapp = https.createServer(credentials,app);
@@ -156,9 +157,17 @@ function handleStatus(req,res)
 
 function handleWebHook(req,res)
 {
+    console.log("WEBHOOK",req.body);
+
+}
+
+
+function handleWebHookCheck(req,res)
+{
     console.log("WEBHOOK",req.query);
 
 }
+
 
 function requestToken()
 {
