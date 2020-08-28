@@ -5,7 +5,8 @@
    "private": true,
    "dependencies": {
       "crypto": ">= 0.10.24",
-      "express": "3.x",
+      "express": ">= 4.16",
+      "morgan": "^1.10.0",
       "node-uuid": ">= 1.4.0",
       "request": "^2.88.2"
    }

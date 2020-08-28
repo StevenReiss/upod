@@ -36,6 +36,7 @@ var fs = require('fs');
 var request = require("request");
 var https = require('https');
 var bodyparser = require('body-parser');
+var morgan = require('morgan');
 
 
 /********************************************************************************/
@@ -92,7 +93,8 @@ function errorHandler(response)
 function start()
 {
    var app = express();
-   app.use(express.logger());
+  
+   app.use(morgan('combined'));
    app.use(bodyparser.urlencoded({ extended : false }));
    app.json({});
 
