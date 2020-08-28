@@ -160,14 +160,14 @@ function handleStatus(req,res)
 function handleWebHook(req,res)
 {
     console.log("WEBHOOK",req.body);
-
+    res.type('txt').send("OK");
 }
 
 
 function handleWebHookCheck(req,res)
 {
     console.log("WEBHOOK",req.query);
-
+    res.type('txt').send("OK");
 }
 
 
