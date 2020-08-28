@@ -99,12 +99,14 @@ function start()
    app.post("/zoomhook",handleWebHook)
    app.get("/zoomhook",handleWebHookCheck);
    app.get('/status',handleStatus);
+   app.all('*',handle404);
 
    var sapp = https.createServer(credentials,app);
    var httpsserver = sapp.listen(6060);
    var httpserver = app.listen(6061);
 
    console.log("UPOD Node.JS server has started");
+   console.log(httpsserver);
 }
 
 
@@ -193,6 +195,12 @@ function requestToken()
 	    } );
 }
 
+
+function handle404(req,res)
+{
+        res.status(404);
+        res.type('txt').send("Not Found");
+}
 
 
 
