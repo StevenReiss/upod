@@ -35,7 +35,7 @@ var express = require("express");
 var fs = require('fs');
 var request = require("request");
 var https = require('https');
-
+var bodyparser = require('body-parser');
 
 
 /********************************************************************************/
@@ -44,7 +44,7 @@ var https = require('https');
 /*										*/
 /********************************************************************************/
 
-const private_key = fs.readFileSync('/etc/letsencrypt/live/conifer2.cs.brown.edu/privatekey.pem','utf8');
+const private_key = fs.readFileSync('/etc/letsencrypt/live/conifer2.cs.brown.edu/privkey.pem','utf8');
 const certificate = fs.readFileSync('/etc/letsencrypt/live/conifer2.cs.brown.edu/cert.pem','utf8');
 const ca = fs.readFileSync('/etc/letsencrypt/live/conifer2.cs.brown.edu/chain.pem','utf8');
 
@@ -53,6 +53,16 @@ const credentials = {
    cert : certificate,
    ca: ca
 };
+
+
+
+/********************************************************************************/
+/*										*/
+/*	Local Storage								*/
+/*										*/
+/********************************************************************************/
+
+var current_code = null;
 
 
 
@@ -82,7 +92,11 @@ function start()
 {
    var app = express();
    app.use(express.logger());
+   app.use(bodyparser.urlencoded({ extended : false }));
+
    app.get('/zoomauth',handleAuth);
+   app.get('/zoomtoken',handleToken);
+   app.post("/zoomhook",handleWebHook)
    app.get('/status',handleStatus);
 
    var sapp = https.createServer(credentials,app);
@@ -105,15 +119,46 @@ function decoder(req,res,fct)
 
 function handleAuth(req,res)
 {
-   console.log("AUTH RESPONSE",req);
+   console.log("AUTH RESPONSE",req.query);
+
+   let code = req.query.code;
+
+   res.type('txt').send("OK");
+}
+
+
+function handleToken(req,res)
+{
+   console.log("AUTH RESPONSE",req.body);
+
+   res.type('txt').send("OK");
 }
 
 
 function handleStatus(req,res)
 {
-   console.log("STATUS",req);
+   if (current_code == null) {
+      let options = {
+	 method: "GET",
+	 url: "https://zoom.us/oauth/authorize?response_type=code&client_id=xdIWPd8JT0iUbegYyYljA&redirect_uri=https%3A%2F%2Fconifer2.cs.brown.edu%3A6060%2Fzoomauth"
+       };
+      request(options,function(err,resp,body) {
+		 console.log("REQUEST RESPONSE",body);
+	       } );
+      res.type('xml').send("<TRYAGAIN/>");
+    }	
+   else {
+      console.log("STATUS",req.query);
+   }
 }
 
+
+
+function handleWebHook(req,res)
+{
+    console.log("WEBHOOK",req.query);
+
+}
 
 function requestToken()
 {
@@ -125,8 +170,8 @@ function requestToken()
       url: "https//zoom.us/oauth/token",
       qs: {
 	  grant_type: 'authorization_code',
-	  code: 'xxxxxx',
-	  redirect_uri: 'https://conifer2.cs.brown.edu:6060/zoomauth'
+	  code: current_code,
+	  redirect_uri: 'https://conifer2.cs.brown.edu:6060/zoomtoken'
        },
       headers: {
 	  Authorization: 'Basic ' + Buffer.from(cid + ":" + csec).toString('base64')
@@ -135,7 +180,7 @@ function requestToken()
 
    request(options,function(err,resp,body) {
 	      if (error) throw new Error(error);
-	      console.log(body);
+	      console.log("REQUEST",body);
 	    } );
 }
 
