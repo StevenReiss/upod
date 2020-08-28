@@ -47,6 +47,7 @@ var bodyparser = require('body-parser');
 const private_key = fs.readFileSync('/etc/letsencrypt/live/conifer2.cs.brown.edu/privkey.pem','utf8');
 const certificate = fs.readFileSync('/etc/letsencrypt/live/conifer2.cs.brown.edu/cert.pem','utf8');
 const ca = fs.readFileSync('/etc/letsencrypt/live/conifer2.cs.brown.edu/chain.pem','utf8');
+const eventtoken = fs.readFileSync('zoom.event');
 
 const credentials = {
    key : private_key,
@@ -62,7 +63,7 @@ const credentials = {
 /*										*/
 /********************************************************************************/
 
-var current_code = null;
+var current_code = "test";
 
 
 
@@ -153,6 +154,7 @@ function handleStatus(req,res)
    else {
       console.log("STATUS",req.query);
    }
+   res.type('txt').send("OK");
 }
 
 
@@ -160,13 +162,17 @@ function handleStatus(req,res)
 function handleWebHook(req,res)
 {
     console.log("WEBHOOK",req.body);
+    res.status(200);
     res.type('txt').send("OK");
+    let evt = JSON.parse(req.body);
+    console.log("RECEIVED",evt);
 }
 
 
 function handleWebHookCheck(req,res)
 {
     console.log("WEBHOOK",req.query);
+    res.status(200);
     res.type('txt').send("OK");
 }
 
