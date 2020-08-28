@@ -94,6 +94,7 @@ function start()
    var app = express();
    app.use(express.logger());
    app.use(bodyparser.urlencoded({ extended : false }));
+   app.json({});
 
    app.get('/zoomauth',handleAuth);
    app.get('/zoomtoken',handleToken);
@@ -161,7 +162,8 @@ function handleStatus(req,res)
 
 function handleWebHook(req,res)
 {
-    console.log("WEBHOOK",req);
+    console.log("WEBHOOK",req.body);
+    
     res.status(200);
     res.type('txt').send("OK");
 //     let evt = JSON.parse(req.body);
