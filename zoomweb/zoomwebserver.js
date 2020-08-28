@@ -96,7 +96,7 @@ function start()
   
    app.use(morgan('combined'));
    app.use(bodyparser.urlencoded({ extended : false }));
-   app.json({});
+   app.use(express.json({}));
 
    app.get('/zoomauth',handleAuth);
    app.get('/zoomtoken',handleToken);
@@ -105,12 +105,11 @@ function start()
    app.get('/status',handleStatus);
    app.all('*',handle404);
 
-   var sapp = https.createServer(credentials,app);
+   var sapp = https.createServer(credentials);
    var httpsserver = sapp.listen(6060);
    var httpserver = app.listen(6061);
 
-   console.log("UPOD Node.JS server has started");
-   console.log(httpsserver);
+   console.log("UPOD Node.JS server has started");!nod
 }
 
 
@@ -164,7 +163,48 @@ function handleStatus(req,res)
 
 function handleWebHook(req,res)
 {
-    console.log("WEBHOOK",req.body);
+    console.log("WEBHOOK");
+
+    let clientid = req.headers.authorization;
+    if (clientid != eventtoken) {
+            console.log("BAD CLIENT ID ",clientid,eventtoken);
+    }
+    let event = req.body.payload;
+    let what = req.body.event;
+    let data = event.object;
+    let who = data.participant;
+    console.log(what,data,who0;)
+
+    switch (what) {
+      case 'meeting.started' :
+         let meeting = data;
+         // handle started meeting
+         break;
+      case 'meeting.ended' :
+         // handle meeting ended
+         break;
+      case 'meeting.participant_joined_waiting_room' :
+         // handle someone waiting
+         break;
+      case 'meeting.participant_left_waiting_room' :
+         // handle someone not waiting
+         break;
+      case 'meeting.participant_jbh_joined' :
+         // handle participant there, no host
+         break;
+      case 'meeting.participant_jbh_waiting' :
+         // handle participant there, no host
+         break;
+      case 'meeting.participant_joined' :
+         // handle someone joined
+         break;
+      case 'meeting.participant_left' :
+         // handle someone left
+         break;
+      default :
+         console.log("UNKNOWN EVENT",what);
+         break;
+    }
     
     res.status(200);
     res.type('txt').send("OK");
@@ -175,7 +215,7 @@ function handleWebHook(req,res)
 
 function handleWebHookCheck(req,res)
 {
-    console.log("WEBHOOK",req.query);
+    console.log("WEBHOOK",req);
     res.status(200);
     res.type('txt').send("OK");
 }
