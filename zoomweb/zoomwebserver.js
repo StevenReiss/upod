@@ -161,11 +161,11 @@ function handleStatus(req,res)
 
 function handleWebHook(req,res)
 {
-    console.log("WEBHOOK",req.body);
+    console.log("WEBHOOK",req);
     res.status(200);
     res.type('txt').send("OK");
-    let evt = JSON.parse(req.body);
-    console.log("RECEIVED",evt);
+//     let evt = JSON.parse(req.body);
+//     console.log("RECEIVED",evt);
 }
 
 
