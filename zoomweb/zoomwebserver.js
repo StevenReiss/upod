@@ -159,6 +159,7 @@ function handleToken(req,res)
 function handleStatus(req,res)
 {
    res.end(JSON.stringify(status));
+
 }
 
 
@@ -174,7 +175,7 @@ function handleWebHook(req,res)
     let event = req.body.payload;
     let what = req.body.event;
     let meeting = event.object;
-    let who = data.participant;
+    let who = meeting.participant;
     console.log(what,meeting,who);
 
     switch (what) {
@@ -185,12 +186,12 @@ function handleWebHook(req,res)
          if (meeting.id == personalmtg) status.personal_active = false;
          break;
       case 'meeting.participant_joined_waiting_room' :
-         if (meeting.id == personalmtg) status.num_waiting++;
+         if (meeting.id == personalmtg) status.wait_count++;
          break;
       case 'meeting.participant_left_waiting_room' :
          if (meeting.id == personalmtg) {
-            status.num_waiting--;
-            if (status.num_waiting < 0) status.num_waiting = 0;
+            status.wait_count--;
+            if (status.num_waiting < 0) status.wait_count = 0;
          }
          break;
       case 'meeting.participant_jbh_joined' :
