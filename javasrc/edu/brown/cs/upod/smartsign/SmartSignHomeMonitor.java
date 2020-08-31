@@ -83,7 +83,7 @@ private String	last_personal;
 
 private final String IDLE_COMMAND = "sh -c 'ioreg -c IOHIDSystem | fgrep HIDIdleTime'";
 
-private final String ZOOM_COMMAND = "sh -c 'ps -ax | fgrep zoom | fgrep caphost'";
+private final String ZOOM_COMMAND = "sh -c 'ps -ax | fgrep zoom | fgrep CptHost'";
 
 private final File LOCK_FILE = IvyFile.expandFile("$(HOME)/.smartsignhomemonitor.lock");
 
@@ -102,6 +102,7 @@ private SmartSignHomeMonitor(String [] args)
 {
    last_idle = -1;
    last_zoom = null;
+   last_personal = null;
 }
 
 
@@ -150,6 +151,8 @@ private void sendUpdate(PrintWriter pw)
    long idle = getIdleTime();
    Boolean zoom = usingZoom();
    String psts = getPersonalStatus();
+// System.err.println("CHECK " + idle + " " + zoom + " " + psts);
+
    if (idle > 0) {
       if (idle < 300) {
 	 if (last_idle >= 300 || last_idle < 0) {
@@ -158,10 +161,10 @@ private void sendUpdate(PrintWriter pw)
 	  }
        }
       else if (idle < 3600) {
-         if (last_idle >= 3600 || last_idle < 300) {
-            pw.println("HomePresenceSensor=IDLE");
-            write = true;
-          }
+	 if (last_idle >= 3600 || last_idle < 300) {
+	    pw.println("HomePresenceSensor=IDLE");
+	    write = true;
+	  }
        }
       else if (last_idle < 3600) {
 	 pw.println("HomePresenceSensor=AWAY");
@@ -227,7 +230,7 @@ private Boolean usingZoom()
 	    String ln = br.readLine();
 	    if (ln == null) break;
 	    if (ln.contains("sh -c")) continue;
-	    if (ln.contains("zoom") && ln.contains("caphost")) {
+	    if (ln.contains("zoom") && ln.contains("CptHost")) {
 	       return true;
 	     }
 	  }
