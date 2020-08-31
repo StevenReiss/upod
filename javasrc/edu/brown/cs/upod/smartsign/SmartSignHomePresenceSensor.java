@@ -58,7 +58,7 @@ private UpodParameter	 presence_param;
 
 private static final String	SENSOR_NAME = "HomePresenceSensor";
 
-static enum State { WORKING, AWAY, NOTHOME };
+static enum State { WORKING, IDLE, AWAY, NOTHOME };
 
 
 
