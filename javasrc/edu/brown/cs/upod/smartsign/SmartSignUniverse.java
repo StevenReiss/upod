@@ -194,6 +194,7 @@ private class SensorHub extends TimerTask implements UpodHub {
           }
          s.close();
        }
+      catch (ConnectException e) { }
       catch (IOException e) {
          System.err.println("Problem getting sensor info: " + e);
        }
