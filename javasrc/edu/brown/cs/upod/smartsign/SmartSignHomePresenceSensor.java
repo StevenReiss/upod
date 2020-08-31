@@ -91,6 +91,8 @@ private void initialize()
    addConditions(presence_param);
    UpodCondition c1 = getCondition(presence_param,State.WORKING);
    c1.setLabel("Working At Home");
+   c1 = getCondition(presence_param,State.IDLE);
+   c1.setLabel("Working At Home, Stepped Out");
    c1 = getCondition(presence_param,State.AWAY);
    c1.setLabel("At Home, Out of Office");
    c1 = getCondition(presence_param,State.NOTHOME);
