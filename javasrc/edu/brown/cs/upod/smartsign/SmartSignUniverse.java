@@ -111,7 +111,7 @@ public SmartSignUniverse(File f,Element xml)
 	 null,SmartSignPresenceSensor.State.IN,c);
    addDevice(inatall);
 
-   UpodParameter up1 = usshps.findParameter("HomePresenseSensor");
+   UpodParameter up1 = usshps.findParameter("HomePresenceSensor");
    UpodDevice anyhome1 = bf.createOrSensor("Working at Home, Not Out of Office",usshps,up1,"WORKING");
    BasisSensorOr anyhome = (BasisSensorOr) anyhome1;
    anyhome.addCondition(usshps,up1,"IDLE");

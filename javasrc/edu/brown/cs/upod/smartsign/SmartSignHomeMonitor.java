@@ -151,7 +151,7 @@ private void sendUpdate(PrintWriter pw)
    long idle = getIdleTime();
    Boolean zoom = usingZoom();
    String psts = getPersonalStatus();
-// System.err.println("CHECK " + idle + " " + zoom + " " + psts);
+   System.err.println("CHECK " + idle + " " + zoom + " " + psts);
 
    if (idle > 0) {
       if (idle < 300) {

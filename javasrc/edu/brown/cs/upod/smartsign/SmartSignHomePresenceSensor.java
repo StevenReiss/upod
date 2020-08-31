@@ -1,6 +1,6 @@
 /********************************************************************************/
 /*										*/
-/*		SmartSignHomePresenseSensor.java				*/
+/*		SmartSignHomePresenceSensor.java				*/
 /*										*/
 /*	Detect if working at home						*/
 /*										*/
@@ -85,7 +85,7 @@ public SmartSignHomePresenceSensor(UpodUniverse u,Element xml)
 private void initialize()
 {
    BasisParameter pp = BasisParameter.createEnumParameter(getUID(),State.NOTHOME);
-   pp.setLabel("HomePresenseSensor");
+   pp.setLabel("HomePresenceSensor");
    pp.setIsSensor(true);
    presence_param = addParameter(pp);
    addConditions(presence_param);
@@ -124,10 +124,10 @@ private void initialize()
 
 
 
-}	// end of class SmartSignHomePresenseSensor
+}	// end of class SmartSignHomePresenceSensor
 
 
 
 
-/* end of SmartSignHomePresenseSensor.java */
+/* end of SmartSignHomePresenceSensor.java */
 

@@ -90,7 +90,7 @@ private void initialize()
 {
    doing_update = false;
    BasisParameter pp = BasisParameter.createEnumParameter(getUID(),State.OUT);
-   pp.setLabel("PresenseSensor");
+   pp.setLabel("PresenceSensor");
    pp.setIsSensor(true);
    presence_param = addParameter(pp);
    addConditions(presence_param);
