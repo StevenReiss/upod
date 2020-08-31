@@ -224,6 +224,8 @@ private void handleStateChanged(UpodWorld w)
       if (fg) break;
     }
    
+   System.err.println("SET OR SENSOR " + getLabel() + " = " + fg);
+   
    setValueInWorld(result_parameter,fg,w);
 }
 
