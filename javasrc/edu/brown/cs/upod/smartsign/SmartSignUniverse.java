@@ -85,25 +85,21 @@ public SmartSignUniverse(File f,Element xml)
 
    UpodDevice ts = bf.createTimedSensor("Stepped out",uss,null,SmartSignPresenceSensor.State.OUT,0,300000);
    addDevice(ts);
-   
+
    SmartSignHomePresenceSensor sshps = new SmartSignHomePresenceSensor(this);
    UpodDevice usshps = addDevice(sshps);
- 
-   UpodDevice ths = bf.createTimedSensor("Stepped Away at Home",usshps,null,
-         SmartSignHomePresenceSensor.State.AWAY,0,300000);
-   addDevice(ths);
-   
+
    UpodDevice ns = new SmartSignOnPhoneSensor(this);
    phone_sensor = addDevice(ns);
 
    ns = new SmartSignVisitorSensor(this);
    visitor_sensor = addDevice(ns);
-   
+
    UpodDevice zs = new SmartSignOnZoomSensor(this);
    addDevice(zs);
    UpodDevice zps = new SmartSignPersonalZoomSensor(this);
    addDevice(zps);
-   
+
    UpodDevice wts = new SmartSignWeatherTempSensor(this);
    wts = addDevice(wts);
    UpodDevice wcs = new SmartSignWeatherCondSensor(this);
@@ -114,7 +110,12 @@ public SmartSignUniverse(File f,Element xml)
    UpodDevice inatall = bf.createLatchSensor("In At All",uss,
 	 null,SmartSignPresenceSensor.State.IN,c);
    addDevice(inatall);
-
+   
+   UpodParameter up1 = usshps.findParameter("HomePresenseSensor");
+   UpodDevice anyhome1 = bf.createOrSensor("Working at Home, Not Out of Office",usshps,up1,"WORKING");
+   BasisSensorOr anyhome = (BasisSensorOr) anyhome1;
+   anyhome.addCondition(usshps,up1,"IDLE");
+   
    SensorHub hub = new SensorHub();
    addHub(hub);
 
@@ -149,10 +150,10 @@ public SmartSignUniverse(File f,Element xml)
 private class SensorHub extends TimerTask implements UpodHub {
 
    private UpodWorld current_world;
-   
+
    private static final String	   SENSOR_HOST = "valerie.cs.brown.edu";
    private static final int	   SENSOR_PORT = 19892;
-   
+
    SensorHub() {
       current_world = BasisFactory.getFactory().getCurrentWorld(SmartSignUniverse.this);
     }
@@ -171,32 +172,32 @@ private class SensorHub extends TimerTask implements UpodHub {
    @Override public void run() {
       if (server_socket == null) setupServer();
       try {
-         Socket s = new Socket(SENSOR_HOST,SENSOR_PORT);
-         OutputStream so = s.getOutputStream();
-         so.write("GO\n".getBytes());
-         so.flush();
-         InputStream si = s.getInputStream();
-         Reader r = new InputStreamReader(si);
-         char [] buf = new char[10240];
-         int ln = r.read(buf);
-         if (ln > 0) {
-            String rslt = new String(buf,0,ln);
-            if (rslt.startsWith("RESULT ")) {
-               current_world.startUpdate();
-               try {
-                  setSensorState(phone_sensor,rslt.charAt(8) == '1');
-                  setSensorState(visitor_sensor,rslt.charAt(7) == '1');
-                }
-               finally {
-                  current_world.endUpdate();
-                }
-             }
-          }
-         s.close();
+	 Socket s = new Socket(SENSOR_HOST,SENSOR_PORT);
+	 OutputStream so = s.getOutputStream();
+	 so.write("GO\n".getBytes());
+	 so.flush();
+	 InputStream si = s.getInputStream();
+	 Reader r = new InputStreamReader(si);
+	 char [] buf = new char[10240];
+	 int ln = r.read(buf);
+	 if (ln > 0) {
+	    String rslt = new String(buf,0,ln);
+	    if (rslt.startsWith("RESULT ")) {
+	       current_world.startUpdate();
+	       try {
+		  setSensorState(phone_sensor,rslt.charAt(8) == '1');
+		  setSensorState(visitor_sensor,rslt.charAt(7) == '1');
+		}
+	       finally {
+		  current_world.endUpdate();
+		}
+	     }
+	  }
+	 s.close();
        }
       catch (ConnectException e) { }
       catch (IOException e) {
-         System.err.println("Problem getting sensor info: " + e);
+	 System.err.println("Problem getting sensor info: " + e);
        }
    }
 
@@ -211,14 +212,14 @@ private class SensorHub extends TimerTask implements UpodHub {
 
    private void setupServer() {
       try {
-         server_socket = new ServerSocket(SMART_SIGN_MONITOR_PORT);
-         HomeChecker hc = new HomeChecker();
-         hc.start();
+	 server_socket = new ServerSocket(SMART_SIGN_MONITOR_PORT);
+	 HomeChecker hc = new HomeChecker();
+	 hc.start();
        }
       catch (IOException e) {
-         server_socket = null;
+	 server_socket = null;
        }
-      
+
     }
 }	// end of inner class SensorHub
 
@@ -239,58 +240,58 @@ private class HomeChecker extends Thread {
    HomeChecker() {
       super("SmartSignHomeServerChecker");
     }
-   
+
    @Override public void run() {
       setSensor("HomePresenceSensor","NOTHOME");
       setSensor("HomeZoomSensor","NOT_ON_ZOOM");
       setSensor("ZoomPersonalMeeting","NOT_ACTIVE");
-      
+
       try {
-         for ( ; ; ) {
-            Socket s = server_socket.accept();
-            HomeHub hh = new HomeHub(s);
-            hh.start();
-          }
+	 for ( ; ; ) {
+	    Socket s = server_socket.accept();
+	    HomeHub hh = new HomeHub(s);
+	    hh.start();
+	  }
        }
       catch (IOException e) {
-         server_socket = null;
+	 server_socket = null;
        }
     }
-   
-}       // end of inner class HomeChecker
+
+}	// end of inner class HomeChecker
 
 
 
 private class HomeHub extends Thread {
 
    private BufferedReader socket_reader;
-   
+
    HomeHub(Socket s) throws IOException {
       super("SmartSignHomeHub");
       socket_reader = new BufferedReader(new InputStreamReader(s.getInputStream()));
     }
-   
+
    @Override public void run() {
       try {
-         for ( ; ; ) {
-            String ln = socket_reader.readLine();
-            if (ln == null) break;
-            int idx = ln.indexOf("=");
-            if (idx < 0) continue;
-            String sensor = ln.substring(0,idx).trim();
-            String value = ln.substring(idx+1).trim();
-            setSensor(sensor,value);
-          }
-         socket_reader.close();
+	 for ( ; ; ) {
+	    String ln = socket_reader.readLine();
+	    if (ln == null) break;
+	    int idx = ln.indexOf("=");
+	    if (idx < 0) continue;
+	    String sensor = ln.substring(0,idx).trim();
+	    String value = ln.substring(idx+1).trim();
+	    setSensor(sensor,value);
+	  }
+	 socket_reader.close();
        }
       catch (IOException e) { }
-      
+
       setSensor("HomePresenceSensor","NOTHOME");
       setSensor("HomeZoomSensor","NOT_ON_ZOOM");
       setSensor("ZoomPersonalMeeting","NOT_ACTIVE");
    }
-   
-}       // end of inner class HomeHub
+
+}	// end of inner class HomeHub
 
 
 

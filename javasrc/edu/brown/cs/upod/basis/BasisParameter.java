@@ -524,15 +524,15 @@ private static class IntParameter extends BasisParameter {
       if (value == null) return null;
       int ivl = 0;
       if (value instanceof Number) {
-	 Number n = (Number) value;
-	 ivl = n.intValue();
+         Number n = (Number) value;
+         ivl = n.intValue();
        }
       else {
-	 String s = value.toString();
-	 try {
-	    ivl = Integer.parseInt(s);
-	  }
-	 catch (NumberFormatException e) { }
+         String s = value.toString();
+         try {
+            ivl = Integer.parseInt(s);
+          }
+         catch (NumberFormatException e) { }
        }
       if (ivl < min_value) ivl = min_value;
       if (ivl > max_value) ivl = max_value;

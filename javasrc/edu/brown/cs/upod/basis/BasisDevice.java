@@ -213,6 +213,7 @@ protected UpodWorld getCurrentWorld()
    
    for (UpodParameter up : parameter_set) {
       if (up.getName().equals(id)) return up;
+      if (up.getLabel().equals(id)) return up;
     }
 
    return null;
