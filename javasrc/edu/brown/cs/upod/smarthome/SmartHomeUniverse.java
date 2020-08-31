@@ -37,7 +37,7 @@ package edu.brown.cs.upod.smarthome;
 
 import edu.brown.cs.upod.basis.*;
 
-import org.w3c.dom.*;
+import org.w3c.dom.Element;
 
 import java.io.*;
 

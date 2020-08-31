@@ -39,7 +39,7 @@ import edu.brown.cs.upod.upod.*;
 
 import edu.brown.cs.ivy.xml.*;
 
-import org.w3c.dom.*;
+import org.w3c.dom.Element;
 
 import java.util.*;
 import java.io.*;
