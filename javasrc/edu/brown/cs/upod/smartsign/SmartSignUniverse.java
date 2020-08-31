@@ -163,10 +163,10 @@ private class SensorHub extends TimerTask implements UpodHub {
       setupServer();
       String cmd = "ssh " + SENSOR_HOST + " -C java spr.automate.MessageChecker &";
       try {
-         new IvyExec(cmd);
+	 new IvyExec(cmd);
        }
       catch (IOException e) { }
-   
+
       BasisWorld.getWorldTimer().schedule(this,5*T_SECOND,T_MINUTE);
     }
 
@@ -213,14 +213,14 @@ private class SensorHub extends TimerTask implements UpodHub {
 
    private void setupServer() {
       try {
-         server_socket = new ServerSocket(SMART_SIGN_MONITOR_PORT);
-         HomeChecker hc = new HomeChecker();
-         hc.start();
+	 server_socket = new ServerSocket(SMART_SIGN_MONITOR_PORT);
+	 HomeChecker hc = new HomeChecker();
+	 hc.start();
        }
       catch (IOException e) {
-         server_socket = null;
+	 server_socket = null;
        }
-   
+
     }
 }	// end of inner class SensorHub
 
@@ -231,6 +231,9 @@ private void setSensor(String sensor,String value)
    if (ud != null) {
       UpodParameter p0 = findParameter(ud);
       ud.setValueInWorld(p0,value,null);
+    }
+   else {
+      System.err.println("Can't find snssor " + sensor);
     }
 }
 
@@ -246,16 +249,16 @@ private class HomeChecker extends Thread {
       setSensor("HomePresenceSensor","NOTHOME");
       setSensor("HomeZoomSensor","NOT_ON_ZOOM");
       setSensor("ZoomPersonalMeeting","NOT_ACTIVE");
-   
+
       try {
-         for ( ; ; ) {
-            Socket s = server_socket.accept();
-            HomeHub hh = new HomeHub(s);
-            hh.start();
-          }
+	 for ( ; ; ) {
+	    Socket s = server_socket.accept();
+	    HomeHub hh = new HomeHub(s);
+	    hh.start();
+	  }
        }
       catch (IOException e) {
-         server_socket = null;
+	 server_socket = null;
        }
     }
 
@@ -274,19 +277,21 @@ private class HomeHub extends Thread {
 
    @Override public void run() {
       try {
-         for ( ; ; ) {
-            String ln = socket_reader.readLine();
-            if (ln == null) break;
-            int idx = ln.indexOf("=");
-            if (idx < 0) continue;
-            String sensor = ln.substring(0,idx).trim();
-            String value = ln.substring(idx+1).trim();
-            setSensor(sensor,value);
-          }
-         socket_reader.close();
+	 for ( ; ; ) {
+	    String ln = socket_reader.readLine();
+	    if (ln == null) break;
+	    int idx = ln.indexOf("=");
+	    if (idx < 0) continue;
+	    String sensor = ln.substring(0,idx).trim();
+	    String value = ln.substring(idx+1).trim();
+	    System.err.println("HOME: " + ln);
+
+	    setSensor(sensor,value);
+	  }
+	 socket_reader.close();
        }
       catch (IOException e) { }
-   
+
       setSensor("HomePresenceSensor","NOTHOME");
       setSensor("HomeZoomSensor","NOT_ON_ZOOM");
       setSensor("ZoomPersonalMeeting","NOT_ACTIVE");
@@ -303,230 +308,3 @@ private class HomeHub extends Thread {
 
 
 /* end of SmartSignUniverse.java */
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
