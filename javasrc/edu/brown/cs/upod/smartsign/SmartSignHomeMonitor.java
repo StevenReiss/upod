@@ -41,7 +41,12 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.io.PrintWriter;
+import java.io.Reader;
+import java.net.HttpURLConnection;
 import java.net.Socket;
+import java.net.URL;
+
+import org.json.JSONObject;
 
 import edu.brown.cs.ivy.exec.IvyExec;
 import edu.brown.cs.ivy.file.IvyFile;
@@ -74,12 +79,15 @@ public static void main(String ... args)
 
 private long    last_idle;
 private Boolean last_zoom;
+private String  last_personal;
 
 private final String IDLE_COMMAND = "sh -c 'ioreg -c IOHIDSystem | fgrep HIDIdleTime'";
 
 private final String ZOOM_COMMAND = "sh -c 'ps -ax | fgrep zoom | fgrep caphost'";
 
 private final File LOCK_FILE = IvyFile.expandFile("$(HOME)/.smartsignhomemonitor.lock");
+
+private final String STATUS_REQUEST = "https://conifer2.cs.brown.edu:6060/status";
 
 
         
@@ -104,7 +112,6 @@ private SmartSignHomeMonitor(String [] args)
 /*                                                                              */
 /********************************************************************************/
 
-@SuppressWarnings("resource")
 private void start()
 {
    IvyFileLocker locker = new IvyFileLocker(LOCK_FILE);
@@ -142,6 +149,7 @@ private void sendUpdate(PrintWriter pw)
    boolean write = false;
    long idle = getIdleTime();
    Boolean zoom = usingZoom();
+   String psts = getPersonalStatus();
    if (idle > 0) {
       if (idle < 30) {
          if (last_idle >= 30 || last_idle < 0) {
@@ -162,8 +170,16 @@ private void sendUpdate(PrintWriter pw)
        }
       last_zoom = zoom;
     }
-   if (write) 
+   if (psts != null) {
+      if (last_personal == null || !psts.equals(last_personal)) {
+         pw.println("ZoomPersonalMeeting=" + psts);
+         write = true;
+       }
+      last_personal = psts;
+    }
+   if (write) {
       pw.flush();
+    }
 }
 
 
@@ -216,6 +232,41 @@ private Boolean usingZoom()
    
    return null;
 }
+
+
+private String getPersonalStatus()
+{
+   String status = null;
+   
+   try {
+      URL u = new URL(STATUS_REQUEST);
+      HttpURLConnection hc = (HttpURLConnection) u.openConnection();
+      hc.setReadTimeout(5000);
+      hc.setConnectTimeout(5000);
+      hc.setUseCaches(false);
+      hc.setInstanceFollowRedirects(true);
+      hc.connect();
+      Reader ins = new InputStreamReader(hc.getInputStream());
+      String prslt = IvyFile.loadFile(ins);
+      ins.close();
+      JSONObject obj = new JSONObject(prslt);
+      int otherct = obj.getInt("in_other");
+      boolean personal = obj.getBoolean("in_personal");
+      boolean active = obj.getBoolean("personal_active");
+      int waitct = obj.getInt("wait_count");
+      int activect = obj.getInt("active_count");
+      if (!active || !personal || otherct > 0) status = "NOT_ACTIVE";
+      else if (activect > 0 || waitct > 0) status = "BUSY";
+      else status = "ACTIVE";
+    }
+   catch (IOException e) {
+      System.err.println("Problem accessing personal status: " + e);
+    }
+   
+   return status;
+}
+
+
 
 }       // end of class SmartSignHomeMonitor
 

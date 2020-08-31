@@ -101,7 +101,9 @@ public SmartSignUniverse(File f,Element xml)
    
    UpodDevice zs = new SmartSignOnZoomSensor(this);
    addDevice(zs);
-
+   UpodDevice zps = new SmartSignPersonalZoomSensor(this);
+   addDevice(zps);
+   
    UpodDevice wts = new SmartSignWeatherTempSensor(this);
    wts = addDevice(wts);
    UpodDevice wcs = new SmartSignWeatherCondSensor(this);
@@ -240,6 +242,7 @@ private class HomeChecker extends Thread {
    @Override public void run() {
       setSensor("HomePresenceSensor","NOTHOME");
       setSensor("HomeZoomSensor","NOT_ON_ZOOM");
+      setSensor("ZoomPersonalMeeting","NOT_ACTIVE");
       
       try {
          for ( ; ; ) {
@@ -283,6 +286,7 @@ private class HomeHub extends Thread {
       
       setSensor("HomePresenceSensor","NOTHOME");
       setSensor("HomeZoomSensor","NOT_ON_ZOOM");
+      setSensor("ZoomPersonalMeeting","NOT_ACTIVE");
    }
    
 }       // end of inner class HomeHub
