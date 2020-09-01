@@ -51,6 +51,7 @@ const ca = fs.readFileSync('/etc/letsencrypt/live/conifer2.cs.brown.edu/chain.pe
 const eventtoken = fs.readFileSync('zoom.event','utf8').trim();
 const personalmtg = fs.readFileSync('zoom.personal','utf8').trim();
 const personalid = fs.readFileSync('zoom.whoami','utf8').trim();
+const altid = fs.readFileSync('zoom.whoelse','utf8').trim();
 
 const credentials = {
    key : private_key,
@@ -66,7 +67,7 @@ const credentials = {
 
 var status = {
    in_other: 0,
-   in_personal : false,
+   in_personal : 0,
    personal_active : false,
    wait_count: 0,
    active_count : 0,
@@ -202,20 +203,23 @@ function handleWebHook(req,res)
          break;
       case 'meeting.participant_joined' :
          if (meeting.id == personalmtg) {
-            if (who.user_id == personalid) status.in_personal = true;
+            if (who.user_id == personalid || who.user_id == altid) status.in_personal++;
             else status.active_count++
          }
-         else if (who.user_id == personalid) status.in_other++;
+         else if (who.user_id == personalid || who.user_id == altid) status.in_other++;
          break;
       case 'meeting.participant_left' :
          if (meeting.id == personalmtg) {
-            if (who.user_id == personalid) status.in_personal = false;
+            if (who.user_id == personalid || who.user_id == altid) {
+               status.in_personal--;
+               if (status.in_personal < 0) status.in_personal = 0;
+            }
             else {
                status.active_count--;
                if (status.active_count < 0) status.active_count = 0;
             }
          }
-         else if (who.user_id == personalid) {
+         else if (who.user_id == personalid || who.user_id == altid) {
             status.in_other--;
             if (status.in_other < 0) status.in_other = 0;
          }

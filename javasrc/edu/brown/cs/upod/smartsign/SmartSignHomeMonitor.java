@@ -260,7 +260,10 @@ private String getPersonalStatus()
       ins.close();
       JSONObject obj = new JSONObject(prslt);
       int otherct = obj.getInt("in_other");
-      boolean personal = obj.getBoolean("in_personal");
+      Object perobj = obj.get("in_personal");
+      boolean personal = false;
+      if (perobj instanceof Boolean) personal = ((Boolean) perobj).booleanValue();
+      else if (perobj instanceof Number) personal = ((Number) perobj).intValue() > 0;
       boolean active = obj.getBoolean("personal_active");
       int waitct = obj.getInt("wait_count");
       int activect = obj.getInt("active_count");
