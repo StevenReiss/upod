@@ -181,10 +181,20 @@ function handleWebHook(req,res)
 
     switch (what) {
       case 'meeting.started' :
-         if (meeting.id == personalmtg) status.personal_active = true;
+         if (meeting.id == personalmtg) {
+            status.personal_active = true;
+            status.active_count = 0;
+            status.wait_count = 0;
+            status.in_personal = false;
+         }
          break;
       case 'meeting.ended' :
-         if (meeting.id == personalmtg) status.personal_active = false;
+         if (meeting.id == personalmtg) {
+            status.personal_active = false;
+            status.active_count = 0;
+            status.wait_count = 0;
+            status.in_personal = false;
+         }
          break;
       case 'meeting.participant_joined_waiting_room' :
          if (meeting.id == personalmtg) status.wait_count++;
@@ -192,14 +202,14 @@ function handleWebHook(req,res)
       case 'meeting.participant_left_waiting_room' :
          if (meeting.id == personalmtg) {
             status.wait_count--;
-            if (status.num_waiting < 0) status.wait_count = 0;
+            if (status.wait_count < 0) status.wait_count = 0;
          }
          break;
       case 'meeting.participant_jbh_joined' :
          if (meeting.id == personalmtg) status.active_count++;
          break;
       case 'meeting.participant_jbh_waiting' :
-         if (meeting.id == personalmtg) status.num_waiting++;
+         if (meeting.id == personalmtg) status.wait_count++;
          break;
       case 'meeting.participant_joined' :
          if (meeting.id == personalmtg) {
