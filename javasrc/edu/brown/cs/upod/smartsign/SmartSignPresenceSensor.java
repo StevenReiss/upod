@@ -143,7 +143,7 @@ private void initialize()
     }
 
    try {
-      IvyExec ex = new IvyExec("checkphone");
+      IvyExec ex = new IvyExec("/u/spr/commands/checkphone");
       int sts = ex.waitFor();
       State state = (sts != 0 ? State.IN : State.OUT);
       BasisLogger.logD("PRESENCE: " + state);
