@@ -200,6 +200,7 @@ function handleWebHook(req,res)
          if (meeting.id == personalmtg) status.wait_count++;
          break;
       case 'meeting.participant_left_waiting_room' :
+      case 'meeting.participant_admitted' 
          if (meeting.id == personalmtg) {
             status.wait_count--;
             if (status.wait_count < 0) status.wait_count = 0;

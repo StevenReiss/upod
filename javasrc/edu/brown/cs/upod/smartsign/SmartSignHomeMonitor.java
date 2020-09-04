@@ -80,10 +80,14 @@ public static void main(String ... args)
 private long	last_idle;
 private Boolean last_zoom;
 private String	last_personal;
+private int     last_wait;
+private int     cur_wait;
 
 private final String IDLE_COMMAND = "sh -c 'ioreg -c IOHIDSystem | fgrep HIDIdleTime'";
 
 private final String ZOOM_COMMAND = "sh -c 'ps -ax | fgrep zoom | fgrep CptHost'";
+
+private final String ALERT_COMMAND = "/usr/bin/osascript -e 'display notification \"You have someone waiting\" with title \"Knock, Knock\" sound name \"Basso\" '";
 
 private final File LOCK_FILE = IvyFile.expandFile("$(HOME)/.smartsignhomemonitor.lock");
 
@@ -103,6 +107,8 @@ private SmartSignHomeMonitor(String [] args)
    last_idle = -1;
    last_zoom = null;
    last_personal = null;
+   last_wait = 0;
+   cur_wait = 0;
 }
 
 
@@ -189,6 +195,19 @@ private void sendUpdate(PrintWriter pw)
    if (write) {
       pw.flush();
     }
+   
+   if (cur_wait != last_wait) {
+      if (cur_wait > 0 && last_wait == 0) {
+         try {
+            IvyExec ex = new IvyExec(ALERT_COMMAND);
+            ex.waitFor();
+          }
+         catch (IOException e) {
+            System.err.println("SMARTSIGN: Problem sending alert: " + e);
+          }
+       }
+      last_wait = cur_wait;
+    }
 }
 
 
@@ -266,6 +285,7 @@ private String getPersonalStatus()
       else if (perobj instanceof Number) personal = ((Number) perobj).intValue() > 0;
       boolean active = obj.getBoolean("personal_active");
       int waitct = obj.getInt("wait_count");
+      cur_wait = waitct;
       int activect = obj.getInt("active_count");
       if (!active || !personal || otherct > 0) status = "NOT_ACTIVE";
       else if (activect > 0 || waitct > 0) status = "BUSY";
