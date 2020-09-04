@@ -146,10 +146,11 @@ private void initialize()
       IvyExec ex = new IvyExec("checkphone");
       int sts = ex.waitFor();
       State state = (sts != 0 ? State.IN : State.OUT);
-      BasisLogger.logD("PRESENSE: " + state);
+      BasisLogger.logD("PRESENCE: " + state);
       setValueInWorld(presence_param,state,cw);
     }
    catch (IOException e) {
+      BasisLogger.logE("Checkphone failed: " + e);
     }
 
    synchronized (this) {
