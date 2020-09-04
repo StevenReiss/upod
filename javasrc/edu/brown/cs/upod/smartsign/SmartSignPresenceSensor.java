@@ -146,7 +146,7 @@ private void initialize()
       IvyExec ex = new IvyExec("/u/spr/commands/checkphone");
       int sts = ex.waitFor();
       State state = (sts != 0 ? State.IN : State.OUT);
-      BasisLogger.logD("PRESENCE: " + state);
+//       BasisLogger.logD("PRESENCE: " + state);
       setValueInWorld(presence_param,state,cw);
     }
    catch (IOException e) {
