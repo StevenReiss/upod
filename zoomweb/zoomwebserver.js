@@ -73,6 +73,8 @@ var status = {
    active_count : 0,
 }
 
+var last_start = 0;
+
 
 /********************************************************************************/
 /*										*/
@@ -159,6 +161,10 @@ function handleToken(req,res)
 
 function handleStatus(req,res)
 {
+   if (status.personal_active && status.active_count == 0 && status.wait_count == 0 && status.in_personal == 0) {
+      // handle lack of join message
+      status.in_personal = 1;
+   }
    res.end(JSON.stringify(status));
 
 }
@@ -182,6 +188,8 @@ function handleWebHook(req,res)
     switch (what) {
       case 'meeting.started' :
          if (meeting.id == personalmtg) {
+            let date1 = new Date(req.meeting.start_time);
+            last_start = date1.getTime();
             status.personal_active = true;
             status.active_count = 0;
             status.wait_count = 0;
@@ -190,6 +198,9 @@ function handleWebHook(req,res)
          break;
       case 'meeting.ended' :
          if (meeting.id == personalmtg) {
+            let date2 = new Date(req.meeting.end_time);
+            let time2 = date2.getTime();
+            if (time2 < last_start) break;
             status.personal_active = false;
             status.active_count = 0;
             status.wait_count = 0;

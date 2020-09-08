@@ -80,8 +80,8 @@ public static void main(String ... args)
 private long	last_idle;
 private Boolean last_zoom;
 private String	last_personal;
-private int     last_wait;
-private int     cur_wait;
+private int	last_wait;
+private int	cur_wait;
 
 private final String IDLE_COMMAND = "sh -c 'ioreg -c IOHIDSystem | fgrep HIDIdleTime'";
 
@@ -195,16 +195,16 @@ private void sendUpdate(PrintWriter pw)
    if (write) {
       pw.flush();
     }
-   
+
    if (cur_wait != last_wait) {
       if (cur_wait > 0 && last_wait == 0) {
-         try {
-            IvyExec ex = new IvyExec(ALERT_COMMAND);
-            ex.waitFor();
-          }
-         catch (IOException e) {
-            System.err.println("SMARTSIGN: Problem sending alert: " + e);
-          }
+	 try {
+	    IvyExec ex = new IvyExec(ALERT_COMMAND);
+	    ex.waitFor();
+	  }
+	 catch (IOException e) {
+	    System.err.println("SMARTSIGN: Problem sending alert: " + e);
+	  }
        }
       last_wait = cur_wait;
     }
@@ -287,6 +287,7 @@ private String getPersonalStatus()
       int waitct = obj.getInt("wait_count");
       cur_wait = waitct;
       int activect = obj.getInt("active_count");
+      System.err.println("STATUS : " + active + " " + personal + " " + otherct + " " + waitct + " " + activect);
       if (!active || !personal || otherct > 0) status = "NOT_ACTIVE";
       else if (activect > 0 || waitct > 0) status = "BUSY";
       else status = "ACTIVE";
