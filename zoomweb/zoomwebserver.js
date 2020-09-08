@@ -188,7 +188,7 @@ function handleWebHook(req,res)
     switch (what) {
       case 'meeting.started' :
          if (meeting.id == personalmtg) {
-            let date1 = new Date(req.meeting.start_time);
+            let date1 = new Date(meeting.start_time);
             last_start = date1.getTime();
             status.personal_active = true;
             status.active_count = 0;
@@ -197,8 +197,8 @@ function handleWebHook(req,res)
          }
          break;
       case 'meeting.ended' :
-         if (meeting.id == personalmtg) {
-            let date2 = new Date(req.meeting.end_time);
+         if (meeting.id == personalmtg) {}
+            let date2 = new Date(meeting.end_time);
             let time2 = date2.getTime();
             if (time2 < last_start) break;
             status.personal_active = false;
