@@ -312,7 +312,7 @@ function handle404(req,res)
 
 function isPersonalId(id)
 {
-   for (const i = 0; i < ids.length; ++i) {
+   for (let i = 0; i < ids.length; ++i) {
       if (id == ids[i]) return true;
    }
    return false;
