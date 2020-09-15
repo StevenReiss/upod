@@ -53,6 +53,8 @@ const personalmtg = fs.readFileSync('zoom.personal','utf8').trim();
 const personalid = fs.readFileSync('zoom.whoami','utf8').trim();
 const altid = fs.readFileSync('zoom.whoelse','utf8').trim();
 
+var ids = [ personalid, altid ];
+
 const credentials = {
    key : private_key,
    cert : certificate,
@@ -197,7 +199,7 @@ function handleWebHook(req,res)
          }
          break;
       case 'meeting.ended' :
-         if (meeting.id == personalmtg) {}
+         if (meeting.id == personalmtg) {
             let date2 = new Date(meeting.end_time);
             let time2 = date2.getTime();
             if (time2 < last_start) break;
@@ -208,31 +210,40 @@ function handleWebHook(req,res)
          }
          break;
       case 'meeting.participant_joined_waiting_room' :
-         if (meeting.id == personalmtg) status.wait_count++;
+         if (meeting.id == personalmtg) {
+            if (!isPersonalId(who.user_id)) status.wait_count++;
+         }
          break;
       case 'meeting.participant_left_waiting_room' :
       case 'meeting.participant_admitted' :
          if (meeting.id == personalmtg) {
-            status.wait_count--;
-            if (status.wait_count < 0) status.wait_count = 0;
+            if (!isPersonalId(who.user_id)) {
+               status.wait_count--;
+               if (status.wait_count < 0) status.wait_count = 0;
+            }
          }
          break;
       case 'meeting.participant_jbh_joined' :
-         if (meeting.id == personalmtg) status.active_count++;
+         // if (meeting.id == personalmtg) status.active_count++;
          break;
       case 'meeting.participant_jbh_waiting' :
-         if (meeting.id == personalmtg) status.wait_count++;
+         // if (meeting.id == personalmtg) status.wait_count++;
          break;
       case 'meeting.participant_joined' :
          if (meeting.id == personalmtg) {
-            if (who.user_id == personalid || who.user_id == altid) status.in_personal++;
+            if (isPersonalId(who.user_id)) status.in_personal++;
+            else if (status.active_count == 0 && status.wait_count == 0 && status.in_personal == 0 &&
+               who.user_name == 'Steven Reiss') {
+               ids.push(who.user_id);
+               status.in_personal++;
+            }
             else status.active_count++
          }
-         else if (who.user_id == personalid || who.user_id == altid) status.in_other++;
+         else if (isPersonalId(who.user_id)) status.in_other++;
          break;
       case 'meeting.participant_left' :
          if (meeting.id == personalmtg) {
-            if (who.user_id == personalid || who.user_id == altid) {
+            if (isPersonalId(who.user_id)) {
                status.in_personal--;
                if (status.in_personal < 0) status.in_personal = 0;
             }
@@ -241,7 +252,7 @@ function handleWebHook(req,res)
                if (status.active_count < 0) status.active_count = 0;
             }
          }
-         else if (who.user_id == personalid || who.user_id == altid) {
+         else if (isPersonalId(who.user_id)) {
             status.in_other--;
             if (status.in_other < 0) status.in_other = 0;
          }
@@ -297,6 +308,15 @@ function handle404(req,res)
         res.type('txt').send("Not Found");
 }
 
+
+
+function isPersonalId(id)
+{
+   for (const i = 0; i < ids.length; ++i) {
+      if (id == ids[i]) return true;
+   }
+   return false;
+}
 
 
 start();
