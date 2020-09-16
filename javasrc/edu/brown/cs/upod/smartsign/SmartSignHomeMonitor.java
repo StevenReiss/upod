@@ -120,7 +120,7 @@ private SmartSignHomeMonitor(String [] args)
 /********************************************************************************/
 
 private void start()
-{																     Y
+{																
    IvyFileLocker locker = new IvyFileLocker(LOCK_FILE);
    if (!locker.tryLock()) {
       System.exit(0);
@@ -198,7 +198,7 @@ private void sendUpdate(PrintWriter pw)
     }
    if (write) {
       pw.flush();
-      System.err.println("SEND UPDATE " + pw.
+      System.err.println("SEND UPDATE " + pw.checkError());
     }
 
    if (cur_wait != last_wait) {
