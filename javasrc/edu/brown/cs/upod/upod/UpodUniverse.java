@@ -114,7 +114,6 @@ Collection<UpodHub> getHubs();
 
 int getWebServerPort();
 
-
 /**
  *      Authorize a user for this universe
  **/

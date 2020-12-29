@@ -299,6 +299,7 @@ private String getPersonalStatus()
     }
    catch (IOException e) {
       System.err.println("Problem accessing personal status: " + e);
+      e.printStackTrace();
     }
 
    return status;
