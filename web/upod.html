@@ -1,0 +1,72 @@
+<!DOCTYPE HTML>
+<html>
+<head>
+<meta charset='utf-8'>
+<title>Upod Overview</title>
+
+<link rel='stylesheet' type='text/css' href='smartsign.css' />
+
+</head>
+
+<body>
+<div class='header' id='topheader'>
+Welcome To UPOD-SMARTSIGN
+</div>
+
+<h1>Overview</h1>
+<p>
+UPOD is a general framework for creating, organizing, exploring, and applying a
+set of rules based on a set of sensors and conditions.  It is designed to handle
+tasks such as whole house automation.
+</p>
+<p>
+The initial demonstration of the capabilities of UPOD is an implementation of
+our SmartSign.  This is a picture frame hung outside Dr. Reiss's office that
+displays his current status.  The status is updated automatically based on a
+number of sensors and a dynamic set of rules.  The sensors include:
+<ul>
+<li>Whether Dr. Reiss is in his office or not by checking whether his phone is
+visible via bluetooth.
+</li>
+<li>Whether Dr. Reiss is on the phone or not using a off-the-hook circuit
+connected to the phone line.
+</li>
+<li>
+Whether Dr. Reiss has a visitor or not using a motion detector aimed at
+his couch and visitor's chair.
+</li>
+</ul>
+</p>
+<p>
+In addition, the rules can query his Google calendar, can check whether he
+has been in at all for the day, can tell if he has been out of the office for
+less than 5 minutes, and specific or repeated time slots.
+</p>
+<p>
+The goal of our initial research is to explore different user interfaces
+that would let a non-technical program understand and program the sign.
+To date we have developed three different interfaces:
+<ul>
+<li>The <a href='smartsigna.html'>first</a> shows the current rule set in
+priority order, lets the user rearrange the priorities by direct manipluation,
+and provides facilities for creating new rules and editing existing rules.
+</li>
+<li>The <a href='smartsignb.html'>second</a> lets the user set the various
+conditions for a new rule and dynamically shows the set of conflicting
+rules for those conditions so that the user can get a sense of what rules
+would be overrriden if the new rule was created in its current state.
+</li>
+<li>The <a href='smartsignc.html'>third</a> takes a machine language approach.
+Here the user specifies the raw state of the sensors (including time), and the
+system displays what the sign would normally display under those conditions.
+The user can then change the display and ask the system to learn a new rule
+that would set the sign accordingly under these conditions.  The learning is
+based on the current setting, all previous such settings, the history of the
+sensor states over time, and any rules that were either default rules or were
+created explicitly using the first or second interface.  The creation of rules
+using this mechanism is still under development.
+</li>
+<ul>
+
+</body>
+</html>

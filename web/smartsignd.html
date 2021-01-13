@@ -1,0 +1,344 @@
+<!DOCTYPCdHTML>
+<html>
+<head>
+<meta charset="utf-8">
+
+<title>Smartsign Sample 1</title>
+
+
+<script type="text/javascript" src="http://code.jquery.com/jquery-1.9.0.min.js"></script>
+<script type="text/javascript" src="http://code.jquery.com/ui/1.10.0/jquery-ui.min.js"></script>
+<script type="text/javascript" src="js/jquery.timepicker.js"></script>
+<script type='text/javascript' src='share/jscolor/jscolor.js'></script>
+<script type='text/javascript' src='js/date.js'></script>
+<script type='text/javascript' src='../session/usid.js'></script>
+
+<link rel='stylesheet' media='all' type='text/css' href='http://code.jquery.com/ui/1.10.0/themes/smoothness/jquery-ui.css' />
+
+<link rel='stylesheet' type='text/css' href='smartsign.css' />
+<link rel='stylesheet' type='text/css' href='css/jquery.timepicker.css' />
+
+
+<script type='text/javascript' src='smartsignd.js'></script>
+<script type='text/javascript' src='upodcode.js'></script>
+<script type='text/javascript' src='upodrules.js'></script>
+<script type='text/javascript' src='upoddefine.js'></script>
+<script type='text/javascript' src='svg/svg-edit/canvg/canvg.js'></script>
+
+
+</head>
+
+<body>
+
+<div class="header" id='topheader'>
+Header goes here
+</div>
+<div class='rulebase'>
+  <h2 class='rulelabel'>Rule Selection:</h2>
+  <div class='rulecategory'>
+    <form id='rulecatform'>
+      <table class='rulecatoptions'>
+        <tr>
+           <td>Show Rules Affecting:</td>
+           <td>
+              <select id='rulecatdevices' onchange='selectRuleSet();' >
+                 <option value='*'>All devices</option>
+              </select>
+           </td>
+        </tr>
+        <tr>
+           <td>Show Rules Affected by:</td>
+           <td>
+              <select id='rulecatsensors' onchange='selectRuleSet();' >
+                 <option value='*'>All Sensors</option>
+              </select>
+           </td>
+        </tr>
+        <tr>
+           <td>Show Rules On Condition:</td>
+           <td>
+              <select id='rulecatconds' onchange='selectRuleSet();' >
+                 <option value='*'>All Conditions</option>
+              </select>
+           </td>
+        </tr>
+      </table>
+    </form>
+  </div>
+  <div class='rulelisting'>
+  <ul id='rulelist'>
+     <li class='ui-state-default'>
+        <span class='ui-icon ui-icon-arrowthick-2-n-s'></span>
+        First rule
+     </li>
+     <li class='ui-state-default'>
+        <span class='ui-icon ui-icon-arrowthick-2-n-s'></span>
+        Second rule
+     </li>
+  </ul>
+  </div>
+</div>
+
+<div class='ruleoptions'>
+  <form action='get'>
+    <input type='button' name='newrule' value='New Rule' onclick='createNewRule()' />
+    <input type='button' name='editrule' value='Edit Rule' id='editrulebtn'
+                disabled='disabled' onclick='editSelectedRule()' />
+    <input type='button' name='delete' value='Delete Rule' id='deleterulebtn'
+                disabled='disabled' onclick='deleteSelectedRule()' />
+  </form>
+</div>
+
+<div class='newrule starthidden' id='newrulearea' >
+  <form id='newruleform'>
+  <div class='ruleheader' id='ruleheader'>
+  Rule Header Goes Here
+  </div>
+  <div class='ruleinfo' id='ruleinfo'>
+     <table>
+        <tr>
+           <td><label for='rulelabel'>Rule Label:</label></td>
+           <td><input type='text' name='rulelabel' id='rulelabel' maxlength='96' size='48'
+                        onchange='checkRuleValid();'/></td>
+        </tr>
+     </table>
+  </div>
+  <div class='conditionheader' id='conditionheader'>
+     Condition Action Label Here
+  </div>
+  <div class='singlerule' id='rulepart1'>
+    <div class='ruletype'>
+    WHEN:
+    <select name='ruletype_1' id='ruletype_1' class='ruleselect' onchange='setRuleType(this)'>
+       <option value='none' id='none1'>Always</option>
+    </select>
+    </div>
+    <div class='rangeselection starthidden' id='rangeselector1'>
+       <span class='rangetext'>Between&nbsp;</span>
+       <input type='number' name='rangemin1' id='rangemin1' />
+       <span class='rangetext'>&nbsp;And&nbsp;</span>
+       <input type='number' name='rangemax1' id='rangemax1' />
+       <span class='rangetext'>&nbsp;&nbsp;</span>
+       <input type='checkbox' name='rangetrigger1' id='rangetrigger1' value='trigger' />
+       <span class='rangetext'>&nbsp;Trigger</span>
+    </div>
+    <div class='timeselection starthidden' id='timeselector1'>
+       <table>
+          <tr>
+             <td>Description: </td>
+             <td colspan='3'>
+                <input type='text' name='timedesc1' id='timedesc1' class='timedesc'
+                        maxlength='96' size='48' onchcnage='checkRuleValid();' />
+             </td>
+          </tr>
+          <tr>
+             <td>Date From: </td>
+             <td>
+                <input type='text' name='datefrom1' id='datefrom1' class='dateregion' value=''
+                        onchange='checkRuleValid();' />
+             </td>
+             <td>To: </td>
+             <td>
+                <input type='text' name='dateto1' id='dateto1' class='dateregion' value=''
+                        onchange='checkRuleValid();' />
+             </td>
+          </tr>
+          <tr>
+             <td>Time From: </td>
+             <td>
+                <input type='text' name='timefrom1' id='timefrom1' class='timeregion' value=''
+                        onchange='checkRuleValid();' />
+             </td>
+             <td>To: </td>
+             <td>
+                <input type='text' name='timeto1' id='timeto1' class='timeregion' value=''
+                        onchange='checkRuleValid();' />
+             </td>
+          </tr>
+       </table>
+       <p>Days of the week:</p><p>&nbsp;&nbsp;&nbsp;
+           <input type="checkbox" class='daycheck' name="daysmon1" value="mon" id='daysmon1'/>
+           <label for='daysmon1'>Monday</label>
+           <input type="checkbox" class='daycheck' name="daystue1" value="tue" id='daystue1'/>
+           <label for='daystue1'>Tuesday</label>
+           <input type="checkbox" class='daycheck' name="dayswed1" value="wed" id='dayswed1'/>
+           <label for='dayswed1'>Wednesday</label>
+           <input type="checkbox" class='daycheck' name="daysthu1" value="thu" id='daysthu1'/>
+           <label for='daysthu1'>Thursday</label>
+           <input type="checkbox" class='daycheck' name="daysfri1" value="fri" id='daysfri1'/>
+           <label for='daysfri1'>Friday</label>
+           <input type="checkbox" class='daycheck' name="dayssat1" value="sat" id='dayssat1'/>
+           <label for='dayssat1'>Saturday</label>
+           <input type="checkbox" class='daycheck' name="dayssun1" value="sun" id='dayssun1'/>
+           <label for='dayssun1'>Sunday</label>
+       </p>
+       <p>Repeat every:
+            <select name='repeattype1' id='repeattype1'>
+               <option value='0' selected='selected'>No Repeat</option>
+               <option value='7'>Every Week</option>
+               <option value='14'>Every Two Weeks</option>
+               <option value='21'>Every Three Weeks</option>
+               <option value='28'>Every Four Weeks</option>
+               <option value='-1'>Every Month</option>
+            </select>
+       </p>
+    </div>
+    <div class='calendarselection starthidden' id='calendarselector1'>
+      <div class='calendarfield' id='calendarfield1'>
+         <label for='caldesc1'>Description: </label>
+         <input type='text' name='caldesc1' id='caldesc1' class='caldesc'
+                  maxlength='96' size='48' onchange='checkRuleValid();' />
+         <br/>
+         <label for='calfielda1'>Calendar Field: </label>
+         <select name='calfielda1' id='calfielda1' onchange='checkRuleValid();' >
+            <option value='none' selected='selected'> -- None -- </option>
+            <option value='TRANS'>Transparency</option>
+            <option value='WHERE'>Where</option>
+            <option value='CONTENT'>Content</option>
+            <option value='WHO'>Who</option>
+            <option value='TITLE'>Title</option>
+            <option value='TEXT'>Text</option>
+            <option value='CALENDAR'>Calendar</option>
+            <option value='ALLDAY'>All Day</option>
+          </select>
+          <select name="calfieldemptya1" id="calfieldemptya1" onchange='checkRuleValid();' >
+            <option value="EITHER" selected='selected'>Can be Empty</option>
+            <option value="NULL">Must be Empty</option>
+            <option value="NOTNULL">Must not be Empty</option>
+          </select>
+          And
+          <select name='calmatchtypea1' id='calmatchtypea1' onchange='checkRuleValid();' >
+             <option value='IGNORE' selected='selected'>Ignore Value</option>
+             <option value='MATCH'>Matches</option>
+             <option value='NOMATCH'>Doesn't Match</option>
+          </select>
+          <input type='text' name='calfieldmatcha1' id='calfieldmatcha1' value='' onchange='checkRuleValid();' />
+         <br/>
+         <label for='calfieldb1'>Calendar Field: </label>
+         <select name='calfieldb1' id='calfieldb1' onchange='checkRuleValid();' >
+            <option value='none' selected='selected'> -- None -- </option>
+            <option value='TRANS'>Transparency</option>
+            <option value='WHERE'>Where</option>
+            <option value='CONTENT'>Content</option>
+            <option value='WHO'>Who</option>
+            <option value='TITLE'>Title</option>
+            <option value='TEXT'>Text</option>
+            <option value='CALENDAR'>Calendar</option>
+            <option value='ALLDAY'>All Day</option>
+          </select>
+          <select name="calfieldemptyb1" id="calfieldemptyb1" onchange='checkRuleValid();' >
+            <option value="EITHER" selected='selected'>Can be Empty</option>
+            <option value="NULL">Must be Empty</option>
+            <option value="NOTNULL">Must not be Empty</option>
+          </select>
+          And
+          <select name='calmatchtypeb1' id='calmatchtypeb1' onchange='checkRuleValid();' >
+             <option value='IGNORE' selected='selected'>Ignore Value</option>
+             <option value='MATCH'>Matches</option>
+             <option value='NOMATCH'>Doesn't Match</option>
+          </select>
+          <input type='text' name='calfieldmatchb1' id='calfieldmatchb1' value='' onchange='checkRuleValid();' />
+         <br/>
+         <label for='calfieldc1'>Calendar Field: </label>
+         <select name='calfieldc1' id='calfieldc1' onchange='checkRuleValid();' >
+            <option value='none' selected='selected'> -- None -- </option>
+            <option value='TRANS'>Transparency</option>
+            <option value='WHERE'>Where</option>
+            <option value='CONTENT'>Content</option>
+            <option value='WHO'>Who</option>
+            <option value='TITLE'>Title</option>
+            <option value='TEXT'>Text</option>
+            <option value='CALENDAR'>Calendar</option>
+            <option value='ALLDAY'>All Day</option>
+          </select>
+          <select name="calfieldemptyc1" id="calfieldemptyc1" onchange='checkRuleValid();' >
+            <option value="EITHER" selected='selected'>Can be Empty</option>
+            <option value="NULL">Must be Empty</option>
+            <option value="NOTNULL">Must not be Empty</option>
+          </select>
+          And
+          <select name='calmatchtypec1' id='calmatchtypec1' onchange='checkRuleValid();' >
+             <option value='IGNORE' selected='selected'>Ignore Value</option>
+             <option value='MATCH'>Matches</option>
+             <option value='NOMATCH'>Doesn't Match</option>
+          </select>
+          <input type='text' name='calfieldmatchc1' id='calfieldmatchc1' value='' onchange='checkRuleValid();' />
+         <br/>
+         <label for='calfieldd1'>Calendar Field: </label>
+         <select name='calfieldd1' id='calfieldd1' onchange='checkRuleValid();' >
+            <option value='none' selected='selected'> -- None -- </option>
+            <option value='TRANS'>Transparency</option>
+            <option value='WHERE'>Where</option>
+            <option value='CONTENT'>Content</option>
+            <option value='WHO'>Who</option>
+            <option value='TITLE'>Title</option>
+            <option value='TEXT'>Text</option>
+            <option value='CALENDAR'>Calendar</option>
+            <option value='ALLDAY'>All Day</option>
+          </select>
+          <select name="calfieldemptyd1" id="calfieldemptyd1" onchange='checkRuleValid();' >
+            <option value="EITHER" selected='selected'>Can be Empty</option>
+            <option value="NULL">Must be Empty</option>
+            <option value="NOTNULL">Must not be Empty</option>
+          </select>
+          And
+          <select name='calmatchtyped1' id='calmatchtyped1' onchange='checkRuleValid();' >
+             <option value='IGNORE' selected='selected'>Ignore Value</option>
+             <option value='MATCH'>Matches</option>
+             <option value='NOMATCH'>Doesn't Match</option>
+          </select>
+          <input type='text' name='calfieldmatchd1' id='calfieldmatchd1' value='' onchange='checkRuleValid();' />
+       </div>
+    </div>
+  </div>
+  <div class='andarea'>
+    <button type='button' id='andbutton' onclick='expandRule(this.parentNode);' >AND</button>
+  </div>
+  <div class="actionarea" id='actionarea'>
+     <div class='actionheader' id='actionheader'>
+        Rule Action Label Here
+     </div>
+    <div class='arearegion'>
+      <div class='actionspan'>
+        <table>
+           <tr>
+              <td><label for='actionlabel'>Description: </label></td>
+              <td><input type='text' id='actionlabel' class='actionlabel' maxlength='96' size='48' /></td>
+           </tr>
+           <tr>
+              <td><label for='actionedittype'>Action To Take: </label></td>
+              <td>
+                 <select name="actionedittype" id="actionedittype" class='actionselect' onchange='setActionType(this);' >
+                   <option value='none'>Do Nothing</option>
+                 </select>
+              </td>
+           </tr>
+         </table>
+      </div>
+      <div class='actionparams' id='actionparams'>
+      </div>
+    </div>
+  </div>
+  <div class='acceptarea'>
+     <div class='newaccept'>
+        <input type='button' name='clearrule' value='Clear' id='clearrulebtn'
+                   onclick='clearRuleArea()' />
+        <input name="rulesubmit" type='submit' id="rulesubmit" class='rulesubmit' value="Create Rule"
+                   onclick='addNewRule(); return false;' />
+        <input name="ruleedit" type='submit' id="ruleedit" class='rulesubmit' value="Edit Rule"
+                   onclick='editRule(); return false;' />
+        <input id="ruleeditid" name="ruleeditid" type='hidden' value="" />
+        <input name="rulecancel" type='submit' id="rulecancel" class='rulecancel' value="Cancel Rule"
+                   onclick='cancelNewRule(); return false;' />
+     </div>
+  </div>
+  </form>
+</div>
+
+</html>
+
+
+
+
+
+

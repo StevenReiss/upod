@@ -1,0 +1,75 @@
+<!DOCTYPE HTML>
+<html>
+<head>
+<meta charset="utf-8">
+
+<title>Smartsign Sample 3</title>
+
+
+<script type="text/javascript" src="http://code.jquery.com/jquery-1.9.0.min.js"></script>
+<script type="text/javascript" src="http://code.jquery.com/ui/1.10.0/jquery-ui.min.js"></script>
+<script type="text/javascript" src="js/jquery.timepicker.js"></script>
+<script type='text/javascript' src='share/jscolor/jscolor.js'></script>
+<script type='text/javascript' src='js/date.js'></script>
+<script type='text/javascript' src='../session/usid.js'></script>
+
+<link rel='stylesheet' media='all' type='text/css' href='http://code.jquery.com/ui/1.10.0/themes/smoothness/jquery-ui.css' />
+
+<link rel='stylesheet' type='text/css' href='smartsign.css' />
+<link rel='stylesheet' type='text/css' href='css/jquery.timepicker.css' />
+
+
+<script type='text/javascript' src='smartsignc.js'></script>
+<script type='text/javascript' src='upodcode.js'></script>
+<script type='text/javascript' src='upodrules.js'></script>
+<script type='text/javascript' src='upoddefine.js'></script>
+<script type='text/javascript' src='svg/svg-edit/canvg/canvg.js'></script>
+
+
+</head>
+
+<body>
+
+<div class="header" id='topheader'>
+Header goes here
+</div>
+
+<form id='setruleform'>
+<div class='setworldstate' id='setworldstate'>
+   <span class='settitle'>WHEN</span>
+   <div class='setdatetime' id='setdatetime'>
+   Date:
+      <input type='text' name='curdate' id='curdate' class='dateregion' value=''
+                   onchange='updateDateTime();' />
+   Time:
+      <input type='text' name='curtime' id='curtime' class='timeregion' value=''
+                   onchange='updateDateTime();' />
+   </div>
+   <br>
+   <span class='settitle'>SENSORS</span>
+   <div class='setsensors' id='setsensors'>
+      <table id='sensorlist'>
+      <tr><td>
+        <label for='sensor1'>Sensor 1</label>
+        <select name='sensor1' id='sensor1' class='sensorstate' onchange='updateSensors();'>
+           <option value='ONSTATE'>ONSTATE</option>
+           <option value='OFFSTATE'>OFFSTATE</option>
+        </select>
+      </td></tr>
+      </table>
+   </div>
+   <br>
+   <span class='settitle'>RESULT</span>
+   <div class='setresult' id='setresult'>
+       <img src="images/sample1.png" alt="default image" width="256" height="192"
+                class='resultimage' id='resultimage' />
+   </div>
+</div>
+
+<div class='ruleoptions'>
+   <input type='button' name='newrule' value='New Rule' onclick='createNewSetRule()' />
+   <input type='button' name='editrule' value='Edit Rule' onclick='editCurrentRule()' />
+</div>
+
+</form>
+</html>

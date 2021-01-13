@@ -1,0 +1,261 @@
+/********************************************************************************/
+/*                                                                              */
+/*      General definitions                                                     */
+/*                                                                              */
+/********************************************************************************/
+
+.header {
+   font-family: "Comic Sans MS", cursive;
+   text-align: center;
+   font-size: 24px;
+   font-weight: bold;
+   border-color: #FC3;
+   border: 1px;
+}
+
+body {
+   background-color: #FFE;
+}
+
+img {
+   display: inline-block;
+}
+
+
+.starthidden {
+   width: 1px;
+   height: 1px;
+   overflow: hidden;
+}
+
+
+
+/********************************************************************************/
+/*                                                                              */
+/*      Rule area definitions                                                   */
+/*                                                                              */
+/********************************************************************************/
+
+.rulebase {
+   background-color: #cfc;
+}
+
+.rulelisting {
+   width: 75%;
+}
+
+.ruleoptions {
+   background-color: #CCF;
+   text-align: center;
+   margin-bottom: 18px;
+}
+
+.rulearea {
+   background-color: #CF9;
+}
+
+.ruleinfo {
+   margin-bottom: 20px;
+}
+
+.rulelabel {
+   font-weight: bold;
+   font-size: 18px;
+   color: #080;
+}
+
+#rulelist .ui-selecting {
+   background: #FECA40;
+}
+
+#rulelist .ui-selected {
+   background: #F39814;
+   color: white;
+}
+
+
+.conflictarea {
+   margin-top: 16px;
+   background-color: #FCC;
+}
+
+
+
+/********************************************************************************/
+/*                                                                              */
+/*      Rule creation definitions                                               */
+/*                                                                              */
+/********************************************************************************/
+
+.fullwidth {
+   width: 100%;
+}
+
+.newrule {
+   background-color: #FF9;
+   margin-top: 16px;
+}
+
+.ruleheader {
+   font-family: "Comic Sans MS", cursive;
+   background-color: #FF9;
+   text-align: center;
+   font-size: 24px;
+   font-weight: bold;
+   border-color: #FC3;
+   border: 1px;
+}
+
+.svgeditor {
+   width: 100%;
+   height: 500px;
+}
+
+.pictureeditor {
+   width: 100%;
+   height: 630px;
+}
+
+
+.singlerule {
+   margin-left: 40px;
+}
+
+
+.conditionheader {
+   font-family: "Comic Sans MS", cursive;
+   font-size: 24px;
+   font-style: italic;
+   text-align: center;
+}
+
+
+.actionheader {
+   font-family: "Comic Sans MS", cursive;
+   font-size: 24px;
+   font-style: italic;
+   text-align: center;
+}
+
+.actionarea {
+   font-size: 16px;
+}
+
+.actionspan {
+   display: inline-block;
+   border-left: 10px;
+   width: 100%;
+}
+
+.actiondisplay {
+   display: inline-block;
+}
+
+.acceptarea {
+   background-color: #FFE;
+   padding-top: 16px;
+}
+
+.newaccept {
+   text-align: center;
+   background-color: #CCF;
+}
+
+.rulesubmit {
+   width: 300px;
+}
+
+
+.rulecancel {
+   width: 300px;
+}
+
+
+.sampleeditor {
+}
+
+
+.conflictheader {
+   font-family: "Comic Sans MS", cursive;
+   font-size: 24px;
+   font-style: italic;
+   text-align: center;
+}
+
+.setworldstate {
+   background-color: #CF9;
+}
+
+.setdatetime {
+   margin-left: 20px;
+}
+
+.setsensors {
+   margin-left: 20px;
+}
+
+.setcalevents {
+   margin-left: 20px;
+}
+
+.setresult {
+   margin-left: 20px;
+   background-color: #FC9;
+}
+
+
+.settitle {
+   font-size: 14pt;
+   font-weight: bold;
+}
+
+.resultpicture {
+   margin-left: 20px;
+}
+
+
+
+/********************************************************************************/
+/*                                                                              */
+/*      Rule category definitions                                               */
+/*                                                                              */
+/********************************************************************************/
+
+.rulecategory {
+   background-color: #FF9;
+   margin-top: 16px;
+}
+
+.rulecatoptions {
+   margin-left: 48px;
+   font-weight: bold;
+}
+
+
+/********************************************************************************/
+/*                                                                              */
+/*      Image Library Display                                                   */
+/*                                                                              */
+/********************************************************************************/
+
+.libimage {
+   border : 2px solid #000;
+}
+
+.liblabel {
+}
+
+
+
+/********************************************************************************/
+/*                                                                              */
+/*      Home and Login page definitions                                         */
+/*                                                                              */
+/********************************************************************************/
+
+.loginbtns {
+   background-color: #ccf;
+   text-align: center;
+}
+
+

@@ -1,0 +1,150 @@
+s6test_111059.FeedbackInvestigation (1046x852+0+0) 
+ javax.swing.JRootPane (1042x827+2+23) 
+  javax.swing.JPanel (1042x827+0+0) 
+  javax.swing.JLayeredPane (1042x827+0+0) 
+   javax.swing.JPanel (1042x827+0+0) 
+    javax.swing.JSplitPane (1018x815+12+12) 
+     javax.swing.plaf.metal.MetalSplitPaneDivider (10x813+410+1) 
+     javax.swing.JPanel (409x813+1+1) 
+      javax.swing.JLayeredPane (398x758+5+5) 
+       javax.swing.JPanel (380x50+10+10) 
+        javax.swing.JPanel (378x55+1+6) 
+         javax.swing.JLayeredPane (123x43+0+0) 
+          javax.swing.JTextField (120x20+0+20) [0]
+          javax.swing.JLabel (50x10+0+0) [ Box ID] 
+         javax.swing.JLayeredPane (110x43+129+0) 
+          javax.swing.JTextField (110x20+0+20) [0]
+          javax.swing.JLabel (50x10+0+0) [ DocN] 
+         javax.swing.JLayeredPane (133x43+245+0) 
+          javax.swing.JTextField (130x20+0+20) [0]
+          javax.swing.JLabel (70x10+0+0) [ Tag Name] 
+       javax.swing.JPanel (380x50+10+60) 
+        javax.swing.JTextField (378x19+1+21) [0]
+        javax.swing.JLabel (106x14+1+1) [ Tag Value] 
+       javax.swing.JPanel (380x50+10+110) 
+        javax.swing.JLabel (124x14+1+1) [ Correct Tag Value] 
+        javax.swing.JTextField (379x19+1+21) [0]
+       javax.swing.JLayeredPane (380x30+10+160) 
+        javax.swing.JLabel (50x20+10+0) [Validity] 
+        javax.swing.JCheckBox (120x30+190+0) 
+        javax.swing.JCheckBox (100x30+80+2) 
+       javax.swing.JPanel (380x110+10+190) 
+        javax.swing.JScrollPane (158x42+1+67) 
+         javax.swing.JViewport (140x39+1+1) 
+          javax.swing.JTextArea (140x75+0+0) 
+         javax.swing.JScrollPane$ScrollBar (15x39+141+1) 
+          javax.swing.plaf.metal.MetalScrollButton (15x15+0+24) [] 
+          javax.swing.plaf.metal.MetalScrollButton (15x15+0+0) [] 
+         javax.swing.JScrollPane$ScrollBar (0x0+0+0) 
+          javax.swing.plaf.metal.MetalScrollButton (0x0+0+0) [] 
+          javax.swing.plaf.metal.MetalScrollButton (0x0+0+0) [] 
+        javax.swing.JTextField (158x20+1+21) [0]
+        javax.swing.JLabel (81x14+1+47) [Comment] 
+        javax.swing.JScrollPane (214x88+165+21) 
+         javax.swing.JViewport (211x85+1+1) 
+          javax.swing.JTextArea (211x85+0+0) 
+         javax.swing.JScrollPane$ScrollBar (0x0+0+0) 
+          javax.swing.plaf.metal.MetalScrollButton (0x0+0+0) [] 
+          javax.swing.plaf.metal.MetalScrollButton (0x0+0+0) [] 
+         javax.swing.JScrollPane$ScrollBar (0x0+0+0) 
+          javax.swing.plaf.metal.MetalScrollButton (0x0+0+0) [] 
+          javax.swing.plaf.metal.MetalScrollButton (0x0+0+0) [] 
+        javax.swing.JLabel (108x14+1+1) [SPI Remarks] 
+       javax.swing.JLayeredPane (380x50+10+300) 
+        javax.swing.JLayeredPane (100x50+280+0) 
+         javax.swing.JLabel (70x20+0+0) [Legibility] 
+         javax.swing.JComboBox (100x20+0+20) 
+          javax.swing.plaf.metal.MetalComboBoxButton (20x20+80+0) [] 
+          javax.swing.CellRendererPane (0x0+0+0) 
+           javax.swing.plaf.basic.BasicComboBoxRenderer$UIResource (0x0+-77+-13) [Legible] 
+        javax.swing.JLayeredPane (100x50+0+0) 
+         javax.swing.JLabel (80x20+0+0) [Error Class] 
+         javax.swing.JComboBox (90x20+0+20) 
+          javax.swing.plaf.metal.MetalComboBoxButton (20x20+70+0) [] 
+          javax.swing.CellRendererPane (0x0+0+0) 
+           javax.swing.plaf.basic.BasicComboBoxRenderer$UIResource (0x0+-67+-13) [Miscoded] 
+        javax.swing.JLayeredPane (100x50+100+0) 
+         javax.swing.JLabel (80x20+0+0) [Type of Doc] 
+         javax.swing.JComboBox (90x20+0+20) 
+          javax.swing.plaf.metal.MetalComboBoxButton (20x20+70+0) [] 
+          javax.swing.CellRendererPane (0x0+0+0) 
+           javax.swing.plaf.basic.BasicComboBoxRenderer$UIResource (0x0+-67+-13) [] 
+        javax.swing.JLayeredPane (80x50+200+0) 
+         javax.swing.JLabel (80x20+0+0) [Location] 
+         javax.swing.JTextField (70x20+0+20) [0]
+       javax.swing.JLayeredPane (380x380+10+370) 
+        javax.swing.JLayeredPane (380x80+0+300) 
+         javax.swing.JPanel (250x50+120+20) 
+          javax.swing.JLabel (124x14+1+1) [Value] 
+          javax.swing.JTextField (248x19+1+21) [0]
+         javax.swing.JLayeredPane (100x50+10+20) 
+          javax.swing.JTextField (80x20+10+20) [0]
+          javax.swing.JCheckBox (80x20+10+0) 
+         javax.swing.JLabel (70x20+10+0) [ QA] 
+        javax.swing.JLayeredPane (380x70+0+0) 
+         javax.swing.JPanel (250x50+120+20) 
+          javax.swing.JLabel (124x14+1+1) [Value] 
+          javax.swing.JTextField (248x19+1+21) [0]
+         javax.swing.JLayeredPane (100x50+10+20) 
+          javax.swing.JTextField (80x20+10+20) [0]
+          javax.swing.JCheckBox (80x20+10+0) 
+         javax.swing.JLabel (50x20+10+0) [ Coder] 
+        javax.swing.JLayeredPane (380x70+0+70) 
+         javax.swing.JPanel (250x50+120+20) 
+          javax.swing.JLabel (124x14+1+1) [Value] 
+          javax.swing.JTextField (248x19+1+21) [0]
+         javax.swing.JLayeredPane (100x50+10+20) 
+          javax.swing.JTextField (80x20+10+20) [0]
+          javax.swing.JCheckBox (80x20+10+0) 
+         javax.swing.JLabel (70x20+10+0) [ Checker] 
+        javax.swing.JLayeredPane (380x70+0+140) 
+         javax.swing.JPanel (250x50+120+20) 
+          javax.swing.JLabel (124x14+1+1) [Value] 
+          javax.swing.JTextField (248x19+1+21) [0]
+         javax.swing.JLayeredPane (100x50+10+20) 
+          javax.swing.JTextField (80x20+10+20) [0]
+          javax.swing.JCheckBox (80x20+10+0) 
+         javax.swing.JLabel (70x20+10+0) [ Listing] 
+        javax.swing.JLayeredPane (380x90+0+210) 
+         javax.swing.JLabel (70x20+10+0) [ Tally] 
+         javax.swing.JPanel (360x70+10+20) 
+          javax.swing.JScrollPane (360x70+0+0) 
+           javax.swing.JViewport (342x48+1+20) 
+            javax.swing.JTable (342x80+0+0) 
+             javax.swing.CellRendererPane (0x0+0+0) 
+           javax.swing.JScrollPane$ScrollBar (15x48+343+20) 
+            javax.swing.plaf.metal.MetalScrollButton (15x15+0+33) [] 
+            javax.swing.plaf.metal.MetalScrollButton (15x15+0+0) [] 
+           javax.swing.JScrollPane$ScrollBar (0x0+0+0) 
+            javax.swing.plaf.metal.MetalScrollButton (0x0+0+0) [] 
+            javax.swing.plaf.metal.MetalScrollButton (0x0+0+0) [] 
+           javax.swing.JViewport (342x19+1+1) 
+            javax.swing.table.JTableHeader (342x19+0+0) 
+             javax.swing.CellRendererPane (0x0+0+0) 
+       javax.swing.JLabel (90x20+20+350) [Data of Table] 
+      javax.swing.JPanel (398x39+5+769) 
+       javax.swing.JButton (54x25+38+7) [<--] 
+       javax.swing.JButton (44x25+97+7) [<] 
+       javax.swing.JTextField (4x19+146+10) [0]
+       javax.swing.JLabel (19x15+155+12) [OF] 
+       javax.swing.JTextField (4x19+179+10) [0]
+       javax.swing.JButton (63x25+188+7) [EXIT] 
+       javax.swing.JButton (44x25+256+7) [>] 
+       javax.swing.JButton (54x25+305+7) [-->] 
+       javax.swing.JButton (79x25+125+37) [Export] 
+       javax.swing.JButton (63x25+209+37) [EXIT] 
+     javax.swing.JPanel (597x813+420+1) 
+      javax.swing.JToolBar (597x50+0+0) 
+       javax.swing.JToolBar$Separator (10x10+16+19) 
+       javax.swing.JButton (12x12+26+18) [] 
+       javax.swing.JButton (12x12+38+18) [] 
+       javax.swing.JButton (12x12+50+18) [] 
+       javax.swing.JToolBar$Separator (10x10+62+19) 
+       javax.swing.JButton (12x12+72+18) [] 
+       javax.swing.JButton (12x12+84+18) [] 
+       javax.swing.JToolBar$Separator (10x10+96+19) 
+       javax.swing.JButton (12x12+106+18) [] 
+       javax.swing.JButton (12x12+118+18) [] 
+       javax.swing.JButton (12x12+130+18) [] 
+       javax.swing.JButton (12x12+142+18) [] 
+      javax.swing.JPanel (597x745+0+56) 

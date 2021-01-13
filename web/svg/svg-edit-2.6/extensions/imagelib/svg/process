@@ -1,0 +1,71 @@
+tar -zcf ../tarballs/animals_nicu.tgz animals
+
+tar -zcf ../tarballs/arrows_nicu.tgz arrows
+
+tar -zcf ../tarballs/borders_nicu.tgz borders
+
+tar -zcf ../tarballs/callouts_nicu.tgz callouts
+
+tar -zcf ../tarballs/carved-pumpkins_nicu.tgz carved-pumpkins
+
+tar -zcf ../tarballs/clock_nicu.tgz clock
+
+tar -zcf ../tarballs/clothes_nicu.tgz clothes
+
+tar -zcf ../tarballs/comic_chars_nicu.tgz comic_chars
+
+tar -zcf ../tarballs/computers_nicu.tgz computers
+
+tar -zcf ../tarballs/events_nicu.tgz events
+
+tar -zcf ../tarballs/flags_nicu.tgz flags
+
+tar -zcf ../tarballs/flowcharts_nicu.tgz flowcharts
+
+tar -zcf ../tarballs/flowers_nicu.tgz flowers
+
+tar -zcf ../tarballs/fruits_nicu.tgz fruits
+
+tar -zcf ../tarballs/fullsize_nicu.tgz fullsize
+
+tar -zcf ../tarballs/game_elements_nicu.tgz game_elements
+
+tar -zcf ../tarballs/happy_nicu.tgz happy
+
+tar -zcf ../tarballs/holidays_nicu.tgz holidays
+
+tar -zcf ../tarballs/jigsaw_nicu.tgz jigsaw
+
+tar -zcf ../tarballs/misc_nicu.tgz misc
+
+tar -zcf ../tarballs/office_nicu.tgz office
+
+tar -zcf ../tarballs/pacman_nicu.tgz pacman
+
+tar -zcf ../tarballs/people_nicu.tgz people
+
+tar -zcf ../tarballs/rpg_map_nicu.tgz rpg_map
+
+tar -zcf ../tarballs/sexy_nicu.tgz sexy
+
+tar -zcf ../tarballs/shapes_nicu.tgz shapes
+
+tar -zcf ../tarballs/signs_nicu.tgz signs
+
+tar -zcf ../tarballs/silhouettes_nicu.tgz silhouettes
+
+tar -zcf ../tarballs/smileys_nicu.tgz smileys
+
+tar -zcf ../tarballs/special_nicu.tgz special
+
+tar -zcf ../tarballs/starry_night_nicu.tgz starry_night
+
+tar -zcf ../tarballs/stick_man_nicu.tgz stick_man
+
+tar -zcf ../tarballs/symbols_nicu.tgz symbols
+
+tar -zcf ../tarballs/toys_nicu.tgz toys
+
+tar -zcf ../tarballs/weather_nicu.tgz weather
+
+tar -zcf ../tarballs/all_svg_nicu.tgz ../svg

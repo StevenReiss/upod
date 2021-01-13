@@ -1,0 +1,92 @@
+<!DOCTYPE HTML>
+<html>
+<head>
+<meta charset="utf-8">
+
+<title>UPOD Login</title>
+
+
+<script type="text/javascript" src="http://code.jquery.com/jquery-1.9.0.min.js"></script>
+<script src='js/sha256.js'></script>
+<script src='js/enc-base64-min.js'></script>
+<script type='text/javascript' src='../session/usid.js'></script>
+
+
+<script type='text/javascript'>
+
+function clear()
+{
+   $("#userid").val("");
+   $("#passwd").val("");
+
+}
+
+
+
+function authenticate()
+{
+   var u = $("#userid").val();
+   var p = $("#passwd").val();
+   var p1 = CryptoJS.SHA256(p);
+   var p2 = p1.toString(CryptoJS.enc.Hex);
+
+   var msg = "UPOD@" + u + "@UPOD@" + p2 + "@UPOD@" + USID + "@UPOD";
+   var hash = CryptoJS.SHA256(msg);
+   $("#passwd").val("");
+   $("#auth").val(hash.toString(CryptoJS.enc.Base64));
+   $("#USID").val(USID);
+}
+
+</script>
+
+<style>
+
+.loginbtns {
+   background-color: #ccf;
+   text-align: center;
+}
+
+</style>
+
+</head>
+
+<body>
+<h1>Upod Login Page</h1>
+
+<br>
+
+<form action='../file/validate.html' method='get'onsubmit='authenticate();' >
+<table>
+   <tr>
+      <td>Username:</td>
+      <td><input type='text' name='userid' id='userid' class='userid' maxlength='64' />
+   </tr>
+   <tr>
+      <td>Password:</td>
+      <td><input type='password' name='passwd' id='passwd' class='passwd' maxlength='64' />
+   </tr>
+</table>
+<br>
+<input type='hidden' name='auth' id='auth' value='*' />
+<input type='hidden' name='USID' id='USID' value='*' />
+<div class='loginbtns'>
+   <input type='button' name='clearbtn' value='Clear' onclick='clear();' />
+   <input type='submit' name='login' value='Login' />
+</div>
+</form>
+</body>
+</html>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
