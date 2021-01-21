@@ -45,9 +45,13 @@ var morgan = require('morgan');
 /*										*/
 /********************************************************************************/
 
-const private_key = fs.readFileSync('/etc/letsencrypt/live/conifer2.cs.brown.edu/privkey.pem','utf8');
-const certificate = fs.readFileSync('/etc/letsencrypt/live/conifer2.cs.brown.edu/cert.pem','utf8');
-const ca = fs.readFileSync('/etc/letsencrypt/live/conifer2.cs.brown.edu/chain.pem','utf8');
+// const private_key = fs.readFileSync('/etc/letsencrypt/live/conifer2.cs.brown.edu/privkey.pem','utf8');
+// const certificate = fs.readFileSync('/etc/letsencrypt/live/conifer2.cs.brown.edu/cert.pem','utf8');
+// const ca = fs.readFileSync('/etc/letsencrypt/live/conifer2.cs.brown.edu/chain.pem','utf8');
+
+const private_key = fs.readFileSync('/vol/home/spr/cert/conifer2.key','utf8');
+const certificate = fs.readFileSync('/vol/home/spr/cert/conifer2_cs_brown_edu_cert.cer','utf8');
+
 const eventtoken = fs.readFileSync('zoom.event','utf8').trim();
 const personalmtg = fs.readFileSync('zoom.personal','utf8').trim();
 const personalid = fs.readFileSync('zoom.whoami','utf8').trim();
@@ -56,10 +60,11 @@ const altid = fs.readFileSync('zoom.whoelse','utf8').trim();
 var ids = [ personalid, altid ];
 
 const credentials = {
+// ca: ca,
    key : private_key,
-   cert : certificate,
-   ca: ca
+   cert : certificate
 };
+
 
 /********************************************************************************/
 /*										*/
@@ -113,7 +118,7 @@ function errorHandler(response)
 function start()
 {
    var app = express();
-  
+
    app.use(morgan('combined'));
    app.use(bodyparser.urlencoded({ extended : false }));
    app.use(express.json({}));
@@ -179,7 +184,7 @@ function handleWebHook(req,res)
 
     let clientid = req.headers.authorization;
     if (clientid != eventtoken) {
-            console.log("BAD CLIENT ID ",clientid,eventtoken);
+	    console.log("BAD CLIENT ID ",clientid,eventtoken);
     }
     let event = req.body.payload;
     let what = req.body.event;
@@ -189,79 +194,79 @@ function handleWebHook(req,res)
 
     switch (what) {
       case 'meeting.started' :
-         if (meeting.id == personalmtg) {
-            let date1 = new Date(meeting.start_time);
-            last_start = date1.getTime();
-            status.personal_active = true;
-            status.active_count = 0;
-            status.wait_count = 0;
-            status.in_personal = false;
-         }
-         break;
+	 if (meeting.id == personalmtg) {
+	    let date1 = new Date(meeting.start_time);
+	    last_start = date1.getTime();
+	    status.personal_active = true;
+	    status.active_count = 0;
+	    status.wait_count = 0;
+	    status.in_personal = false;
+	 }
+	 break;
       case 'meeting.ended' :
-         if (meeting.id == personalmtg) {
-            let date2 = new Date(meeting.end_time);
-            let time2 = date2.getTime();
-            if (time2 < last_start) break;
-            status.personal_active = false;
-            status.active_count = 0;
-            status.wait_count = 0;
-            status.in_personal = false;
-         }
-         break;
+	 if (meeting.id == personalmtg) {
+	    let date2 = new Date(meeting.end_time);
+	    let time2 = date2.getTime();
+	    if (time2 < last_start) break;
+	    status.personal_active = false;
+	    status.active_count = 0;
+	    status.wait_count = 0;
+	    status.in_personal = false;
+	 }
+	 break;
       case 'meeting.participant_joined_waiting_room' :
-         if (meeting.id == personalmtg) {
-            if (!isPersonalId(who.user_id)) status.wait_count++;
-         }
-         break;
+	 if (meeting.id == personalmtg) {
+	    if (!isPersonalId(who.user_id)) status.wait_count++;
+	 }
+	 break;
       case 'meeting.participant_left_waiting_room' :
       case 'meeting.participant_admitted' :
-         if (meeting.id == personalmtg) {
-            if (!isPersonalId(who.user_id)) {
-               status.wait_count--;
-               if (status.wait_count < 0) status.wait_count = 0;
-            }
-         }
-         break;
+	 if (meeting.id == personalmtg) {
+	    if (!isPersonalId(who.user_id)) {
+	       status.wait_count--;
+	       if (status.wait_count < 0) status.wait_count = 0;
+	    }
+	 }
+	 break;
       case 'meeting.participant_jbh_joined' :
-         // if (meeting.id == personalmtg) status.active_count++;
-         break;
+	 // if (meeting.id == personalmtg) status.active_count++;
+	 break;
       case 'meeting.participant_jbh_waiting' :
-         // if (meeting.id == personalmtg) status.wait_count++;
-         break;
+	 // if (meeting.id == personalmtg) status.wait_count++;
+	 break;
       case 'meeting.participant_joined' :
-         if (meeting.id == personalmtg) {
-            if (isPersonalId(who.user_id)) status.in_personal++;
-            else if (status.active_count == 0 && status.wait_count == 0 && status.in_personal == 0 &&
-               who.user_name == 'Steven Reiss') {
-               ids.push(who.user_id);
-               status.in_personal++;
-            }
-            else status.active_count++
-         }
-         else if (isPersonalId(who.user_id)) status.in_other++;
-         break;
+	 if (meeting.id == personalmtg) {
+	    if (isPersonalId(who.user_id)) status.in_personal++;
+	    else if (status.active_count == 0 && status.wait_count == 0 && status.in_personal == 0 &&
+	       who.user_name == 'Steven Reiss') {
+	       ids.push(who.user_id);
+	       status.in_personal++;
+	    }
+	    else status.active_count++
+	 }
+	 else if (isPersonalId(who.user_id)) status.in_other++;
+	 break;
       case 'meeting.participant_left' :
-         if (meeting.id == personalmtg) {
-            if (isPersonalId(who.user_id)) {
-               status.in_personal--;
-               if (status.in_personal < 0) status.in_personal = 0;
-            }
-            else {
-               status.active_count--;
-               if (status.active_count < 0) status.active_count = 0;
-            }
-         }
-         else if (isPersonalId(who.user_id)) {
-            status.in_other--;
-            if (status.in_other < 0) status.in_other = 0;
-         }
-         break;
+	 if (meeting.id == personalmtg) {
+	    if (isPersonalId(who.user_id)) {
+	       status.in_personal--;
+	       if (status.in_personal < 0) status.in_personal = 0;
+	    }
+	    else {
+	       status.active_count--;
+	       if (status.active_count < 0) status.active_count = 0;
+	    }
+	 }
+	 else if (isPersonalId(who.user_id)) {
+	    status.in_other--;
+	    if (status.in_other < 0) status.in_other = 0;
+	 }
+	 break;
       default :
-         console.log("UNKNOWN EVENT",what);
-         break;
+	 console.log("UNKNOWN EVENT",what);
+	 break;
     }
-    
+
     res.status(200);
     res.type('txt').send("OK");
 //     let evt = JSON.parse(req.body);
@@ -304,8 +309,8 @@ function requestToken()
 
 function handle404(req,res)
 {
-        res.status(404);
-        res.type('txt').send("Not Found");
+	res.status(404);
+	res.type('txt').send("Not Found");
 }
 
 
