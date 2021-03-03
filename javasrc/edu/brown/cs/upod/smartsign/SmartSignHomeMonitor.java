@@ -92,6 +92,7 @@ private final String ALERT_COMMAND = "/usr/bin/osascript -e 'display notificatio
 private final File LOCK_FILE = IvyFile.expandFile("$(HOME)/.smartsignhomemonitor.lock");
 
 private final String STATUS_REQUEST = "https://conifer2.cs.brown.edu:6060/status";
+// private final String STATUS_REQUEST = "http://conifer2.cs.brown.edu:6061/status";
 
 
 
@@ -120,7 +121,7 @@ private SmartSignHomeMonitor(String [] args)
 /********************************************************************************/
 
 private void start()
-{																
+{										
    IvyFileLocker locker = new IvyFileLocker(LOCK_FILE);
    if (!locker.tryLock()) {
       System.exit(0);
