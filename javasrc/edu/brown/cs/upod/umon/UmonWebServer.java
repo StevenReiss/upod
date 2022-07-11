@@ -95,7 +95,7 @@ UmonWebServer(UmonControl uc,int port)
       our_server.start(500);
     }
    catch (IOException e) {
-      BasisLogger.log("Couldn't start umon web server on port " +
+      BasisLogger.logE("Couldn't start umon web server on port " +
 	    using_port + ": " + e);
     }
 
@@ -671,30 +671,30 @@ private class HttpServer extends NanoHTTPD implements NanoHTTPD.AsyncRunner {
       Map<String,String> files = new HashMap<String,String>();
       Method method = session.getMethod();
       if (Method.PUT.equals(method) || Method.POST.equals(method)) {
-	 try {
-	    session.parseBody(files);
-	  }
-	 catch (IOException e) {
-	    return newFixedLengthResponse(Response.Status.INTERNAL_ERROR,TEXT_MIME,
-		  "Server Internal Error: " + e.getMessage());
-	  }
-	 catch (ResponseException e) {
-	    return newFixedLengthResponse(e.getStatus(),TEXT_MIME,
-		 e.getMessage());
-	  }
+         try {
+            session.parseBody(files);
+          }
+         catch (IOException e) {
+            return newFixedLengthResponse(Response.Status.INTERNAL_ERROR,TEXT_MIME,
+        	  "Server Internal Error: " + e.getMessage());
+          }
+         catch (ResponseException e) {
+            return newFixedLengthResponse(e.getStatus(),TEXT_MIME,
+        	 e.getMessage());
+          }
        }
       Map<String,String> parms = session.getParms();
       parms.put("NanoHttpd.QUERY_STRING",session.getQueryParameterString());
       CookieHandler cookies = session.getCookies();
       String host = session.getHeaders().get("host");
-
+   
       Response rslt = getResponse(session.getUri(),host,parms,cookies);
       if (rslt == null)
-	 return newFixedLengthResponse(Response.Status.NOT_FOUND,TEXT_MIME,"Not Found");
-
+         return newFixedLengthResponse(Response.Status.NOT_FOUND,TEXT_MIME,"Not Found");
+   
       long end = System.currentTimeMillis();
       System.err.println("UMON: SERVE: " + rslt.getStatus() + " " + (end-start) + " " + Thread.currentThread().getName());
-
+   
       return rslt;
     }
 

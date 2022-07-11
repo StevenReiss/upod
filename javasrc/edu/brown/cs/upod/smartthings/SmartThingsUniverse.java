@@ -360,48 +360,48 @@ private class SmartThingsPoller extends Thread {
    @Override public void run() {
       int errct = 0;
       while (errct < 100) {
-	 String qp = "https://graph.api.smartthings.com" + api_endpoint.getString("url") + "/x/y/poll";
-	 JSONArray prslt = sendArrayRequest("POST",qp);
-	 if (prslt == null) ++errct;
-	 else errct = 0;
-	 if (prslt != null && prslt.length() > 0) {
-	    for (int i = 0; i < prslt.length(); ++i) {
-	       JSONObject poll = prslt.getJSONObject(i);
-	       try {
-		  String id = poll.getString("id");
-		  String lbl = poll.getString("label");
-		  String typ = poll.optString("type");
-		  if (typ == null) {
-		     BasisLogger.logE("Problem parsing result (no type): " + poll);
-		   }
-		  JSONObject val = poll.getJSONObject("value");
-		  SmartThingsDevice std = device_map.get(id);
-		  if (std == null) std = (SmartThingsDevice) findDevice(lbl);
-		  if (std != null && typ != null) {
-		     for (UpodCapability uc : std.getCapabilities()) {
-			if (uc instanceof SmartThingsCapability) {
-			   SmartThingsCapability stc = (SmartThingsCapability) uc;
-			   if (typ.equals(stc.getAccessName())) {
-			      std.handleValue(stc,val);
-			      break;
-			    }
-			 }
-		      }
-		   }
-		}
-	       catch (Throwable t) {
-		  BasisLogger.logE("Problem parsing result: " + poll,t);
-		}
-	     }
-	    BasisLogger.logD("POLL YIELDS: " + prslt);
-	  }
-	 try {
-	    Thread.sleep(333);
-	  }
-	 catch (InterruptedException e) { }
+         String qp = "https://graph.api.smartthings.com" + api_endpoint.getString("url") + "/x/y/poll";
+         JSONArray prslt = sendArrayRequest("POST",qp);
+         if (prslt == null) ++errct;
+         else errct = 0;
+         if (prslt != null && prslt.length() > 0) {
+            for (int i = 0; i < prslt.length(); ++i) {
+               JSONObject poll = prslt.getJSONObject(i);
+               try {
+                  String id = poll.getString("id");
+                  String lbl = poll.getString("label");
+                  String typ = poll.optString("type");
+                  if (typ == null) {
+                     BasisLogger.logE("Problem parsing result (no type): " + poll);
+                   }
+                  JSONObject val = poll.getJSONObject("value");
+                  SmartThingsDevice std = device_map.get(id);
+                  if (std == null) std = (SmartThingsDevice) findDevice(lbl);
+                  if (std != null && typ != null) {
+                     for (UpodCapability uc : std.getCapabilities()) {
+                        if (uc instanceof SmartThingsCapability) {
+                           SmartThingsCapability stc = (SmartThingsCapability) uc;
+                           if (typ.equals(stc.getAccessName())) {
+                              std.handleValue(stc,val);
+                              break;
+                            }
+                         }
+                      }
+                   }
+                }
+               catch (Throwable t) {
+                  BasisLogger.logE("Problem parsing result: " + poll,t);
+                }
+             }
+            BasisLogger.logD("POLL YIELDS: " + prslt);
+          }
+         try {
+            Thread.sleep(333);
+          }
+         catch (InterruptedException e) { }
        }
       BasisLogger.logE("Exited due to too many errors");
-    }
+   }
 }
 
 

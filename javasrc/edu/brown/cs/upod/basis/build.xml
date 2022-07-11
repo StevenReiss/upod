@@ -23,6 +23,12 @@
      <target name='compile'>
 	<javac srcdir='.' destdir='${UPOD}/java' debug='on' deprecation='on' includeantruntime='false'>
 	   <classpath refid='spr.classpath' />
+	</javac>
+     </target>
+
+     <target name='oldcompile'>
+	<javac srcdir='.' destdir='${UPOD}/java' debug='on' deprecation='on' includeantruntime='false'>
+	   <classpath refid='spr.classpath' />
 	   <compilerarg value='--add-modules' />
 	   <compilerarg value='java.xml.ws' />
 	</javac>

@@ -281,10 +281,10 @@ private class Session {
       if (now - last_used > SESSION_TIMEOUT) return false;
       if (!host.equals(host_id)) return false;
       if (!login && !is_valid) return false;
-
+   
       last_used = now;
       user_role = for_universe.getRole(user_id);
-
+   
       return true;
     }
 

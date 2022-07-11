@@ -23,5 +23,6 @@
    <PACKAGE NAME='com.jogamp.opengl.' />
 
    <METHOD NAME='edu.brown.cs.upod.umon.UmonControl.process' SCAN='true' NORETURN='true' />
+   <METHOD NAME='edu.brown.cs.upod.smartsign.SmartSignHomeMonitor.startMonitor' SCAN='true' NORETURN='true' />
 
 </FAIT>

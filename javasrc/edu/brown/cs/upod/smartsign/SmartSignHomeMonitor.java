@@ -66,7 +66,7 @@ public class SmartSignHomeMonitor implements SmartSignConstants
 public static void main(String ... args)
 {
    SmartSignHomeMonitor mon = new SmartSignHomeMonitor(args);
-   mon.start();
+   mon.startMonitor();
 }
 
 
@@ -82,6 +82,7 @@ private Boolean last_zoom;
 private String	last_personal;
 private int	last_wait;
 private int	cur_wait;
+private long    last_error;
 
 private final String IDLE_COMMAND = "sh -c 'ioreg -c IOHIDSystem | fgrep HIDIdleTime'";
 
@@ -110,6 +111,7 @@ private SmartSignHomeMonitor(String [] args)
    last_personal = null;
    last_wait = 0;
    cur_wait = 0;
+   last_error = 0;
 }
 
 
@@ -120,7 +122,7 @@ private SmartSignHomeMonitor(String [] args)
 /*										*/
 /********************************************************************************/
 
-private void start()
+private void startMonitor()
 {										
    IvyFileLocker locker = new IvyFileLocker(LOCK_FILE);
    if (!locker.tryLock()) {
@@ -163,7 +165,11 @@ private void sendUpdate(PrintWriter pw)
    Boolean zoom = usingZoom();
    String psts = getPersonalStatus();
    System.err.println("CHECK " + idle + " " + zoom + " " + psts);
-
+   if (last_error > 0) {
+      // force write if there was an error previously
+      if (System.currentTimeMillis() - last_error > 5*60*1000) write = true;
+    }
+    
    if (idle > 0) {
       if (idle < 300) {
 	 if (last_idle >= 300 || last_idle < 0) {
@@ -199,7 +205,15 @@ private void sendUpdate(PrintWriter pw)
     }
    if (write) {
       pw.flush();
-      System.err.println("SEND UPDATE " + pw.checkError());
+      if (pw.checkError()) {
+         System.err.println("SEND UPDATE ERROR");
+         last_error = System.currentTimeMillis();
+       }
+      else {
+         System.err.println("SEND UPDATE OK");
+         write = false;
+         last_error = 0;
+       }
     }
 
    if (cur_wait != last_wait) {
@@ -300,7 +314,6 @@ private String getPersonalStatus()
     }
    catch (IOException e) {
       System.err.println("Problem accessing personal status: " + e);
-      e.printStackTrace();
     }
 
    return status;
