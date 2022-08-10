@@ -51,7 +51,7 @@ public class SmartSignUniverse extends BasisUniverse implements SmartSignConstan
 
 
 /********************************************************************************/
-/*										*/
+/*										*/						
 /*	Private Storage 							*/
 /*										*/
 /********************************************************************************/
@@ -198,7 +198,7 @@ private class SensorHub extends TimerTask implements UpodHub {
        }
       catch (ConnectException e) { }
       catch (IOException e) {
-	 System.err.println("Problem getting sensor info: " + e);
+	 BasisLogger.logE("SMARTSIGN: Problem getting sensor info: ",e);
        }
    }
 
@@ -233,7 +233,7 @@ private void setSensor(String sensor,String value)
       ud.setValueInWorld(p0,value,null);
     }
    else {
-      System.err.println("Can't find snssor " + sensor);
+      BasisLogger.logE("SMARTSIGN: Can't find snssor " + sensor);
     }
 }
 
@@ -246,6 +246,7 @@ private class HomeChecker extends Thread {
     }
 
    @Override public void run() {
+      BasisLogger.logD("SMARTSIGN: START HOME checker " + SMART_SIGN_MONITOR_PORT);
       setSensor("HomePresenceSensor","NOTHOME");
       setSensor("HomeZoomSensor","NOT_ON_ZOOM");
       setSensor("ZoomPersonalMeeting","NOT_ACTIVE");
@@ -258,6 +259,7 @@ private class HomeChecker extends Thread {
 	  }
        }
       catch (IOException e) {
+	 BasisLogger.logE("SMARTSIGN: Problem connecting to HOME sensor: ",e);
 	 server_socket = null;
        }
     }
@@ -272,6 +274,7 @@ private class HomeHub extends Thread {
 
    HomeHub(Socket s) throws IOException {
       super("SmartSignHomeHub");
+      BasisLogger.logD("SMARTSIGN: Create home hub for " + s);
       socket_reader = new BufferedReader(new InputStreamReader(s.getInputStream()));
     }
 
@@ -284,7 +287,7 @@ private class HomeHub extends Thread {
 	    if (idx < 0) continue;
 	    String sensor = ln.substring(0,idx).trim();
 	    String value = ln.substring(idx+1).trim();
-	    System.err.println("HOME: " + ln);
+	    BasisLogger.logD("SMARTSIGN: HOME: " + ln);
 
 	    setSensor(sensor,value);
 	  }

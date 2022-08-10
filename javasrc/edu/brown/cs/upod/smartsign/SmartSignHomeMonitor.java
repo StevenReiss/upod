@@ -82,7 +82,7 @@ private Boolean last_zoom;
 private String	last_personal;
 private int	last_wait;
 private int	cur_wait;
-private long    last_error;
+private long	last_error;
 
 private final String IDLE_COMMAND = "sh -c 'ioreg -c IOHIDSystem | fgrep HIDIdleTime'";
 
@@ -123,7 +123,7 @@ private SmartSignHomeMonitor(String [] args)
 /********************************************************************************/
 
 private void startMonitor()
-{										
+{									
    IvyFileLocker locker = new IvyFileLocker(LOCK_FILE);
    if (!locker.tryLock()) {
       System.exit(0);
@@ -169,7 +169,7 @@ private void sendUpdate(PrintWriter pw)
       // force write if there was an error previously
       if (System.currentTimeMillis() - last_error > 5*60*1000) write = true;
     }
-    
+
    if (idle > 0) {
       if (idle < 300) {
 	 if (last_idle >= 300 || last_idle < 0) {
@@ -206,13 +206,13 @@ private void sendUpdate(PrintWriter pw)
    if (write) {
       pw.flush();
       if (pw.checkError()) {
-         System.err.println("SEND UPDATE ERROR");
-         last_error = System.currentTimeMillis();
+	 System.err.println("SEND UPDATE ERROR");
+	 last_error = System.currentTimeMillis();
        }
       else {
-         System.err.println("SEND UPDATE OK");
-         write = false;
-         last_error = 0;
+	 System.err.println("SEND UPDATE OK");
+	 write = false;
+	 last_error = 0;
        }
     }
 
@@ -316,7 +316,7 @@ private String getPersonalStatus()
       System.err.println("Problem accessing personal status: " + e);
     }
 
-   return status;
+   return status;																	m<
 }
 
 
