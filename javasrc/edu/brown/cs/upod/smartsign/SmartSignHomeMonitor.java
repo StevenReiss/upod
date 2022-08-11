@@ -43,7 +43,9 @@ import java.io.OutputStream;
 import java.io.PrintWriter;
 import java.io.Reader;
 import java.net.HttpURLConnection;
+import java.net.InetSocketAddress;
 import java.net.Socket;
+import java.net.SocketTimeoutException;
 import java.net.URL;
 
 import org.json.JSONObject;
@@ -128,9 +130,21 @@ private void startMonitor()
    if (!locker.tryLock()) {
       System.exit(0);
     }
+   
 
    for ( ; ; ) {
+      int port = SMART_SIGN_MONITOR_PORT;
       try (Socket s = new Socket(SMART_SIGN_HOST,SMART_SIGN_MONITOR_PORT)) {
+         for (int i = 0; i < 32; ++i) {
+            try {
+               InetSocketAddress iad = new InetSocketAddress(SMART_SIGN_HOST,port);
+               s.connect(iad,2000);
+               break;
+             }
+            catch (SocketTimeoutException e) {
+               port += 1;
+             }
+          }
 	 last_idle = -1;
 	 last_zoom = null;
 	 try (OutputStream so = s.getOutputStream()) {
@@ -316,7 +330,7 @@ private String getPersonalStatus()
       System.err.println("Problem accessing personal status: " + e);
     }
 
-   return status;																	m<
+   return status;													
 }
 
 

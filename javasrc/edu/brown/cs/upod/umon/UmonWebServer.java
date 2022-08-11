@@ -90,14 +90,27 @@ UmonWebServer(UmonControl uc,int port)
 
    session_manager = new UmonSessionManager(uc.getUniverse());
 
-   our_server = new HttpServer();
-   try {
-      our_server.start(500);
+   int port0 = using_port;
+   for (int i = 0; i < 32; ++i) {
+      our_server = new HttpServer();
+      try {
+         our_server.start(500);
+         break;
+       }
+      catch (IOException e) {
+         BasisLogger.logI("Couldn't start umon web server on port " +
+               using_port + ": " + e);
+       }
+      our_server = null;
+      using_port += 1;
     }
-   catch (IOException e) {
-      BasisLogger.logE("Couldn't start umon web server on port " +
-	    using_port + ": " + e);
+   
+   if (our_server == null) {
+         BasisLogger.logE("Couldn't start umon web server on ports " + port0 +
+               " - " + using_port);
     }
+   
+   BasisLogger.logI("UMON Web server started on " + using_port);
 
    Properties p = new Properties();
    p.setProperty(RuntimeConstants.FILE_RESOURCE_LOADER_PATH,TEMPLATE_DIR);

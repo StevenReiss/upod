@@ -101,8 +101,6 @@ enum DeviceCommands {
 
 int	WEB_PORT = 8800;
 
-int	SOCKET_PORT = 23432;
-
 String	XML_MIME = "application/xml";
 String	TEXT_MIME = "text/plain";
 String	HTML_MIME = "text/html";

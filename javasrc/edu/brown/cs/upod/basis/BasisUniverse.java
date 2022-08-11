@@ -439,8 +439,9 @@ private void save()
 
 private void loadUniverse(Element xml)
 {
-   port_number = IvyXml.getAttrInt(xml,"PORT",port_number);
-
+   int pn = IvyXml.getAttrInt(xml,"PORT",port_number);
+   setWebServerPort(pn);
+   
    for (Element cxml : IvyXml.children(xml,"CAPABILITY")) {
       String nm = IvyXml.getAttrString(xml,"NAME");
       if (findCapability(nm) == null) {
