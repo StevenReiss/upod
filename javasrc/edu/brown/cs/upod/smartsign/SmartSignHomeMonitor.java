@@ -43,8 +43,8 @@ import java.io.OutputStream;
 import java.io.PrintWriter;
 import java.io.Reader;
 import java.net.HttpURLConnection;
-import java.net.InetSocketAddress;
 import java.net.Socket;
+import java.net.SocketException;
 import java.net.SocketTimeoutException;
 import java.net.URL;
 
@@ -56,8 +56,6 @@ import edu.brown.cs.ivy.file.IvyFileLocker;
 
 public class SmartSignHomeMonitor implements SmartSignConstants
 {
-
-
 
 /********************************************************************************/
 /*										*/
@@ -125,44 +123,63 @@ private SmartSignHomeMonitor(String [] args)
 /********************************************************************************/
 
 private void startMonitor()
-{									
+{		
    IvyFileLocker locker = new IvyFileLocker(LOCK_FILE);
    if (!locker.tryLock()) {
       System.exit(0);
     }
    
+   int tries = 32;
 
    for ( ; ; ) {
-      int port = SMART_SIGN_MONITOR_PORT;
-      try (Socket s = new Socket(SMART_SIGN_HOST,SMART_SIGN_MONITOR_PORT)) {
-         for (int i = 0; i < 32; ++i) {
-            try {
-               InetSocketAddress iad = new InetSocketAddress(SMART_SIGN_HOST,port);
-               s.connect(iad,2000);
-               break;
+      int port = SMART_SIGN_MONITOR_PORT + tries - 1;
+      Socket s = null;
+      try  {
+	 for (int i = 0; i < tries; ++i) {
+	    System.err.println("TRY PORT " + port);
+	    try {
+               s = new Socket(SMART_SIGN_HOST,port);
+	       System.err.println("CONNECT SUCCESS " + port);
+	       break;
+	     }
+            catch (SocketException e) {
+               port -= 1;
+               s = null;
              }
-            catch (SocketTimeoutException e) {
-               port += 1;
-             }
-          }
-	 last_idle = -1;
-	 last_zoom = null;
-	 try (OutputStream so = s.getOutputStream()) {
-	    PrintWriter pw = new PrintWriter(so);
-	    for ( ; ; ) {
-	       sendUpdate(pw);
-	       if (pw.checkError()) {
-		  System.err.println("ERROR DETECTED");
-		  break;
-		}
-	       try {
-		  Thread.sleep(30000);
-		}
-	       catch (InterruptedException e) { }
+	    catch (SocketTimeoutException e) {
+	       port -= 1;
+               s = null;
 	     }
 	  }
+         if (s != null) {
+            last_idle = -1;
+            last_zoom = null;
+            try (OutputStream so = s.getOutputStream()) {
+               PrintWriter pw = new PrintWriter(so);
+               for ( ; ; ) {
+                  sendUpdate(pw);
+                  if (pw.checkError()) {
+                     System.err.println("ERROR DETECTED");
+                     break;
+                   }
+                  try {
+                     Thread.sleep(30000);
+                   }
+                  catch (InterruptedException e) { }
+                }
+             }
+          }
        }
-      catch (IOException e) { }
+      catch (IOException e) {
+	 System.err.println("Connect exception: " + e);
+       }
+      if (s != null) {
+         try {
+            s.close();
+            s = null;
+          }
+         catch (IOException e) { }
+       }
       try {
 	 Thread.sleep(30000);
        }
@@ -330,7 +347,7 @@ private String getPersonalStatus()
       System.err.println("Problem accessing personal status: " + e);
     }
 
-   return status;													
+   return status;						
 }
 
 
