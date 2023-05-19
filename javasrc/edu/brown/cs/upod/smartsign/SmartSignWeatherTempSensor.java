@@ -75,17 +75,17 @@ private static final String weather_url =
 
 static {
    String appid = "00000000000";
-   
+
    File f = IvyFile.expandFile("$(HOME)/.upodweather");
    try (BufferedReader br = new BufferedReader(new FileReader(f))) {
       for ( ; ; ) {
-         String ln = br.readLine();
-         if (ln == null) break;
-         ln = ln.trim();
-         if (ln.startsWith("#")) continue;
-         if (ln.length() == 0) continue;
-         appid = ln;
-         break;
+	 String ln = br.readLine();
+	 if (ln == null) break;
+	 ln = ln.trim();
+	 if (ln.startsWith("#")) continue;
+	 if (ln.length() == 0) continue;
+	 appid = ln;
+	 break;
        }
     }
    catch (IOException e) { }

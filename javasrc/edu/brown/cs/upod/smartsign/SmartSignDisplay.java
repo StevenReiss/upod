@@ -37,7 +37,7 @@ package edu.brown.cs.upod.smartsign;
 
 import edu.brown.cs.upod.upod.*;
 import edu.brown.cs.upod.basis.*;
-
+import edu.brown.cs.ivy.exec.IvyExec;
 import edu.brown.cs.ivy.file.*;
 import edu.brown.cs.ivy.xml.IvyXml;
 
@@ -197,13 +197,11 @@ private class SignUpdater implements Runnable {
 	    do_change = true;
 	  }
 
-	 String cmd = "ssh valerie obexftp -B 1 -b 00:1A:7D:DA:71:13 -p " + basefile;
-	 BasisLogger.logI("SMARTSIGN: " + cmd + " " + do_change);
-
+         
+         BasisLogger.logI("SMARTSIGN: Update Sign " + do_change);
+         
 	 if (do_change) {
 	    try {
-	       // IvyExec ex = new IvyExec(cmd);
-	       // ex.waitFor();
 	       if (web_file != null) {
 		  if (temp_file != null) {
 		     IvyFile.copyFile(basefile,temp_file);
@@ -212,6 +210,11 @@ private class SignUpdater implements Runnable {
 		  else {
 		     IvyFile.copyFile(basefile,web_file);
 		   }
+                  String cmd = "scp " + basefile.getAbsolutePath() +
+                        " eadotc:/vol/web/html/status.jpg";
+                  BasisLogger.logI("SMARTSIGN: Execute: " + cmd);
+                  IvyExec ex = new IvyExec(cmd);
+                  ex.waitFor();
 		}
 	     }
 	    catch (IOException e) { }
@@ -263,51 +266,51 @@ private class SignChanger extends BasisTransition  {
 
    File getSignFile(UpodPropertySet ps,UpodWorld w) {
       String vl = ps.get(picture_param.getName()).toString();
-
+   
       Map<String,String> pvals = new HashMap<String,String>();
       if (ps != null) {
-	 for (Map.Entry<String,Object> ent : ps.entrySet()) {
-	    Object val = ent.getValue();
-	    if (val != null) {
-	       pvals.put(ent.getKey(),val.toString());
-	     }
-	    else pvals.put(ent.getKey(),null);
-	  }
-	 vl = IvyFile.expandText(vl,pvals);
+         for (Map.Entry<String,Object> ent : ps.entrySet()) {
+            Object val = ent.getValue();
+            if (val != null) {
+               pvals.put(ent.getKey(),val.toString());
+             }
+            else pvals.put(ent.getKey(),null);
+          }
+         vl = IvyFile.expandText(vl,pvals);
        }
-
+   
       if (!w.isCurrent()) {
-	 w.setValue(display_param,vl);
+         w.setValue(display_param,vl);
        }
       else {
-	 if (current_value == null && vl == null) return null;
-	 if (current_value != null && current_value.equals(vl)) return null;
-	 current_value = vl;
+         if (current_value == null && vl == null) return null;
+         if (current_value != null && current_value.equals(vl)) return null;
+         current_value = vl;
        }
-
+   
       File f = null;
       try {
-	 f = File.createTempFile("upod",".jpg");
-	 f.deleteOnExit();
-	 StringReader sr = new StringReader(vl);
-	 TranscoderInput tin = new TranscoderInput(sr);
-	 FileOutputStream fw = new FileOutputStream(f);
-	 TranscoderOutput tout =new TranscoderOutput(fw);
-	 JPEGTranscoder jtr = new JPEGTranscoder();
-	 jtr.addTranscodingHint(JPEGTranscoder.KEY_QUALITY,Float.valueOf(1.0f));
-	 // BasisLogger.logI("SIGN: about to transcode : " + vl);
-	 jtr.transcode(tin,tout);
-	 fw.flush();
-	 fw.close();
-	 // BasisLogger.logI("SIGN: done transcode : " + f.length());
+         f = File.createTempFile("upod",".jpg");
+         f.deleteOnExit();
+         StringReader sr = new StringReader(vl);
+         TranscoderInput tin = new TranscoderInput(sr);
+         FileOutputStream fw = new FileOutputStream(f);
+         TranscoderOutput tout =new TranscoderOutput(fw);
+         JPEGTranscoder jtr = new JPEGTranscoder();
+         jtr.addTranscodingHint(JPEGTranscoder.KEY_QUALITY,Float.valueOf(1.0f));
+         // BasisLogger.logI("SIGN: about to transcode : " + vl);
+         jtr.transcode(tin,tout);
+         fw.flush();
+         fw.close();
+         // BasisLogger.logI("SIGN: done transcode : " + f.length());
        }
       catch (Throwable e) {
-	 BasisLogger.logI("SIGN: transcode fail : " + e);
-	 if (f != null) f.delete();
-	 f = null;
-	 BasisLogger.logE("Problem create jpeg from " + vl,e);
+         BasisLogger.logI("SIGN: transcode fail : " + e);
+         if (f != null) f.delete();
+         f = null;
+         BasisLogger.logE("Problem create jpeg from " + vl,e);
        }
-
+   
       return f;
     }
 

@@ -94,22 +94,22 @@ UmonWebServer(UmonControl uc,int port)
    for (int i = 0; i < 32; ++i) {
       our_server = new HttpServer();
       try {
-         our_server.start(500);
-         break;
+	 our_server.start(500);
+	 break;
        }
       catch (IOException e) {
-         BasisLogger.logI("Couldn't start umon web server on port " +
-               using_port + ": " + e);
+	 BasisLogger.logI("Couldn't start umon web server on port " +
+	       using_port + ": " + e);
        }
       our_server = null;
       using_port += 1;
     }
-   
+
    if (our_server == null) {
-         BasisLogger.logE("Couldn't start umon web server on ports " + port0 +
-               " - " + using_port);
+	 BasisLogger.logE("Couldn't start umon web server on ports " + port0 +
+	       " - " + using_port);
     }
-   
+
    BasisLogger.logI("UMON Web server started on " + using_port);
 
    Properties p = new Properties();
@@ -148,7 +148,7 @@ private Response getResponse(String file,String host,Map<String,String> args,
       path = what.substring(idx+1);
       what = what.substring(0,idx);
     }
-											
+										
    if (file.equals("/index.html") || file.equals("/") ||
 	 file.equals("/home.html")) {
       if (sessionid == null) {
@@ -196,7 +196,7 @@ private Response getResponse(String file,String host,Map<String,String> args,
 	 cookies.delete(session_cookie);
 	 return HttpServer.newFixedLengthResponse(Status.FORBIDDEN,
 	       TEXT_MIME,"Invalid Session");
-       }											
+       }										
       String gfile = gourl.remove("FILE");
       if (gfile != null) {
 	 return redirectTo(gfile);
@@ -688,7 +688,7 @@ private class HttpServer extends NanoHTTPD implements NanoHTTPD.AsyncRunner {
             session.parseBody(files);
           }
          catch (IOException e) {
-            return newFixedLengthResponse(Response.Status.INTERNAL_ERROR,TEXT_MIME,
+             return newFixedLengthResponse(Response.Status.INTERNAL_ERROR,TEXT_MIME,
         	  "Server Internal Error: " + e.getMessage());
           }
          catch (ResponseException e) {

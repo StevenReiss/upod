@@ -321,7 +321,7 @@ protected void setWebServerPort(int port)
 
 /********************************************************************************/
 /*										*/
-/*	Authorization methods							     */
+/*	Authorization methods							*/
 /*										*/
 /********************************************************************************/
 
@@ -441,7 +441,7 @@ private void loadUniverse(Element xml)
 {
    int pn = IvyXml.getAttrInt(xml,"PORT",port_number);
    setWebServerPort(pn);
-   
+
    for (Element cxml : IvyXml.children(xml,"CAPABILITY")) {
       String nm = IvyXml.getAttrString(xml,"NAME");
       if (findCapability(nm) == null) {

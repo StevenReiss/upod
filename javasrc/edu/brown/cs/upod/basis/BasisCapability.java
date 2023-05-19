@@ -112,7 +112,7 @@ protected void setDescription(String desc)
 /*										*/
 /********************************************************************************/
 
-@Override public void addToDevice(UpodDevice d)         { }
+@Override public void addToDevice(UpodDevice d) 	{ }
 
 
 
@@ -185,7 +185,7 @@ private static class ParameterSetTransition extends BasisTransition {
    @Override public String getName() {
       return transition_name.replaceAll(" ",NSEP);
     }
-   
+
    @Override public String getLabel() {
       String pfx = transition_name;
       if (pfx.startsWith("Set")) pfx = "Set";
@@ -251,14 +251,6 @@ private static class ValueTransition extends BasisTransition {
 }
 
 }	// end of inner class ParameterSetTransition
-
-
-
-
-
-
-
-
 
 
 

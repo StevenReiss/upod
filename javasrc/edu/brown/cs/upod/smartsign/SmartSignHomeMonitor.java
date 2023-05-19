@@ -26,7 +26,7 @@
  *  BE LIABLE FOR ANY SPECIAL, INDIRECT OR CONSEQUENTIAL DAMAGES OR ANY 	 *
  *  DAMAGES WHATSOEVER RESULTING FROM LOSS OF USE, DATA OR PROFITS,		 *
  *  WHETHER IN AN ACTION OF CONTRACT, NEGLIGENCE OR OTHER TORTIOUS		 *
- *  ACTION, ARISING OUT OF OR IN CONNECTION WITH THE USE OR PERFORMANCE 	 *
+ *  ACTION, ARISING OUT OF OR IN CONNECTION WITH THE USE OR PERFORMANCE  cd ..	 *
  *  OF THIS SOFTWARE.								 *
  *										 *
  ********************************************************************************/
@@ -123,12 +123,12 @@ private SmartSignHomeMonitor(String [] args)
 /********************************************************************************/
 
 private void startMonitor()
-{		
+{
    IvyFileLocker locker = new IvyFileLocker(LOCK_FILE);
    if (!locker.tryLock()) {
       System.exit(0);
     }
-   
+
    int tries = 32;
 
    for ( ; ; ) {
@@ -138,47 +138,47 @@ private void startMonitor()
 	 for (int i = 0; i < tries; ++i) {
 	    System.err.println("TRY PORT " + port);
 	    try {
-               s = new Socket(SMART_SIGN_HOST,port);
+	       s = new Socket(SMART_SIGN_HOST,port);
 	       System.err.println("CONNECT SUCCESS " + port);
 	       break;
 	     }
-            catch (SocketException e) {
-               port -= 1;
-               s = null;
-             }
+	    catch (SocketException e) {
+	       port -= 1;
+	       s = null;
+	     }
 	    catch (SocketTimeoutException e) {
 	       port -= 1;
-               s = null;
+	       s = null;
 	     }
 	  }
-         if (s != null) {
-            last_idle = -1;
-            last_zoom = null;
-            try (OutputStream so = s.getOutputStream()) {
-               PrintWriter pw = new PrintWriter(so);
-               for ( ; ; ) {
-                  sendUpdate(pw);
-                  if (pw.checkError()) {
-                     System.err.println("ERROR DETECTED");
-                     break;
-                   }
-                  try {
-                     Thread.sleep(30000);
-                   }
-                  catch (InterruptedException e) { }
-                }
-             }
-          }
+	 if (s != null) {
+	    last_idle = -1;
+	    last_zoom = null;
+	    try (OutputStream so = s.getOutputStream()) {
+	       PrintWriter pw = new PrintWriter(so);
+	       for ( ; ; ) {
+		  sendUpdate(pw);
+		  if (pw.checkError()) {
+		     System.err.println("ERROR DETECTED");
+		     break;
+		   }
+		  try {
+		     Thread.sleep(30000);
+		   }
+		  catch (InterruptedException e) { }
+		}
+	     }
+	  }
        }
       catch (IOException e) {
 	 System.err.println("Connect exception: " + e);
        }
       if (s != null) {
-         try {
-            s.close();
-            s = null;
-          }
-         catch (IOException e) { }
+	 try {
+	    s.close();
+	    s = null;
+	  }
+	 catch (IOException e) { }
        }
       try {
 	 Thread.sleep(30000);
@@ -290,6 +290,7 @@ private long getIdleTime()
 
 
 
+
 private Boolean usingZoom()
 {
    try {
@@ -347,7 +348,7 @@ private String getPersonalStatus()
       System.err.println("Problem accessing personal status: " + e);
     }
 
-   return status;						
+   return status;			
 }
 
 
