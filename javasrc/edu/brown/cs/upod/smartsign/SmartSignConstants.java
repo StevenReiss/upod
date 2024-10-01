@@ -52,8 +52,8 @@ String SMART_SIGN_PROGRAM = "$(HOME)/.smartsign";
 // String SMART_SIGN_UNIVERSE = "/ws/volfred/smartsign/smartsign.universe.xml";
 String SMART_SIGN_UNIVERSE = "/research/people/spr/upod/universe/smartsign.universe.xml";
 // String SMART_SIGN_IMAGE = "/ws/volfred/smartsign/smartsignimage.jpg";
-String SMART_SIGN_IMAGE = "/ws/volfred/smartsign/image.jpg";
-
+// String SMART_SIGN_IMAGE = "/ws/volfred/smartsign/image.jpg";
+String SMART_SIGN_IMAGE = "/data/fred4/smartsign/image.jpg";
 
 
 /********************************************************************************/

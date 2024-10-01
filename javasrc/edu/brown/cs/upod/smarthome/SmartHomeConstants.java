@@ -49,7 +49,7 @@ public interface SmartHomeConstants extends BasisConstants
 /********************************************************************************/
 
 String SMART_HOME_PROGRAM = "$(HOME)/.smarthome";
-String SMART_HOME_UNIVERSE = "/ws/volfred/smarthome/smarthome.universe.xml";
+String SMART_HOME_UNIVERSE = "/data/fred4/smarthome/smarthome.universe.xml";
 
 
 

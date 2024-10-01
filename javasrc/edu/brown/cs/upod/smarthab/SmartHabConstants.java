@@ -52,7 +52,7 @@ public interface SmartHabConstants extends BasisConstants
 
 String SMART_HAB_NAME = "SmartHab";
 
-String SMART_HAB_UNIVERSE = "/ws/volfred/smarthab/smarthab.universe.xml";
+String SMART_HAB_UNIVERSE = "/data/fred4/smarthab/smarthab.universe.xml";
 String SMART_HAB_PROGRAM = "$(HOME)/.smarthab";
 
 
@@ -117,14 +117,14 @@ class WidgetData {
        }
     }
 
-   String getType()                             { return widget_type; }
-   
+   String getType()				{ return widget_type; }
+
    Point2D getRange() {
       if (range_min == null) return null;
       return new Point2D.Double(range_min,range_max);
     }
-   
-   Map<String,String> getMapping ()             { return value_map; }
+
+   Map<String,String> getMapping ()		{ return value_map; }
 
 }	// end of inner class WidgetData
 

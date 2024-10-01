@@ -95,7 +95,7 @@ static {
 
    try {
       DATA_STORE_DIR = IvyFile.expandFile("$(HOME)/.upod-calendar.json");
-      DATA_STORE_CREDS = new File("/ws/volfred/smartsign/calendar-quickstart.json");
+      DATA_STORE_CREDS = new File("/data/fred4/smartsign/calendar-quickstart.json");
       HTTP_TRANSPORT = GoogleNetHttpTransport.newTrustedTransport();
       DATA_STORE_FACTORY = new FileDataStoreFactory(DATA_STORE_DIR);
     }
@@ -262,26 +262,26 @@ boolean findEvent(long when,String desc,Map<String,String> fields)
 private void loadCalendarData()
 {
     if (!cal_file.exists()) {
-        cal_dlm = 0;
-        cal_names.clear();
-        cal_names.add("primary");
+	cal_dlm = 0;
+	cal_names.clear();
+	cal_names.add("primary");
      }
     else if (cal_file.lastModified() > cal_dlm) {
-        cal_dlm = cal_file.lastModified();
-        cal_names.clear();
-        try (BufferedReader br = new BufferedReader(new FileReader(cal_file))) {
-            for ( ; ; ) {
-                String ln = br.readLine();
-                if (ln == null) break;
-                ln = ln.trim();
-                if (ln.startsWith("#") || ln.length() == 0) continue;
-                cal_names.add(ln);
-             }
-            if (cal_names.size() == 0) cal_names.add("primary");
-         }
-        catch (IOException e) {
-            BasisLogger.logE("GOOGLECAL: Problem reading calendar data",e);
-         }
+	cal_dlm = cal_file.lastModified();
+	cal_names.clear();
+	try (BufferedReader br = new BufferedReader(new FileReader(cal_file))) {
+	    for ( ; ; ) {
+		String ln = br.readLine();
+		if (ln == null) break;
+		ln = ln.trim();
+		if (ln.startsWith("#") || ln.length() == 0) continue;
+		cal_names.add(ln);
+	     }
+	    if (cal_names.size() == 0) cal_names.add("primary");
+	 }
+	catch (IOException e) {
+	    BasisLogger.logE("GOOGLECAL: Problem reading calendar data",e);
+	 }
      }
 }
 
@@ -353,28 +353,28 @@ private class CalEvent implements CalendarEvent {
       setProperty("VISIBILITY",evt.getVisibility(),true);
       setProperty("CONTENT",evt.getDescription(),false);
       setProperty("WHERE",evt.getLocation(),false);
-   
+
       setProperty("CALENDAR",evt.getOrganizer().getDisplayName(),false);
-   
+
       StringBuffer buf = new StringBuffer();
       if (evt.getAttendees() != null) {
-         for (EventAttendee attd : evt.getAttendees()) {
-            if (buf.length() > 0) buf.append("\t");
-            buf.append(attd.getDisplayName());
-          }
-         if (buf.length() > 0) property_set.put("WHO",buf.toString());
+	 for (EventAttendee attd : evt.getAttendees()) {
+	    if (buf.length() > 0) buf.append("\t");
+	    buf.append(attd.getDisplayName());
+	  }
+	 if (buf.length() > 0) property_set.put("WHO",buf.toString());
        }
-   
+
       buf = new StringBuffer();
       if (evt.getHtmlLink() != null) buf.append(evt.getHtmlLink());
       if (evt.getAttachments() != null) {
-         for (EventAttachment attc : evt.getAttachments()) {
-            if (buf.length() > 0) buf.append("\t");
-            buf.append(attc.getFileUrl());
-          }
+	 for (EventAttachment attc : evt.getAttachments()) {
+	    if (buf.length() > 0) buf.append("\t");
+	    buf.append(attc.getFileUrl());
+	  }
        }
       if (buf.length() > 0) property_set.put("LINKS",buf.toString());
-   
+
       Calendar c0 = Calendar.getInstance();
       c0.setTimeInMillis(start_time);
       Calendar c1 = Calendar.getInstance();
@@ -382,7 +382,7 @@ private class CalEvent implements CalendarEvent {
       Calendar c2 = BasisCalendarEvent.startOfDay(c0);
       Calendar c3 = BasisCalendarEvent.startOfDay(c1);
       if (c0.equals(c2) && c1.equals(c3)) {
-         property_set.put("ALLDAY","true");
+	 property_set.put("ALLDAY","true");
        }
     }
 
